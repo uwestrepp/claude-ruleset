@@ -1,29 +1,13 @@
-# Local Claude Code runtime files — never commit these
+# Sensitive / private Claude Code runtime files
+.credentials.json
+history.jsonl
 settings.json
 settings.local.json
-history.jsonl
-.credentials.json
-.claude.json
 .claude.zip
 
-# Runtime directories
-backups/
-cache/
-downloads/
-file-history/
-ide/
-paste-cache/
-plans/
-plugins/
-projects/
-session-env/
-sessions/
-shell-snapshots/
-statsig/
-todos/
-
-# Memory (user-specific)
+# User-specific runtime data
 memory/
+projects/
 
 # IDE
 .idea/
