@@ -45,7 +45,7 @@ Follows `Batch.md` §1 phase template. TYPO3 upgrade phase mapping:
 
 Within Phase 5, apply the shared pass model and pre-apply classifier/gates from `General.md` sections `5.8` and `5.8.0`.
 Validation selection/depth for Phase 6 MUST follow `General.md` sections `5.2` and `5.8.3`.
-When static-test or scanner workflows are used, chain them per `Batch.md` §5.
+When static-test or scanner workflows are used, chain them per `Batch.md` §6.
 For grouped Pass 1/Pass 2 batches, validation may be concatenated when items share risk profile and impacted surfaces, but coverage mapping per item/topic MUST be explicit in reporting.
 
 ---
@@ -189,4 +189,4 @@ Complex refactors must include explanatory commit body (`Why`, `What`, `How to t
 
 ## 10. Handover template (MUST)
 
-Follow `Batch.md` §7.2 final cycle report template.
+Follow `Batch.md` §8.2 final cycle report template.

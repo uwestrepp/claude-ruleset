@@ -101,9 +101,70 @@ checkpoint per `Meta.md §2.1` and report it as an explicit labeled user-facing 
 
 ---
 
-## 4. Autonomous Execution Mode (MUST)
+## 4. Reviewability & PR Escalation (MUST)
 
-### 4.1 Activation protocol
+Batch-scale work MUST remain reviewable. When a workstream grows beyond sensible review
+size, the agent MUST recommend creating pull requests or splitting work into multiple
+branches instead of continuing indefinite branch accumulation.
+
+The agent MUST evaluate reviewability continuously during batch execution and again at
+minimum:
+- after Phase 2 baseline/inventory,
+- after Phase 4 triage,
+- before Phase 8 commits.
+
+### 4.1 Soft escalation threshold (MUST)
+
+The agent MUST recommend a PR/split checkpoint when any of the following is reached:
+- `>= 8` commits on the working branch,
+- `>= 20` changed files,
+- `>= 600` changed lines,
+- `>= 2` packages/extensions/components touched,
+- `>= 3` concern types touched across one workstream, for example:
+  - PHP runtime,
+  - Fluid/templates,
+  - TypoScript,
+  - configuration/infrastructure,
+  - tests/tooling,
+  - docs/governance.
+
+At soft threshold, the agent MUST:
+- state that the workstream has reached review-risk size,
+- recommend a PR or split strategy,
+- explicitly justify continuing in one branch if the user wants to proceed without splitting.
+
+### 4.2 Hard escalation threshold (MUST)
+
+The agent MUST pause and present a split/PR strategy before continuing when any of the
+following is reached:
+- `>= 12` commits on the working branch,
+- `>= 30` changed files,
+- `>= 1000` changed lines,
+- `>= 3` packages/extensions/components touched,
+- mixed unrelated tickets/extensions in one branch.
+
+At hard threshold, the agent MUST NOT continue accumulating changes in the same branch
+unless the user explicitly overrides after seeing the proposed split strategy.
+
+### 4.3 Weighting rule (MUST)
+
+Package/extension spread takes precedence over raw line count. A smaller diff spanning
+multiple unrelated packages is more review-risky than a larger but coherent single-scope
+change. When thresholds disagree, the agent MUST bias toward recommending a split.
+
+### 4.4 Reporting (MUST)
+
+Whenever this section triggers, the next user-facing update MUST include:
+- which threshold was reached,
+- the current scope size in concrete terms,
+- whether the recommendation is soft or hard escalation,
+- the proposed PR/branch grouping strategy.
+
+---
+
+## 5. Autonomous Execution Mode (MUST)
+
+### 5.1 Activation protocol
 
 When the user expresses intent for autonomous execution, the agent MUST respond with a
 scope confirmation statement before switching modes. Casual phrases alone ("go ahead",
@@ -122,13 +183,13 @@ The scope confirmation statement MUST include:
 The agent MUST wait for the user to explicitly confirm the scope statement before
 activating autonomous mode.
 
-### 4.2 Scope boundary
+### 5.2 Scope boundary
 
 Autonomous mode is active only for the explicitly confirmed scope. If work outside
 that scope is discovered, the agent MUST pause, report the item, and ask whether to
 extend scope before continuing.
 
-### 4.3 Pass 3 always suspends implementation
+### 5.3 Pass 3 always suspends implementation
 
 When a Pass 3 item is encountered, the agent MUST suspend implementation and present
 the item for individual approval per `General.md` §5.8.2 before applying any change
@@ -140,7 +201,7 @@ verified — manual review is the only valid gate.
 
 ---
 
-## 5. Workflow Chaining (MUST)
+## 6. Workflow Chaining (MUST)
 
 When two or more workflows are composed into a single execution, they run strictly
 sequentially: each workflow completes all its phases before the next begins.
@@ -167,7 +228,7 @@ Before starting a chained execution, the agent MUST:
 
 ---
 
-## 6. Agent Delegation (SHOULD)
+## 7. Agent Delegation (SHOULD)
 
 When custom agents are available (defined in `~/.claude/agents/` or `.claude/agents/`),
 the main agent SHOULD delegate suitable work to reduce blocking and context pressure:
@@ -189,9 +250,9 @@ these tasks inline as before.
 
 ---
 
-## 7. Reporting Template
+## 8. Reporting Template
 
-### 7.1 Per-pass report (SHOULD)
+### 8.1 Per-pass report (SHOULD)
 
 After each pass within Phase 5 (Pass 1 / Batch-Safe, Pass 2 / Batch-Provable,
 Pass 3 / Manual), report:
@@ -202,7 +263,7 @@ Pass 3 / Manual), report:
 - explicit next-step proposal
 - knowledge persistence checkpoint per `Meta.md §2.1` as an explicit labeled line (persist any newly confirmed findings before continuing and mention the target path when something was persisted)
 
-### 7.2 Final cycle report (MUST)
+### 8.2 Final cycle report (MUST)
 
 At Phase 9, report:
 - branch + commit ids (all repositories affected)

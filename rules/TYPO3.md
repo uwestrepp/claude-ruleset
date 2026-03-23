@@ -39,7 +39,7 @@ When reviewing existing TYPO3 code, the agent MUST:
 ### 1.3 Autonomous upgrade execution mode (MUST)
 
 For batch workflow tasks including upgrade execution, the autonomous execution protocol
-is defined in `Batch.md` §4. Apply it for this workflow.
+is defined in `Batch.md` §5. Apply it for this workflow.
 
 The agent MUST still pause and ask if:
 

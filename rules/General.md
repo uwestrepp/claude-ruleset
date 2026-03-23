@@ -180,6 +180,17 @@ The agent MUST treat long-session continuity as fallible and MUST NOT rely solel
 
 ---
 
+# 3.5 Large-Scope Handoff To Batch Governance (MUST)
+
+When a task starts small but grows into a larger-scale, multi-file, multi-step, or
+multi-package operation, the agent MUST apply `Batch.md` governance, including its
+reviewability and PR/split escalation thresholds.
+
+The agent MUST NOT keep treating such work as a small ad-hoc task merely because that
+was the initial framing.
+
+---
+
 # 4. Change Safety Protocol
 
 ## 4.1 Re-Read Before Modify (MUST)

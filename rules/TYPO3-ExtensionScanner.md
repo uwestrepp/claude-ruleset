@@ -161,7 +161,7 @@ Minimum requirement:
 
 ## 8. Reporting Format (SHOULD)
 
-Follow `Batch.md` §7 reporting template. Scanner-specific scope field: include `extKey` list and remaining findings by severity.
+Follow `Batch.md` §8 reporting template. Scanner-specific scope field: include `extKey` list and remaining findings by severity.
 
 ---
 
