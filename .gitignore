@@ -5,9 +5,20 @@ settings.json
 settings.local.json
 .claude.zip
 
-# User-specific runtime data
+# User-specific and runtime data
 memory/
 projects/
+backups/
+cache/
+downloads/
+file-history/
+ide/
+paste-cache/
+plugins/
+sessions/
+shell-snapshots/
+statsig/
+todos/
 
 # IDE
 .idea/
