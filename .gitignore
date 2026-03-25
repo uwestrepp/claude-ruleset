@@ -19,6 +19,7 @@ sessions/
 shell-snapshots/
 statsig/
 todos/
+plans/
 
 # IDE
 .idea/
