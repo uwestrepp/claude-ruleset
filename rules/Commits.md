@@ -137,7 +137,7 @@ Before running any `git commit`, the agent MUST execute this checklist:
    - extension-scoped changes: resolver output from `.aiassistant/state/extension-ticket-map.yaml` (if present)
    - non-extension changes: fallback branch ticket from `git branch --show-current`
 3. If user-provided ticket conflicts with resolver output, stop and ask before committing.
-4. If resolver reports missing mapping or mixed tickets, stop and fix mapping/split commit.
+4. If resolver reports missing mapping or mixed tickets (exit code 4 or 5): determine whether this is a multi-extension feature branch (branch intentionally spans several extensions under one Jira ticket). If yes, add the branch → ticket entry to `.aiassistant/state/commit-ticket-overrides.yaml` in the same commit before retrying. If no, split the commit per ticket or fix the missing map entry.
 5. Draft commit subject using required schema.
 6. Validate subject against the regex above.
 7. Re-check `{TYPE}` is in the allowed list and `{scope}` is lowercase.
