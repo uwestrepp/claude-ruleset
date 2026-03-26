@@ -24,22 +24,23 @@
   * `Batch.md`
     * Description: Shared execution phase template (including mandatory functional baseline in Phase 2), toolset gate protocol, autonomous mode activation protocol, strict sequential workflow chaining model, optional agent delegation for test execution and checkpoints, and per-pass and final reporting/handover template for larger-scale or multi-file operations.
     * When to use: Any larger-scale, multi-file, multi-step batch, scanner, migration, static-test cycle, or automation-assisted change workflow. Foundation for all TYPO3-* workflow files.
-* **TYPO3 projects** — the following rules apply when working on TYPO3-based projects (all include a toolset availability gate):
+* **TYPO3 projects** — the following rules apply when working on TYPO3-based projects:
   * `TYPO3.md`
-    * Description: TYPO3-specific operating policy and upgrade impact behavior.
+    * Description: TYPO3-specific operating policy, upgrade impact behavior, and skill invocation gate (§9) — includes the registry of TYPO3 workflow skills and their trigger patterns.
     * When to use: TYPO3 project tasks (core/extensions/Extbase/TypoScript/Fluid/migrations).
-  * `TYPO3-Changelog.md`
-    * Description: TYPO3 deprecation/breaking reference index across versions.
-    * When to use: Deprecation analysis and migration impact checks.
-  * `TYPO3-Upgrade-Workflow.md`
-    * Description: Required execution order + DoD for TYPO3 upgrade tasks, including risk-sequenced execution and configuration-option matrix coverage.
-    * When to use: Explicit TYPO3 upgrade/migration execution work.
-  * `TYPO3-ExtensionScanner.md`
-    * Description: Standardized ExtensionScanner execution specialized on top of General.md shared pass/gate model, including scanner-specific false-positive handling, migration pass behavior, and option-matrix regression checks.
-    * When to use: ExtensionScanner triage/fixing and TYPO3 scanner-driven migration work.
-  * `TYPO3-Static-Code-Tests.md`
-    * Description: Ordered static code test workflow for TYPO3 projects, specialized on top of General.md shared pass/gate model (toolchain prep, full-suite baseline, static-tool execution order, pre-apply behavior-risk classifier, logging, validation gates, and explicit Batch/Meta checkpoints for ordered scoped runs).
-    * When to use: Static analyzer/fixer runs during TYPO3 migration and code-quality update cycles, including per-package verification loops inside larger batch work.
+* **TYPO3 workflow skills** — explicit activation required; see `TYPO3.md` §9 for trigger patterns:
+  * `/typo3-upgrade` (`~/.claude/plugins/typo3-workflows/skills/typo3-upgrade/`)
+    * Description: TYPO3 Upgrade Workflow — full execution + DoD: phase template, preflight, inventory, deprecation/breaking scan (v10–v14 changelog in `references/`), implementation constraints, validation checklist, documentation sync, commit strategy.
+    * Activate with: `/typo3-upgrade` before any TYPO3 upgrade/migration execution task.
+  * `/typo3-scanner` (`~/.claude/plugins/typo3-workflows/skills/typo3-scanner/`)
+    * Description: TYPO3 ExtensionScanner Workflow — command standard, pass model (triage/false-positives/safe replacements/high-risk migrations), false-positive handling, verification gates, reporting.
+    * Activate with: `/typo3-scanner` before any ExtensionScanner triage or scanner-driven migration.
+  * `/typo3-static-tests` (`~/.claude/plugins/typo3-workflows/skills/typo3-static-tests/`)
+    * Description: TYPO3 Static Code Test Workflow — toolchain prep, ordered execution (php-cs-fixer → rector1 → rector2 → fractor → typoscriptlint → phpstan), triage model, false-positive ledger, logging, re-run/validation gates.
+    * Activate with: `/typo3-static-tests` before any static analyzer/fixer cycle.
+  * `/typo3-upgrade-full` (`~/.claude/plugins/typo3-workflows/skills/typo3-upgrade-full/`)
+    * Description: TYPO3 Full Upgrade Chain — orchestration skill that chains all three workflows consecutively (upgrade → scanner → static-tests) per Batch.md §6. Activate alongside the three component skills.
+    * Activate with: `/typo3-upgrade-full` + `/typo3-upgrade` + `/typo3-scanner` + `/typo3-static-tests` for a full chained session.
 * Global MCP servers are configured in `~/.claude.json` under the `mcpServers` key (canonical location).
   * If MCP resources/templates are empty, treat this as a non-blocking beta behavior.
   * Verify MCP availability with one lightweight tool call (instead of relying only on list_mcp_resources/list_mcp_resource_templates).

@@ -89,7 +89,7 @@ The agent MUST evaluate the project rule-set defined in `CLAUDE.md` for effectiv
 
 The agent MUST perform checkpoint evaluations continuously during delivery, but MUST batch non-critical rule-improvement feedback only to the next defined checkpoint (major milestone or task end), not beyond, to avoid workflow disruption.
 
-Checkpoint results MUST be visibly labeled in user-facing output, for example with the prefix `Meta checkpoint:`.
+Checkpoint results MUST be visibly labeled in user-facing output, for example with the prefix `Meta checkpoint:`. For task-end and Phase 9 checkpoints: if the checkpoint finds substantive improvements or knowledge items, the result MUST also be appended to a durable committed artifact (the triage packet, the closure log, or an equivalent named session artifact). A chat-only label is not sufficient evidence for auditability when committed session artifacts exist. The checkpoint is not complete until either (a) no meaningful improvements were identified and this is stated in the next user-facing update, or (b) substantive findings are persisted to the named artifact.
 
 At task start, the agent MUST record an initial checkpoint internally and SHOULD surface it immediately when there is a meaningful improvement to raise. If there is no meaningful improvement at task start, the agent MAY defer a no-op statement to the first major milestone.
 

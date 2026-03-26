@@ -228,13 +228,14 @@ If a change alters behavior:
 
 ## 4.5 Upstream Contract Verification (MUST)
 
-Before applying call-site changes (manual or automated) that modify method/function calls, the agent MUST verify the upstream callee contract and semantic equivalence.
+Before applying call-site changes (manual or automated) that modify method/function calls, the agent MUST verify the upstream callee contract and semantic equivalence. This trigger also applies retroactively during Phase 2 inventory: any signature change already present in the working scope from a prior session or base-branch merge MUST be identified, listed as a §4.5 item in the triage packet, and verified before Phase 5 implementation begins.
 
 Per occurrence, the agent MUST:
 - resolve the effective callee used at runtime (interface/implementation path),
 - compare old vs new signature shape (parameter count, order, defaults, nullability, variadic, by-reference, accepted types),
 - verify semantic mapping for removed/changed arguments (truly obsolete or explicitly migrated to the new mechanism),
-- classify unresolved or ambiguous dispatch as high risk and avoid auto-apply.
+- classify unresolved or ambiguous dispatch as high risk and avoid auto-apply,
+- record the check result in the triage packet (§5.8.0), naming the specific file+method, the checked callee location, and the evidence of signature compatibility.
 
 After applying such changes, the agent MUST run scoped validation and report evidence:
 - checked callee/signature location,
@@ -370,9 +371,13 @@ Before the first code edit in such a cycle, the agent MUST:
   - explicit list of `manual` topics requiring approval.
 - persist the same packet to:
   - `.aiassistant/state/workflow-triage/<timestamp>-<workflow>-<scope>.md`
+- confirm the triage packet exists at the mandatory path before proceeding: work MUST NOT advance to Phase 5 (Implementation) until this artifact is present with all prescribed fields populated. An informal or equivalently structured triage document at another path does not satisfy this requirement unless explicitly reformatted or mapped into a compliant artifact at the correct path in the same step.
 - wait for explicit user approval before applying:
   - any `provable` batch,
   - any `manual` item.
+
+Vocabulary compliance:
+- The `safe` / `provable` / `manual` classification labels MUST appear verbatim in the triage packet's finding classification section. Equivalent informal labels (for example `FIX NEEDED / BUSINESS DECISION / MANUAL FOLLOW-UP`) do not satisfy this requirement unless an explicit cross-reference to the three-tier model is included.
 
 Execution clarification:
 - `safe` (maps to Pass 1):
@@ -399,6 +404,8 @@ Final reporting gate:
   - `approvals_recorded_for_provable_manual`: `yes|no` (link)
   - `static_rerun_green`: `yes|no` (path)
   - `runtime_validation_executed`: `yes|no` (evidence link OR blocker + exact follow-up command)
+  - `meta_checkpoint_phase2_executed`: `yes|no` (evidence: labeled output or committed artifact reference)
+  - `meta_checkpoint_phase9_executed`: `yes|no` (evidence: labeled committed artifact line or path)
 
 Non-circumvention:
 - workflow-specialization rules MUST reference this section.
@@ -549,10 +556,37 @@ If any uncertainty remains, the agent MUST communicate it clearly.
 
 ---
 
+# 11. Skill Invocation Gate
+
+## 11.1 Require explicit skill activation (MUST)
+
+When a defined skill exists for a workflow type and a user request matches that workflow,
+the agent MUST interrupt and prompt for explicit skill invocation rather than proceeding
+ad-hoc. The agent MUST NOT begin workflow execution as if the skill were active when it
+has not been invoked. Show the exact invocation command and explain that it must be
+activated first.
+
+The concrete skill registry (which skills exist and what patterns trigger them) is
+maintained in the most general applicable rule file for that domain — for example,
+`TYPO3.md` §9 for TYPO3 workflow skills.
+
+## 11.2 Skill ledger maintenance (MUST)
+
+When a new skill is created for a workflow:
+- its name, invocation command, and trigger patterns MUST be recorded in the most
+  general applicable rule file that covers that domain before the skill is considered
+  complete,
+- `General.md` is the fallback location only when no more specific domain rule applies,
+- the skill MUST NOT be created without a corresponding ledger entry.
+
+This requirement applies to all future skills regardless of domain.
+
+---
+
 # Meta Rule
 
-Correctness > Elegance  
-Safety > Speed  
+Correctness > Elegance
+Safety > Speed
 Clarity > Cleverness
 
 If a conflict arises, the agent MUST prioritize safety and correctness.

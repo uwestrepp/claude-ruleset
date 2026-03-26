@@ -1,14 +1,9 @@
----
-apply: by model decision
-instructions: Load when analyzing TYPO3 deprecations/breaking changes, or during TYPO3 upgrade and migration tasks.
----
-
 # TYPO3 Core: Deprecations & Breaking Changes since TYPO3 v10 LTS (v10.4)
 
 ## Scope & sources
 
 - **Start point**: TYPO3 **v10.4 (LTS)** and everything released afterwards (v11, v12, v13, v14).
-- **Primary sources (official)**: TYPO3 Core Changelog “combined / changes by type” pages (contain *Breaking Changes* and *Deprecations* lists):
+- **Primary sources (official)**: TYPO3 Core Changelog "combined / changes by type" pages (contain *Breaking Changes* and *Deprecations* lists):
     - v10: https://docs.typo3.org/c/typo3/cms-core/master/en-us/Changelog-10-combined.html
     - v11: https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog-11-combined.html
     - v12: https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog-12-combined.html
@@ -22,7 +17,6 @@ instructions: Load when analyzing TYPO3 deprecations/breaking changes, or during
     - v14: https://get.typo3.org/list/version/14
 
 > These official changelog pages are the canonical source of truth. This document is a compiled index for agent use.
-
 
 ---
 
@@ -70,7 +64,7 @@ instructions: Load when analyzing TYPO3 deprecations/breaking changes, or during
 - Breaking: **#88376** - Removed obsolete `pageNotFound_handling` settings
 - Breaking: **#88411** - `TBE_EDITOR.typo3form` removed
 - Breaking: **#88427** - `jsfunc.evalfield.js` has been removed
-- Breaking: **#88458** - Removed Frontend Track User (“ftu”) functionality
+- Breaking: **#88458** - Removed Frontend Track User ("ftu") functionality
 - Breaking: **#88496** - Method `getSwitchableControllerActions` has been removed
 - Breaking: **#88498** - Global data for TimeTracker statistics removed
 - Breaking: **#88500** - RTE image handling functionality dropped
@@ -85,7 +79,7 @@ instructions: Load when analyzing TYPO3 deprecations/breaking changes, or during
 - Deprecation: **#82669** - Streamline backend route path inconsistencies
 - Deprecation: **#85895** - Deprecate `File::_getMetaData()`
 - Deprecation: **#87200** - EmailFinisher `FORMAT_*` constants
-- Deprecation: **#87200** - EmailFinisher “format” option
+- Deprecation: **#87200** - EmailFinisher "format" option
 - Deprecation: **#87305** - Use constructor injection in DataMapper
 - Deprecation: **#87332** - Avoid runtime reflection calls in ObjectAccess
 - Deprecation: **#87550** - Use controller classes when registering plugins/modules
@@ -207,7 +201,7 @@ instructions: Load when analyzing TYPO3 deprecations/breaking changes, or during
 
 ## Breaking changes (extract)
 
-From the official “12.x changes by type” page (excerpt of the breaking list):
+From the official "12.x changes by type" page (excerpt of the breaking list):
 
 - Breaking: **#97174** - Removed hook for modifying info module footer content
 - Breaking: **#97187** - Removed hook for modifying link explanation
@@ -304,7 +298,7 @@ From the official “12.x changes by type” page (excerpt of the breaking list)
 - Breaking: **#101131** - Convert LoginType to native backed enum
 - Breaking: **#101133** - IconFactory->getIcon() signature change
 - Breaking: **#101133** - Icon->state changed type
-- Breaking: **#101137** - Page doktype “Recycler” removed
+- Breaking: **#101137** - Page doktype "Recycler" removed
 - Breaking: **#101143** - Strict typing in LinktypeInterface
 - Breaking: **#101149** - Mark PageTsBackendLayoutDataProvider as final
 - Breaking: **#101175** - Convert VersionState to native backed enum

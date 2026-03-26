@@ -1,6 +1,8 @@
 ---
-apply: by model decision
-instructions: Apply only when the task is a TYPO3 upgrade/migration or explicitly requests upgrade execution workflow/DoD.
+name: typo3-upgrade
+description: Activate with /typo3-upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. Provides the full TYPO3 Upgrade Workflow (Execution + DoD): phase template, preflight, inventory, deprecation/breaking scan, implementation constraints, validation checklist, documentation sync, and commit strategy. Required before any structured TYPO3 version upgrade work begins.
+argument-hint: [scope]
+allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
 
 # TYPO3 Upgrade Workflow (Execution + DoD)
@@ -10,6 +12,8 @@ This workflow is mandatory when the task is an upgrade and complements `TYPO3.md
 and `Batch.md` (execution phases, toolset gate, autonomous mode, chaining, reporting).
 
 Non-skippable triage/compliance gates are defined centrally in `General.md` section `5.8.0` and are mandatory for this workflow.
+
+**Changelog reference:** The TYPO3 deprecation/breaking-change index (v10–v14) is available in `references/changelog.md` within this skill. Consult it during Phase 3 scan and Phase 4 triage.
 
 ---
 
@@ -45,7 +49,7 @@ Follows `Batch.md` §1 phase template. TYPO3 upgrade phase mapping:
 
 Within Phase 5, apply the shared pass model and pre-apply classifier/gates from `General.md` sections `5.8` and `5.8.0`.
 Validation selection/depth for Phase 6 MUST follow `General.md` sections `5.2` and `5.8.3`.
-When static-test or scanner workflows are used, chain them per `Batch.md` §6.
+When static-test or scanner workflows are used, chain them per `Batch.md` §6 — activate the `/typo3-scanner` or `/typo3-static-tests` skill at that point.
 For grouped Pass 1/Pass 2 batches, validation may be concatenated when items share risk profile and impacted surfaces, but coverage mapping per item/topic MUST be explicit in reporting.
 
 ---
@@ -77,6 +81,8 @@ Identify and document:
 ---
 
 ## 5. Deprecation/breaking scan checklist (MUST)
+
+Consult `references/changelog.md` for the full v10–v14 deprecation/breaking-change index.
 
 At minimum, scan for TYPO3 upgrade hotspots:
 

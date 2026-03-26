@@ -74,7 +74,7 @@ Must be one of (choose the best fit):
 Add a body **iff** the change:
 
 -   Is complex or non-obvious
--   Contains multiple distinct changes
+-   Contains multiple distinct changes — defined as: changes addressing 2+ separate findings or topics, OR touching 3+ files with logically distinct purposes, OR a single commit with 200+ insertions across 3+ files
 -   Requires explanation of reasoning or trade-offs
 -   Includes migration or rollout steps
 -   Requires testing instructions
@@ -145,8 +145,9 @@ Before running any `git commit`, the agent MUST execute this checklist:
 9. Decide if body is required using the **Body Decision Gate** above.
    - if no criterion matches: commit subject only
    - if one or more criteria match: include concise body sections
-10. For nested repositories, run `git commit` in the affected nested repository context.
-11. Only then run `git commit`.
+10. For TYPO3 upgrade/migration scoped commits: confirm `TYPO3.md` §6.1 completion criteria are all addressed. Criterion 4 (UPDATE*.md synchronized) MUST be explicitly marked as complete or confirmed not applicable with a short rationale before the final commit in the cycle.
+11. For nested repositories, run `git commit` in the affected nested repository context.
+12. Only then run `git commit`.
 
 If validation fails at any step:
 

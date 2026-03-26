@@ -1,11 +1,13 @@
 ---
-apply: by model decision
-instructions: Apply when running static code analyzers/fixers (for example php-cs-fixer, Rector, Fractor, TypoScript lint) for migration or quality passes on TYPO3 projects.
+name: typo3-static-tests
+description: Activate with /typo3-static-tests before starting any TYPO3 static code analyzer or fixer run (php-cs-fixer, Rector, Fractor, TypoScript lint, PHPStan). Provides the full static code test workflow: toolchain prep, ordered execution, triage model, false-positive ledger, logging, and re-run/validation gates. Required before structured static-test cycles begin.
+argument-hint: [scope]
+allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
 
 # TYPO3 Static Code Test Workflow
 
-This rule standardizes static code test execution and triage for TYPO3 projects using ddev-based tooling.
+This skill standardizes static code test execution and triage for TYPO3 projects using ddev-based tooling.
 It specializes `General.md` section `5.2` and `Batch.md` §1 and must not conflict with either.
 
 This workflow is a `Batch.md` workflow whenever the run spans multiple files, multiple tool phases, repeated remediation loops, or an ordered sequence of package/extension scopes. That includes per-package PR verification runs executed one-by-one inside a larger migration or regression cycle.
@@ -20,7 +22,7 @@ Apply `Batch.md` §2 general toolset gate. TYPO3 static-test-specific checks:
 - step 1 (project type): confirm `composer.json` references `typo3/cms-core` or equivalent.
 - step 3 (required commands): confirm project-specific wrapper commands exist and are callable.
 
-**Reference project notice:** All concrete tool commands in this file (for example `ddev mq-tests-*`, `ddev tests <action>`, directory names like `mqtests/`) originate from the reference project's toolchain. Before first use in any project, the agent MUST validate that these commands exist, identify project-specific equivalents where they differ, and use the validated commands for the remainder of the workflow. Do not assume reference-project commands are universally available.
+**Reference project notice:** All concrete tool commands in this skill (for example `ddev mq-tests-*`, `ddev tests <action>`, directory names like `mqtests/`) originate from the reference project's toolchain. Before first use in any project, the agent MUST validate that these commands exist, identify project-specific equivalents where they differ, and use the validated commands for the remainder of the workflow. Do not assume reference-project commands are universally available.
 
 If any check fails: report which tooling is missing, do not continue the workflow, and ask the user how to proceed.
 

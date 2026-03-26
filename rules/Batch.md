@@ -87,6 +87,12 @@ For each identified entry point and surface, the agent MUST:
      exact follow-up step; do not silently skip.
 4. **Persist** baseline artifact to `.aiassistant/state/functional-baseline-<scope>.md`
    (create or update).
+5. **If a baseline artifact from a prior session already exists** for the same scope,
+   explicitly verify it is still current before using it as Phase 2 evidence: confirm
+   that each documented entry point still exists and that at least one key expected
+   behavior per surface still produces the documented result. If the artifact is stale
+   or scope has changed, update it. Note the re-verification in the artifact
+   (for example: "Re-verified: YYYY-MM-DD, all entry points current").
 
 The baseline artifact is the primary comparison evidence for Phase 6. Work MUST NOT
 proceed to Phase 3 if the baseline is incomplete without explicit acknowledgement of

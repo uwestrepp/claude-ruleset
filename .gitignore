@@ -14,7 +14,8 @@ downloads/
 file-history/
 ide/
 paste-cache/
-plugins/
+plugins/*
+!plugins/typo3-workflows/
 sessions/
 shell-snapshots/
 statsig/
