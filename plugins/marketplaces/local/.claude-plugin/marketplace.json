@@ -1,0 +1,15 @@
+{
+  "name": "local",
+  "owner": {
+    "name": "MOSAIQ GmbH"
+  },
+  "plugins": [
+    {
+      "name": "typo3-workflows",
+      "source": "./plugins/typo3-workflows",
+      "description": "TYPO3 upgrade, scanner, and static-test workflow skills",
+      "version": "1.0.0",
+      "author": { "name": "MOSAIQ GmbH" }
+    }
+  ]
+}

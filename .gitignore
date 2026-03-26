@@ -15,7 +15,10 @@ file-history/
 ide/
 paste-cache/
 plugins/*
-!plugins/typo3-workflows/
+!plugins/known_marketplaces.json
+!plugins/marketplaces/
+plugins/marketplaces/*
+!plugins/marketplaces/local/
 sessions/
 shell-snapshots/
 statsig/

@@ -37,8 +37,7 @@ When reviewing existing TYPO3 code, the agent MUST:
 
 ### 1.3 Autonomous upgrade execution mode (MUST)
 
-For batch workflow tasks including upgrade execution, activate the `/typo3-upgrade` skill
-first. The autonomous execution protocol is defined in `Batch.md` §5 and the skill.
+For batch workflow tasks, determine the appropriate workflow skill according to §9. If the correct skill is not clear from the task description, ask the user before proceeding. Present the selected skill to the user and wait for explicit confirmation before activating it. Do NOT proceed with any skill activation until the user has explicitly confirmed. The autonomous execution protocol is defined in `Batch.md` §5 and the activated skill.
 
 The agent MUST still pause and ask if:
 
@@ -199,10 +198,10 @@ invocation command, and explain that the skill must be activated first.
 
 | Skill | Invoke with | Trigger patterns |
 |---|---|---|
-| TYPO3 Upgrade Workflow | `/typo3-upgrade` | upgrade task, migration execution, deprecation/breaking-change remediation, version compatibility work, TYPO3 major/minor migration |
-| TYPO3 ExtensionScanner | `/typo3-scanner` | ExtensionScanner run, scanner triage, scanner findings, scanner pass, scanner-driven migration |
-| TYPO3 Static Code Tests | `/typo3-static-tests` | static test run, phpstan, rector, fractor, php-cs-fixer, TypoScript lint, static analyzer cycle, static code quality pass |
-| TYPO3 Full Upgrade Chain | `/typo3-upgrade-full` | full upgrade chain, run all three workflows, consecutive upgrade + scanner + static tests, chained upgrade execution |
+| TYPO3 Upgrade Workflow | `/typo3-workflows:typo3-upgrade` | upgrade task, migration execution, deprecation/breaking-change remediation, version compatibility work, TYPO3 major/minor migration |
+| TYPO3 ExtensionScanner | `/typo3-workflows:typo3-scanner` | ExtensionScanner run, scanner triage, scanner findings, scanner pass, scanner-driven migration |
+| TYPO3 Static Code Tests | `/typo3-workflows:typo3-static-tests` | static test run, phpstan, rector, fractor, php-cs-fixer, TypoScript lint, static analyzer cycle, static code quality pass |
+| TYPO3 Full Upgrade Chain | `/typo3-workflows:typo3-upgrade-full` | full upgrade chain, run all three workflows, consecutive upgrade + scanner + static tests, chained upgrade execution |
 
 The agent MUST NOT begin workflow execution as if the skill were active when it has not
 been invoked. This is the primary compliance gate replacing the former `apply: by model
