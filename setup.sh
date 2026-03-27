@@ -443,17 +443,17 @@ run_plugin_steps_update() {
 
     if [[ "$HAS_CLAUDE" != "true" ]]; then
         step_skipped "Plugin update (claude CLI not found)"
-        log_warn "Run manually: claude plugins update typo3-workflows"
+        log_warn "Run manually: claude plugins update typo3-workflows@local"
         return 0
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_dry "Would run: claude plugins update typo3-workflows"
+        log_dry "Would run: claude plugins update typo3-workflows@local"
         return 0
     fi
 
     log_info "Updating typo3-workflows plugin..."
-    if claude plugins update typo3-workflows 2>&1; then
+    if claude plugins update typo3-workflows@local 2>&1; then
         step_done "Updated typo3-workflows plugin"
     else
         # Update may fail if nothing changed — not critical

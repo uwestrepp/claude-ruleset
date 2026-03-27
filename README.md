@@ -128,7 +128,7 @@ claude plugins list  # verify: typo3-workflows@local should be enabled
 
 ```bash
 cd ~/.claude && git pull
-claude plugins update typo3-workflows
+claude plugins update typo3-workflows@local
 ```
 
 </details>
