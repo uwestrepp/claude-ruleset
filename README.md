@@ -31,11 +31,59 @@ plugins/
         typo3-workflows/      TYPO3 workflow skills (upgrade, scanner, static-tests, full chain)
 settings.json.example         Template for ~/.claude/settings.json
 claude.json.example           Template for MCP server entries in ~/.claude.json
+setup.sh                      Automated install/update script
 ```
 
 ---
 
 ## Installation
+
+### Quick setup
+
+```bash
+git clone git@bitbucket.org:mosaiq-gmbh/mq.agent-ruleset.git ~/.claude
+~/.claude/setup.sh
+```
+
+The setup script auto-detects install vs update mode. It handles settings, MCP servers, hooks, and plugin registration in one step.
+
+> If `~/.claude` already exists as a Claude Code runtime directory (no git repo), the script overlays the repo without touching existing runtime files (credentials, sessions, etc.).
+
+### Setup options
+
+```
+setup.sh [OPTIONS]
+
+  -d, --dir DIR        Target directory (default: ~/.claude)
+  -m, --mode MODE      install | update | auto (default: auto)
+      --no-plugins     Skip plugin marketplace registration and install/update
+      --no-mcp         Skip MCP server merge into ~/.claude.json
+      --force          Overwrite settings.json from template (backs up first)
+      --dry-run        Show what would be done, change nothing
+  -v, --verbose        Show detailed output
+  -h, --help           Show this help
+```
+
+Prerequisites: `git`, `jq`, and optionally the `claude` CLI (plugin steps are skipped gracefully if it is not installed yet).
+
+---
+
+## Updating
+
+```bash
+~/.claude/setup.sh
+```
+
+The script auto-detects update mode when the target directory already contains the repo. It pulls the latest changes, merges new settings keys (without overwriting your customizations), and updates plugins.
+
+---
+
+## Manual alternative
+
+If you prefer not to use the setup script, or need to debug a specific step:
+
+<details>
+<summary>Show manual installation steps</summary>
 
 ### 1. Clone into `~/.claude`
 
@@ -43,17 +91,11 @@ claude.json.example           Template for MCP server entries in ~/.claude.json
 git clone git@bitbucket.org:mosaiq-gmbh/mq.agent-ruleset.git ~/.claude
 ```
 
-> If `~/.claude` already exists, clone elsewhere and copy/merge the contents manually.
-
 ### 2. Apply `settings.json`
-
-Copy the example and adjust to taste:
 
 ```bash
 cp ~/.claude/settings.json.example ~/.claude/settings.json
 ```
-
-The example enables `acceptEdits` mode by default and wires up the commit message validation hook.
 
 ### 3. Merge MCP servers into `~/.claude.json`
 
@@ -66,25 +108,6 @@ The example enables `acceptEdits` mode by default and wires up the commit messag
 2. Locate (or add) the top-level `"mcpServers"` key.
 3. Copy the server entries from `claude.json.example` into that key.
 
-Example result:
-
-```json
-{
-  "mcpServers": {
-    "atlassian": {
-      "type": "http",
-      "url": "https://mcp.atlassian.com/v1/mcp"
-    },
-    "chrome-devtools": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@0.18.1", "--headless=true", "--isolated=true", "--no-performance-crux", "--no-usage-statistics"]
-    }
-  },
-  ... (rest of your existing ~/.claude.json)
-}
-```
-
 The Atlassian MCP server requires an active Atlassian OAuth session. See [Atlassian MCP documentation](https://mcp.atlassian.com) for authentication setup.
 
 ### 4. Make the hook executable
@@ -95,44 +118,20 @@ chmod +x ~/.claude/hooks/validate-commit-message.sh
 
 ### 5. Register and install the local plugin marketplace
 
-The TYPO3 workflow skills ship as a local Claude Code plugin and must be installed once after cloning.
-
 ```bash
-# Register the local marketplace
 claude plugins marketplace add ~/.claude/plugins/marketplaces/local
-
-# Install the TYPO3 workflow plugin
 claude plugins install typo3-workflows@local
-
-# Verify
-claude plugins list
+claude plugins list  # verify: typo3-workflows@local should be enabled
 ```
 
-Expected output of `claude plugins list`:
-```
-Installed plugins:
-
-  ❯ typo3-workflows@local
-    Version: 1.0.0
-    Scope: user
-    Status: ✔ enabled
-```
-
----
-
-## Updating
+### Manual update
 
 ```bash
 cd ~/.claude && git pull
-```
-
-After pulling, re-run the plugin installation step if the plugin was added or updated:
-
-```bash
 claude plugins update typo3-workflows
 ```
 
-No further steps needed unless `settings.json.example` or `claude.json.example` have changed — check the diff and apply manually if so.
+</details>
 
 ---
 
