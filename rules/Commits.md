@@ -1,6 +1,6 @@
 ---
 apply: by model decision
-instructions: When generating commit messages
+instructions: Apply when creating, amending, or rewriting commits — covers message format, Jira ticket resolution, pre-commit validation checklist, and nested repository handling.
 ---
 
 # Commit Message Generation Rules
