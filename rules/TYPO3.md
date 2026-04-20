@@ -3,11 +3,9 @@ apply: by model decision
 instructions: Apply only for TYPO3 projects/tasks (TYPO3 core/extensions, Extbase, TypoScript, Fluid, upgrade or migration work).
 paths:
   - "**/packages/**"
-  - "**/ext_emconf.php"
-  - "**/Configuration/**"
-  - "**/Resources/Private/**"
-  - "**/config/sites/**"
+  - "**/ext_{localconf,emconf}.php"
   - "**/typo3conf/**"
+  - "**/config/sites/**"
   - "**/*.typoscript"
   - "**/*.tsconfig"
 ---
