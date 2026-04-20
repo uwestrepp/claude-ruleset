@@ -1,6 +1,8 @@
 ---
 apply: by model decision
 instructions: Apply only when generating/reviewing PHP code or enforcing PER/PER-CS conventions in PHP files.
+paths:
+  - "**/*.php"
 ---
 
 # PHP Coding Agent Operational Policy

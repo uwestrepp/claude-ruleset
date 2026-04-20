@@ -1,6 +1,15 @@
 ---
 apply: by model decision
 instructions: Apply only for TYPO3 projects/tasks (TYPO3 core/extensions, Extbase, TypoScript, Fluid, upgrade or migration work).
+paths:
+  - "**/packages/**"
+  - "**/ext_emconf.php"
+  - "**/Configuration/**"
+  - "**/Resources/Private/**"
+  - "**/config/sites/**"
+  - "**/typo3conf/**"
+  - "**/*.typoscript"
+  - "**/*.tsconfig"
 ---
 
 # TYPO3 Upgrade Impact Policy for Coding Agent
@@ -37,7 +46,7 @@ When reviewing existing TYPO3 code, the agent MUST:
 
 ### 1.3 Autonomous upgrade execution mode (MUST)
 
-For batch workflow tasks, determine the appropriate workflow skill according to §9. If the correct skill is not clear from the task description, ask the user before proceeding. Present the selected skill to the user and wait for explicit confirmation before activating it. Do NOT proceed with any skill activation until the user has explicitly confirmed. The autonomous execution protocol is defined in `Batch.md` §5 and the activated skill.
+For batch workflow tasks, determine the appropriate workflow skill according to §9. If the correct skill is not clear from the task description, ask the user before proceeding. Present the selected skill to the user and wait for explicit confirmation before activating it. Do NOT proceed with any skill activation until the user has explicitly confirmed. The autonomous execution protocol is defined in the `/core-workflows:batch` skill §5 and the activated skill.
 
 The agent MUST still pause and ask if:
 
@@ -211,7 +220,7 @@ decision` automatic triggering of the retired rule files.
 invocation command, and trigger patterns MUST be added to the table above before the
 skill is considered complete. For skills covering non-TYPO3 domains, the equivalent
 ledger entry belongs in the most general applicable rule file for that domain; see
-`General.md` §11 for the cross-domain skill registration requirement.
+`General.md` §9 for the cross-domain skill registration requirement.
 
 ---
 

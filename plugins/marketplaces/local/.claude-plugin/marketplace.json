@@ -10,6 +10,13 @@
       "description": "TYPO3 upgrade, scanner, and static-test workflow skills",
       "version": "1.0.0",
       "author": { "name": "MOSAIQ GmbH" }
+    },
+    {
+      "name": "core-workflows",
+      "source": "./plugins/core-workflows",
+      "description": "Generic workflow skills: batch governance, commit discipline, composer wiring",
+      "version": "1.0.0",
+      "author": { "name": "MOSAIQ GmbH" }
     }
   ]
 }

@@ -1,6 +1,8 @@
 ---
-apply: by model decision
-instructions: Apply when creating, amending, or rewriting commits — covers message format, Jira ticket resolution, pre-commit validation checklist, and nested repository handling.
+name: commits
+description: "Activate via /core-workflows:commits or let Claude auto-activate when the task involves creating, amending, or rewriting git commits. Enforces the commit message schema ([TYPE] JIRA (scope) summary), Jira ticket traceability rules (extension-ticket map resolution, branch override resolution, multi-extension commit splitting), body decision gate (when to include body vs subject-only), pre-commit validation checklist, and nested-repository commit handling. Triggers: 'commit these changes', 'create a commit', 'commit the fix', 'amend commit', 'git commit', 'write a commit message', preparing PR-worthy commits, splitting mixed changes across tickets, resolving which Jira ticket applies to a commit, any request mentioning commits/committing/amending."
+argument-hint: [scope]
+allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
 
 # Commit Message Generation Rules
@@ -31,7 +33,7 @@ Must be one of (choose the best fit):
 
 ### `{JIRA}`
 
--   Must match: `ALLCAPS-123` (e.g. `ABC-42`)
+-   Must match: `ALLCAPS-123` (e.g. `ABC-42`)
 -   Apply branch overrides first from `.aiassistant/state/commit-ticket-overrides.yaml` (if current branch is listed)
 -   For extension-scoped commits (per project package layout, e.g., `packages/*/...`), resolve from `.aiassistant/state/extension-ticket-map.yaml` if present
 -   If multiple mapped extensions with different tickets are touched, split into separate commits per ticket
@@ -56,7 +58,7 @@ Must be one of (choose the best fit):
 -   Lowercase
 -   Wrapped in parentheses
 -   Follow Conventional Commits scope conventions
--   Use the most relevant affected area (e.g. `api`, `auth`, `ui`, `db`,
+-   Use the most relevant affected area (e.g. `api`, `auth`, `ui`, `db`,
     `ci`)
 
 ### `{summary}`
@@ -104,7 +106,7 @@ Add a body **iff** the change:
     How to test: concrete verification steps 
     Notes: risks, migrations, follow-ups
 
--   `How to test` MUST follow `General.md` section `5.2` and `5.8.3`:
+-   `How to test` MUST follow `General.md` section `5.2` and the `/core-workflows:batch` skill §9.4:
     - list concrete runtime/functional validation steps actually executed when required by risk/impact,
     - static analyzer/lint commands are supplementary compliance checks and SHOULD be listed only when they provide collaborator-relevant signal (for example: explicitly requested, required by workflow, or reporting notable status such as "phpstan all clear"),
     - static analyzer/lint commands MUST NOT be presented as behavioral/regression proof and MUST NOT replace required runtime/functional validation.

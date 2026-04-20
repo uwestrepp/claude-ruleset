@@ -1,6 +1,8 @@
 ---
 apply: by model decision
 instructions: Apply only when creating/editing/reviewing PHP code.
+paths:
+   - "**/*.php"
 ---
 
 # PER Coding Style 3.0 Context for PHP Coding Agent (PHP >= 7.4)

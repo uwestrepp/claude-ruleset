@@ -1,7 +1,8 @@
 ---
-apply: by model decision
-instructions: Apply for any larger-scale, multi-file, multi-step, batch, or automation-assisted change workflow.
-  Foundation for all batch workflows that explicitly refer to this file.
+name: batch
+description: "Activate via /core-workflows:batch or let Claude auto-activate when the task matches batch-workflow patterns. Provides the shared execution phase template (toolset gate, preflight, scope/inventory/baseline, scan, triage, implementation, validation, documentation, commits, handover), the risk-sequenced Pass 1 (Batch-Safe) / Pass 2 (Batch-Provable) / Pass 3 (Manual) execution model with mandatory non-skippable triage/compliance gates, reviewability and PR-split escalation thresholds, autonomous execution mode activation protocol, strict sequential workflow chaining model, code-test triage memory, post-commit continuation, and per-pass and final reporting template. Triggers: multi-file refactor across N call sites (N>=5), migration touching multiple packages/extensions/components, scope expansion from small task to multi-file work, scanner-driven or analyzer-driven change batches, upgrade execution spanning multiple findings, rector/fractor/php-cs-fixer/phpstan cycles, 'refactor across all X', 'migrate all Y', 'update N files', 'apply to every', autonomous/unattended/batch execution requests, static-test and remediation cycles, any workflow where Pass 1/Pass 2/Pass 3 classification applies, any larger-scale multi-file multi-step automation-assisted change. Foundation for TYPO3 workflow skills (/typo3-workflows:typo3-upgrade, /typo3-workflows:typo3-scanner, /typo3-workflows:typo3-static-tests, /typo3-workflows:typo3-upgrade-full) — they layer domain specifics on this skill."
+argument-hint: [scope]
+allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
 
 # Batch Workflow Foundation
@@ -30,11 +31,11 @@ reordered.
 | 1     | Preflight                   | Branch/state checks, input confirmation                             |
 | 2     | Scope, Inventory & Baseline | Map entry points, dependencies, and verify functional baseline (§3) |
 | 3     | Scan / Analysis             | Collect findings (scanner, analyzer, changelog, or plan)            |
-| 4     | Triage & Plan               | Classify findings; produce triage packet (`General.md` §5.8.0)      |
+| 4     | Triage & Plan               | Classify findings; produce triage packet (§9.1)                     |
 | 5     | Implementation              | Apply changes: Pass 1 → Pass 2 → Pass 3                            |
 | 6     | Validation                  | Verify functional equivalence against Phase 2 baseline (`General.md` §5.2) |
 | 7     | Documentation Sync          | Update migration notes, README, and operator docs                   |
-| 8     | Commits                     | Scoped, traceable commits (`Commits.md`)                            |
+| 8     | Commits                     | Scoped, traceable commits (see `/core-workflows:commits` skill)     |
 | 9     | Handover & Reporting        | Final summary and compliance checklist (§7)                         |
 
 ---
@@ -98,12 +99,25 @@ The baseline artifact is the primary comparison evidence for Phase 6. Work MUST 
 proceed to Phase 3 if the baseline is incomplete without explicit acknowledgement of
 what is missing and why.
 
-This section specializes `General.md` §5.2.1 by making the functional baseline mandatory
-for all batch workflow cycles, not only larger-scale ones.
+This section makes the functional baseline mandatory for all batch workflow cycles
+(see also §3.3).
 
 At the conclusion of Phase 2, perform a knowledge persistence and rule-set governance
 checkpoint per `Meta.md §2.1` and report it as an explicit labeled user-facing line
 (for example `Meta checkpoint: ...`).
+
+### 3.3 Baseline Requirement for Larger-Scale Changes (MUST)
+
+For larger-scale change cycles (for example multi-extension updates, multi-topic analyzer passes, or medium/high-risk migration batches), the agent MUST establish a pre-change baseline before applying code changes.
+
+Baseline requirements:
+- run one full, project-defined suite for the targeted scope (static analyzer runs may be part of this suite for compliance baseline),
+- establish functional/runtime baseline paths for impacted medium/high-risk surfaces,
+- document per-extension functional baseline paths and expected outcomes when such documentation does not already exist,
+- use functional baseline as primary comparison evidence for post-change targeted checks and final regression validation,
+- treat static baseline comparison as supplementary compliance signal only.
+
+If baseline execution is blocked, the agent MUST state blocker, impact, and exact follow-up command/manual step.
 
 ---
 
@@ -198,7 +212,7 @@ extend scope before continuing.
 ### 5.3 Pass 3 always suspends implementation
 
 When a Pass 3 item is encountered, the agent MUST suspend implementation and present
-the item for individual approval per `General.md` §5.8.2 before applying any change
+the item for individual approval per §9.3 before applying any change
 to it. This applies regardless of whether autonomous mode is active.
 
 Autonomous mode does not reduce this requirement. Pass 3 items are, by definition,
@@ -277,5 +291,143 @@ At Phase 9, report:
 - validation evidence per surface, with reference to Phase 2 baseline
 - unresolved risks and backlog items with rationale and follow-up
 - explicit next commands for operator/developer
-- compliance checklist from `General.md` §5.8.0
+- compliance checklist from §9.1
 - knowledge persistence and rule-set governance checkpoint result per `Meta.md §2.1` as an explicit labeled line (either concise improvement proposals or "no new relevant knowledge or rule improvements identified")
+
+---
+
+## 9. Risk-Sequenced Change Execution (MUST)
+
+Applicability (MUST):
+- This section applies when ANY of the following is true:
+  - more than one finding/topic/file is handled in one cycle,
+  - analyzer/scanner/fixer/transformer output is used to decide edits,
+  - edits are applied in grouped passes/batches,
+  - generated or scripted edits are applied.
+- If applicability is uncertain, the user MUST be queried to make the decision before edits are applied.
+
+When this section applies, the agent MUST use this shared execution model:
+
+1. Pass 1 (`Batch-Safe`): low/no-impact mechanical or confirmed-safe changes, applied in one initial sweep across selected scope.
+2. Pass 2 (`Batch-Provable`): grouped medium-risk changes that are applied only when deterministic proof succeeds.
+3. Pass 3 (`Manual`): non-provable or high-risk changes handled one-by-one with explicit approval.
+
+### 9.1 Pre-Apply Risk Classifier + Non-Skippable Triage/Compliance Gates (MUST)
+
+This section is the single authoritative source for hard triage/compliance gates for all large-scale, batch-type, or automation-assisted change workflows.
+
+Before the first code edit in such a cycle, the agent MUST:
+- publish a triage packet in chat that includes:
+  - resolved scope and extension list,
+  - pre-change baseline run id/log path,
+  - finding/change groups classified as `safe` / `provable` / `manual` with concise rationale,
+  - planned validation depth per group and impacted runtime surfaces,
+  - explicit list of `manual` topics requiring approval.
+- persist the same packet to:
+  - `.aiassistant/state/workflow-triage/<timestamp>-<workflow>-<scope>.md`
+- confirm the triage packet exists at the mandatory path before proceeding: work MUST NOT advance to Phase 5 (Implementation) until this artifact is present with all prescribed fields populated. An informal or equivalently structured triage document at another path does not satisfy this requirement unless explicitly reformatted or mapped into a compliant artifact at the correct path in the same step.
+- wait for explicit user approval before applying:
+  - any `provable` batch,
+  - any `manual` item.
+
+Vocabulary compliance:
+- The `safe` / `provable` / `manual` classification labels MUST appear verbatim in the triage packet's finding classification section. Equivalent informal labels (for example `FIX NEEDED / BUSINESS DECISION / MANUAL FOLLOW-UP`) do not satisfy this requirement unless an explicit cross-reference to the three-tier model is included.
+
+Execution clarification:
+- `safe` (maps to Pass 1):
+  - formatting-only, type-annotation/doc normalization, or deterministic no-op mechanical rewrites with proven equivalence.
+- `provable` (maps to Pass 2):
+  - grouped changes where equivalence can be demonstrated by contract/signature checks and targeted validation evidence.
+- `manual` (maps to Pass 3):
+  - behavior-sensitive, business-logic-affecting, environment/credential flow changes, side-effect ordering changes, or ambiguous transformations.
+
+Execution policy:
+- `safe` changes may be applied only after triage packet publication.
+- only `safe` may be batch-applied directly,
+- `provable` may be applied in grouped batches only after proof succeeds (§9.2),
+- `manual` MUST be handled one-by-one with explicit approval (§9.3).
+- if classification is uncertain, classify as `manual`.
+- if any item cannot be confidently proven equivalent, it MUST be classified as `manual`.
+- if triage is skipped and later detected, the agent MUST halt immediately, report non-compliance, and backfill triage before continuing.
+
+Final reporting gate:
+- final cycle report MUST include a compliance checklist with these exact keys:
+  - `triage_packet_published`: `yes|no` (link)
+  - `triage_artifact_saved`: `yes|no` (path)
+  - `pre_change_baseline_logged`: `yes|no` (path)
+  - `approvals_recorded_for_provable_manual`: `yes|no` (link)
+  - `static_rerun_green`: `yes|no` (path)
+  - `runtime_validation_executed`: `yes|no` (evidence link OR blocker + exact follow-up command)
+  - `meta_checkpoint_phase2_executed`: `yes|no` (evidence: labeled output or committed artifact reference)
+  - `meta_checkpoint_phase9_executed`: `yes|no` (evidence: labeled committed artifact line or path)
+
+Non-circumvention:
+- workflow-specialization rules MUST reference this section.
+- workflow-specialization rules MUST NOT duplicate, weaken, or bypass these gates.
+
+### 9.2 Pass 2 Deterministic Proof Gate (MUST)
+
+Before applying grouped Pass 2 changes, the agent MUST verify:
+- upstream contract and semantic mapping (`General.md §4.5`),
+- interface/inheritance compatibility,
+- call-site compatibility (defaults, nullability, variadic, by-reference, accepted types),
+- unresolved dynamic dispatch ambiguity is absent (otherwise escalate),
+- parser/lint/static checks pass for touched files and impacted scope,
+- risk-appropriate runtime/functional checks are selected and executed per `General.md §5.2`.
+
+Static analyzer/lint passes alone are insufficient for Pass 2 proof.
+
+If any proof step is inconclusive, item MUST be escalated to Pass 3 and not batch-applied.
+
+### 9.3 Pass 3 Approval Loop (MUST)
+
+Before applying a Pass 3 topic, present:
+1. rule/finding identifier,
+2. at least one before/after example,
+3. affected file+line list,
+4. concrete behavior/regression risk,
+5. targeted before/after functionality-test suggestion when risk is high.
+
+Then execute:
+1. wait for explicit confirmation,
+2. apply change,
+3. run selected validation and report,
+4. wait for thumbs-up,
+5. commit,
+6. immediately propose next topic packet.
+
+Pass 3 reporting quality gate:
+- validation evidence MUST be scoped to the candidate file(s) and directly impacted paths,
+- if output contains substantial unrelated noise, the agent MUST rerun narrowed commands before presenting results.
+
+### 9.4 Validation Depth by Pass (MUST)
+
+After applying findings:
+- Pass 1: reduced smoke validation for impacted surfaces.
+- Pass 2: grouped impacted-surface validation; escalate to full verification when impact is medium/high.
+- Pass 3: full verification, including targeted before/after functionality checks for high-risk impacts.
+
+---
+
+## 10. Code-Test Triage Memory (MUST)
+
+When static code tests/analyzers are used, the agent MUST:
+- capture repeated finding patterns in a maintained ledger,
+- capture confirmed false positives separately with rationale,
+- prefer scoped, line-level suppressions over broad/file-level suppressions.
+
+If a project-specific workflow exists (for example ordered analyzer passes), follow it as a specialization of this baseline.
+
+---
+
+## 11. Post-Commit Continuation (MUST)
+
+After each completed change loop where validation has run and a commit is created, the agent MUST immediately propose the next concrete step.
+
+The proposal MUST include:
+- the next topic/rule identifier (or equivalent issue label),
+- at least one concise example of the intended change pattern,
+- affected file(s) (and lines when available),
+- a short risk note.
+
+The agent MUST NOT pause after commit without this explicit next-step proposal unless the user asks to stop.
