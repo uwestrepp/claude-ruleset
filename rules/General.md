@@ -384,6 +384,39 @@ This requirement applies to all future skills regardless of domain.
 
 ---
 
+# 10. Sub-agent Delegation
+
+## 10.1 Prefer delegation for bounded, main-context-isolated work (MUST)
+
+The agent MUST delegate a task to a sub-agent (via the `Agent` tool, choosing the narrowest appropriate subagent_type) when ALL of the following hold:
+
+- the task is bounded with a clear exit condition (specific question, specific file set, specific command to run),
+- intermediate outputs do not need to appear in the main context — only the final summary/decision does,
+- the task would otherwise consume read/grep/output volume that the user does not need to see.
+
+The agent MUST NOT delegate when:
+
+- decisions require user interaction mid-task,
+- intermediate results would inform the next step in the main flow,
+- the task is short enough that delegation overhead exceeds the task itself (for example, reading one known file, running one known command).
+
+Good candidates: multi-round codebase exploration (Explore/general-purpose), test/static-analysis runs (test-runner), repeated classification of many findings (contract-researcher), phase-boundary checkpoints (checkpoint), independent sub-tasks that can run in parallel.
+
+Rationale: the main agent's context is a shared session resource. Bounded, read-heavy, or enumeration-style tasks expand main-context tokens faster than their results warrant. Delegation preserves main-context tokens and parallelizes independent work.
+
+## 10.2 Delegation briefing (MUST)
+
+When delegating, the agent MUST:
+
+- give the sub-agent a self-contained prompt (sub-agents do not see conversation context),
+- specify the expected output form and length,
+- state explicitly whether the sub-agent should write code or only research/report,
+- prefer parallel invocation for independent tasks (multiple `Agent` tool calls in a single message).
+
+Workflow-specific delegation patterns (for example test-runner after applying changes, or checkpoint at phase boundaries) are defined in the `/core-workflows:batch` skill §7 as specializations of this baseline.
+
+---
+
 # Meta Rule
 
 Correctness > Elegance
