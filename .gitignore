@@ -6,23 +6,27 @@ settings.local.json
 .claude.zip
 
 # User-specific and runtime data
-memory/
-projects/
+.claude/
 backups/
 cache/
 downloads/
 file-history/
 ide/
+memory/
 paste-cache/
+plans/
 plugins/*
 !plugins/marketplaces/
 plugins/marketplaces/*
 !plugins/marketplaces/local/
+policy-limits.json
+projects/
 sessions/
 shell-snapshots/
+stats-cache.json
 statsig/
+tasks/
 todos/
-plans/
 
 CLAUDE.local.md
 
