@@ -11,24 +11,23 @@ CLAUDE.md                     Rule index (entry point for all projects)
 rules/
   General.md                  Global baseline behavior [CRITICAL]
   Meta.md                     Knowledge persistence and rule governance [CRITICAL]
-  Batch.md                    Batch workflow foundation
   CleanCode.md                Clean code principles
-  Commits.md                  Commit message format and pre-commit checklist
-  PER.md                      PHP PER-CS 3.0 coding style
-  PER-Application.md          PER application policy
-  TYPO3.md                    TYPO3 upgrade impact policy and skill invocation gate (§9)
+  PER.md                      PHP PER-CS 3.0 coding style (path-gated: **/*.php)
+  PER-Application.md          PER application policy (path-gated: **/*.php)
+  TYPO3.md                    TYPO3 upgrade impact policy and skill invocation gate (§9) (path-gated)
 agents/
   checkpoint.md               Knowledge persistence agent
   contract-researcher.md      Upstream contract verification agent
   test-runner.md              Test execution agent
 hooks/
-  validate-commit-message.sh  PreToolUse hook: enforces Commits.md subject format
+  validate-commit-message.sh  PreToolUse hook: enforces /core:commits subject format
 plugins/
   known_marketplaces.json     Marketplace registry (managed by CLI)
   marketplaces/
     local/                    Local MOSAIQ marketplace
       plugins/
-        typo3/                TYPO3 workflow skills (upgrade, scanner, static-tests, full chain)
+        core/                 Generic workflow skills (batch, commits, composer)
+        typo3/                TYPO3 workflow skills (upgrade, scanner, static-tests, upgrade-full)
 settings.json.example         Template for ~/.claude/settings.json
 claude.json.example           Template for MCP server entries in ~/.claude.json
 setup.sh                      Automated install/update script
