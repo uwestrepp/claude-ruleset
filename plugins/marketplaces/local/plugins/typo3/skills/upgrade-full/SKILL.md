@@ -1,52 +1,87 @@
 ---
 name: upgrade-full
-description: "Activate with /typo3:upgrade-full to run all three TYPO3 upgrade workflows consecutively in a single chained session (upgrade execution → ExtensionScanner → static code tests). Also activate /typo3:upgrade, /typo3:scanner, and /typo3:static-tests in the same session to make all workflow content available. Applies Batch.md §6 chaining model with a single toolset gate, single preflight, and one final Phase 9 handover for the full chain."
-allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
+description: "Activate with /typo3:upgrade-full to run the full TYPO3 upgrade chain end-to-end in one invocation: upgrade execution → ExtensionScanner → static code tests. This orchestration skill invokes the three component skills (/typo3:upgrade, /typo3:scanner, /typo3:static-tests) in sequence via the Skill tool. Applies the /core:batch skill §6 chaining model with one combined toolset gate, one preflight, one chain-level autonomous-mode gate, and one final Phase 9 handover."
+allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Skill]
 ---
 
 # TYPO3 Full Upgrade Chain
 
-This skill orchestrates the three TYPO3 workflow skills as a single chained execution
-per `Batch.md` §6. It contains no workflow content of its own — activate the three
-component skills alongside this one so all workflow content is in session context.
+This is an orchestration skill. It contains no workflow content of its own — it
+invokes the three component workflow skills in sequence. The user (or auto-
+activation) needs only this one invocation; the orchestrator activates the rest.
 
-**Required skill activations (invoke all four in the same session):**
-- `/typo3:upgrade-full` — this orchestration skill
-- `/typo3:upgrade` — upgrade execution + DoD content
-- `/typo3:scanner` — ExtensionScanner workflow content
-- `/typo3:static-tests` — static code test workflow content
+**Component skills invoked by this orchestrator** (do NOT pre-activate them
+manually — this skill invokes each via the `Skill` tool at the right time):
+
+- `/typo3:upgrade` — upgrade execution + DoD
+- `/typo3:scanner` — ExtensionScanner workflow
+- `/typo3:static-tests` — static code test workflow
 
 ---
 
-## Execution model: `Batch.md` §6 in full
+## Chain-level gates (run ONCE at the start; do NOT repeat per component)
 
-Apply the Workflow Chaining model from `Batch.md` §6 exactly:
+### 0. Combined toolset gate
 
-1. **Phase 0** (toolset gate): run once for the most demanding toolset requirements
-   across all three workflows.
-2. **Phase 1** (preflight): run once for the combined scope.
-3. **Workflow 1 — `/typo3:upgrade`**: execute phases 2–9 to completion.
-   - Produce inter-workflow handoff note: what was completed, what state the scanner
-     workflow inherits, any open items.
-4. **Workflow 2 — `/typo3:scanner`**: execute phases 2–9 to completion.
-   - Produce inter-workflow handoff note: what was completed, what state the
-     static-tests workflow inherits, any open items.
-5. **Workflow 3 — `/typo3:static-tests`**: execute phases 2–9 to completion.
-6. **Phase 9** (final handover): produce once for the full chain — covers all three
-   workflows, combined compliance checklist from `General.md` §5.8.0, and final
-   `Meta checkpoint:` result.
+Run once for the most demanding toolset requirements across all three component
+workflows. Component skills MUST NOT re-run their own toolset gate when invoked
+from this orchestrator.
 
-Each workflow MUST complete all its phases before the next begins. Do NOT interleave
+### 1. Combined preflight
+
+Run once for the combined scope. Confirm the scope covers all three workflows.
+
+### 2. Chain-level autonomous-mode gate (if autonomous activation is requested)
+
+Apply the `/core:batch` skill §5 autonomous protocol ONCE at the chain level:
+
+- the scope confirmation statement MUST list all three workflows and their phase
+  sequence in order,
+- user confirmation applies to the entire chain,
+- the confirmed autonomous scope is passed to each component-skill invocation as
+  context — **component skills MUST NOT re-prompt for autonomous confirmation
+  when invoked from this orchestrator.**
+
+Pass 3 items always suspend implementation for individual approval regardless of
+autonomous mode, in any of the three workflows.
+
+---
+
+## Execution sequence
+
+Each workflow completes its phases 2–9 before the next begins. Do NOT interleave
 phases across workflows.
 
----
+### Workflow 1 — upgrade
 
-## Autonomous mode
+1. Invoke the `typo3:upgrade` skill via the `Skill` tool.
+2. Pass in context: confirmed combined scope, chain-level autonomous confirmation
+   (if applicable), and the instruction to "skip Phase 0 and Phase 1 — they ran at
+   chain level".
+3. The component executes its phases 2–9 to completion.
+4. Capture the inter-workflow handoff note: what was completed, what state the
+   scanner workflow inherits, any open items.
 
-If the user activates autonomous mode for this chain, apply `Batch.md` §5 protocol
-across the full scope. The scope confirmation statement MUST list all three workflows
-and their phase sequence. Pass 3 items always suspend implementation for individual
-approval regardless of autonomous mode, in any of the three workflows.
+### Workflow 2 — scanner
+
+1. Invoke the `typo3:scanner` skill via the `Skill` tool.
+2. Pass in context: Workflow 1 handoff note; chain-level autonomous confirmation.
+3. The component executes its phases 2–9 to completion.
+4. Capture the handoff note for Workflow 3.
+
+### Workflow 3 — static-tests
+
+1. Invoke the `typo3:static-tests` skill via the `Skill` tool.
+2. Pass in context: Workflow 2 handoff note; chain-level autonomous confirmation.
+3. The component executes its phases 2–9 to completion.
+
+### Final — chain-level Phase 9
+
+Produce once for the full chain:
+
+- summary spanning all three workflows,
+- combined compliance checklist per the `/core:batch` skill §9,
+- final `Meta checkpoint:` line per `Meta.md` §2.1.
 
 ---
 

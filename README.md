@@ -146,14 +146,13 @@ The `typo3` plugin provides four skills for structured TYPO3 upgrade work. Skill
 | TYPO3 Static Code Tests | `/typo3:static-tests` | Running phpstan, rector, fractor, php-cs-fixer, TypoScript lint |
 | TYPO3 Full Upgrade Chain | `/typo3:upgrade-full` | Running all three workflows in one chained session |
 
-For the full chain, activate all four skills in the same session:
+For the full chain, a single invocation drives all three component workflows in sequence:
 
 ```
 /typo3:upgrade-full
-/typo3:upgrade
-/typo3:scanner
-/typo3:static-tests
 ```
+
+The orchestrator invokes `/typo3:upgrade`, `/typo3:scanner`, and `/typo3:static-tests` in order via the Skill tool — do NOT pre-activate them manually.
 
 ---
 
