@@ -97,6 +97,8 @@ At task end, the agent MUST always provide one explicit batched checkpoint resul
 
 At each major milestone, the agent MUST provide one explicit checkpoint result line: either concise improvement proposals or a concise "no meaningful improvement identified" statement.
 
+When the checkpoint involves reviewing multiple files, inspecting rule-set coverage, or drafting substantive rule improvements, the agent SHOULD delegate to the `checkpoint` sub-agent per `General.md` §10.1 rather than performing the review inline. Inline checkpoint is acceptable only when the result is a brief no-op (no new knowledge, no rule improvements to propose).
+
 If the agent identifies a meaningful improvement, it MUST propose it in a concise structure: problem, proposed change, expected impact, and risk/tradeoff.
 
 ## 2.2 Change policy (SHOULD / MUST)

@@ -248,25 +248,27 @@ Before starting a chained execution, the agent MUST:
 
 ---
 
-## 7. Agent Delegation (SHOULD)
+## 7. Agent Delegation
 
 When custom agents are available (defined in `~/.claude/agents/` or `.claude/agents/`),
-the main agent SHOULD delegate suitable work to reduce blocking and context pressure:
+the main agent MUST/SHOULD delegate as follows. This section specializes the baseline
+delegation policy in `General.md` §10.
 
-- **`test-runner`**: spawn in background after applying changes (per pass or per batch)
-  to run validation commands while the main agent continues with triage or the next topic.
-  Collect results before committing.
-- **`checkpoint`**: spawn in background at phase boundaries (phases 2, 5, 9) to handle
-  `Meta.md §2.1` knowledge persistence and rule-set governance evaluation.
-  Collect results before producing the phase report.
-- **`contract-researcher`**: when Phase 4 triage identifies a large number of findings
-  requiring upstream contract verification (`General.md §4.5`), spawn to process the
-  batch sequentially in isolated context. Recommended threshold: >10 findings needing
-  contract verification. Below threshold, the main agent handles verification inline.
-  Collect classification results before finalizing the triage packet.
+- **`checkpoint` (MUST at phases 2, 5, 9)**: spawn in background at each phase boundary
+  to handle `Meta.md §2.1` knowledge persistence and rule-set governance evaluation.
+  Collect results before producing the phase report. Inline checkpoint is acceptable
+  ONLY when the phase's work was minimal and no multi-file review is warranted.
+- **`test-runner` (SHOULD after applying changes)**: spawn in background after each
+  pass or batch to run validation commands while the main agent continues with triage
+  or the next topic. Collect results before committing.
+- **`contract-researcher` (SHOULD when >10 findings)**: when Phase 4 triage identifies
+  a large number of findings requiring upstream contract verification (`General.md §4.5`),
+  spawn to process the batch sequentially in isolated context. Below threshold, the main
+  agent handles verification inline. Collect classification results before finalizing
+  the triage packet.
 
-Agent delegation is optional — if agents are unavailable, the main agent performs
-these tasks inline as before.
+If a custom agent is unavailable in the current environment, the main agent performs
+the task inline and notes the missing agent in the phase report.
 
 ---
 
