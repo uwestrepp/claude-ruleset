@@ -1,6 +1,6 @@
 ---
-name: typo3-upgrade
-description: "Activate with /typo3:typo3-upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. Provides the full TYPO3 Upgrade Workflow (Execution + DoD): phase template, preflight, inventory, deprecation/breaking scan, implementation constraints, validation checklist, documentation sync, and commit strategy. Required before any structured TYPO3 version upgrade work begins."
+name: upgrade
+description: "Activate with /typo3:upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. Provides the full TYPO3 Upgrade Workflow (Execution + DoD): phase template, preflight, inventory, deprecation/breaking scan, implementation constraints, validation checklist, documentation sync, and commit strategy. Required before any structured TYPO3 version upgrade work begins."
 argument-hint: [scope]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
@@ -49,7 +49,7 @@ Follows `Batch.md` §1 phase template. TYPO3 upgrade phase mapping:
 
 Within Phase 5, apply the shared pass model and pre-apply classifier/gates from `General.md` sections `5.8` and `5.8.0`.
 Validation selection/depth for Phase 6 MUST follow `General.md` sections `5.2` and `5.8.3`.
-When static-test or scanner workflows are used, chain them per `Batch.md` §6 — activate the `/typo3:typo3-scanner` or `/typo3:typo3-static-tests` skill at that point.
+When static-test or scanner workflows are used, chain them per `Batch.md` §6 — activate the `/typo3:scanner` or `/typo3:static-tests` skill at that point.
 For grouped Pass 1/Pass 2 batches, validation may be concatenated when items share risk profile and impacted surfaces, but coverage mapping per item/topic MUST be explicit in reporting.
 
 ---

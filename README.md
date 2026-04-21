@@ -141,18 +141,18 @@ The `typo3` plugin provides four skills for structured TYPO3 upgrade work. Skill
 
 | Skill | Invoke with | Use when |
 |---|---|---|
-| TYPO3 Upgrade Workflow | `/typo3:typo3-upgrade` | Running an upgrade, fixing deprecations or breaking changes |
-| TYPO3 ExtensionScanner | `/typo3:typo3-scanner` | Running ExtensionScanner, triaging scanner findings |
-| TYPO3 Static Code Tests | `/typo3:typo3-static-tests` | Running phpstan, rector, fractor, php-cs-fixer, TypoScript lint |
-| TYPO3 Full Upgrade Chain | `/typo3:typo3-upgrade-full` | Running all three workflows in one chained session |
+| TYPO3 Upgrade Workflow | `/typo3:upgrade` | Running an upgrade, fixing deprecations or breaking changes |
+| TYPO3 ExtensionScanner | `/typo3:scanner` | Running ExtensionScanner, triaging scanner findings |
+| TYPO3 Static Code Tests | `/typo3:static-tests` | Running phpstan, rector, fractor, php-cs-fixer, TypoScript lint |
+| TYPO3 Full Upgrade Chain | `/typo3:upgrade-full` | Running all three workflows in one chained session |
 
 For the full chain, activate all four skills in the same session:
 
 ```
-/typo3:typo3-upgrade-full
-/typo3:typo3-upgrade
-/typo3:typo3-scanner
-/typo3:typo3-static-tests
+/typo3:upgrade-full
+/typo3:upgrade
+/typo3:scanner
+/typo3:static-tests
 ```
 
 ---
