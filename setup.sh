@@ -403,7 +403,7 @@ run_plugin_steps_install() {
         step_skipped "Plugin registration (claude CLI not found)"
         log_warn "Run these commands manually after installing Claude Code:"
         log_warn "  claude plugins marketplace add $TARGET_DIR/plugins/marketplaces/local"
-        log_warn "  claude plugins install typo3-workflows@local"
+        log_warn "  claude plugins install typo3@local"
         return 0
     fi
 
@@ -411,7 +411,7 @@ run_plugin_steps_install() {
 
     if [[ "$DRY_RUN" == "true" ]]; then
         log_dry "Would run: claude plugins marketplace add $marketplace_path"
-        log_dry "Would run: claude plugins install typo3-workflows@local"
+        log_dry "Would run: claude plugins install typo3@local"
         return 0
     fi
 
@@ -427,9 +427,9 @@ run_plugin_steps_install() {
         step_failed "Marketplace registration"
     fi
 
-    log_info "Installing typo3-workflows plugin..."
-    if claude plugins install typo3-workflows@local 2>&1; then
-        step_done "Installed typo3-workflows plugin"
+    log_info "Installing typo3 plugin..."
+    if claude plugins install typo3@local 2>&1; then
+        step_done "Installed typo3 plugin"
     else
         step_failed "Plugin installation"
     fi
@@ -443,18 +443,18 @@ run_plugin_steps_update() {
 
     if [[ "$HAS_CLAUDE" != "true" ]]; then
         step_skipped "Plugin update (claude CLI not found)"
-        log_warn "Run manually: claude plugins update typo3-workflows@local"
+        log_warn "Run manually: claude plugins update typo3@local"
         return 0
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_dry "Would run: claude plugins update typo3-workflows@local"
+        log_dry "Would run: claude plugins update typo3@local"
         return 0
     fi
 
-    log_info "Updating typo3-workflows plugin..."
-    if claude plugins update typo3-workflows@local 2>&1; then
-        step_done "Updated typo3-workflows plugin"
+    log_info "Updating typo3 plugin..."
+    if claude plugins update typo3@local 2>&1; then
+        step_done "Updated typo3 plugin"
     else
         # Update may fail if nothing changed — not critical
         log_verbose "Plugin update returned non-zero (may already be up to date)"
@@ -507,10 +507,10 @@ verify() {
 
     # Plugin
     if [[ "$SKIP_PLUGINS" != "true" && "$HAS_CLAUDE" == "true" ]]; then
-        if claude plugins list 2>/dev/null | grep -q "typo3-workflows"; then
-            log_verbose "typo3-workflows plugin: installed"
+        if claude plugins list 2>/dev/null | grep -q "typo3"; then
+            log_verbose "typo3 plugin: installed"
         else
-            log_warn "typo3-workflows plugin not found"
+            log_warn "typo3 plugin not found"
             issues=$((issues + 1))
         fi
     fi

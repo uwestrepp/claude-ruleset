@@ -1,5 +1,0 @@
-{
-  "name": "core-workflows",
-  "description": "Generic workflow skills: batch governance (/core-workflows:batch), commit discipline (/core-workflows:commits), composer wiring (/core-workflows:composer)",
-  "author": { "name": "MOSAIQ GmbH" }
-}

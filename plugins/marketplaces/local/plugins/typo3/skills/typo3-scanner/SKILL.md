@@ -1,6 +1,6 @@
 ---
 name: typo3-scanner
-description: "Activate with /typo3-workflows:typo3-scanner before starting any TYPO3 ExtensionScanner triage, scanner-driven migration, or scanner pass within an upgrade workflow. Provides the full ExtensionScanner execution workflow: command standard, pass model (Pass 1 triage/false-positives, Pass 2 safe replacements, Pass 3 high-risk migrations), false-positive handling, verification gates, and reporting. Required before structured ExtensionScanner work begins."
+description: "Activate with /typo3:typo3-scanner before starting any TYPO3 ExtensionScanner triage, scanner-driven migration, or scanner pass within an upgrade workflow. Provides the full ExtensionScanner execution workflow: command standard, pass model (Pass 1 triage/false-positives, Pass 2 safe replacements, Pass 3 high-risk migrations), false-positive handling, verification gates, and reporting. Required before structured ExtensionScanner work begins."
 argument-hint: [extKey...]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
@@ -13,7 +13,7 @@ It complements:
 - `Batch.md` (execution phases, toolset gate, autonomous mode, chaining, reporting)
 - `General.md` (test-path selection and execution)
 - `TYPO3.md` (TYPO3 migration policy)
-- `/typo3-workflows:typo3-upgrade` skill (upgrade execution order; activate separately when chaining)
+- `/typo3:typo3-upgrade` skill (upgrade execution order; activate separately when chaining)
 
 Non-skippable triage/compliance gates are defined centrally in `General.md` section `5.8.0` and are mandatory for this workflow.
 
@@ -153,7 +153,7 @@ If a required validation path cannot be run, state blocker and exact follow-up c
 
 ## 7.1 Option-Matrix Regression Check (MUST for Pass 2/3)
 
-When Pass 2 or Pass 3 changes touch extension runtime behavior, the agent MUST run/update configuration-option coverage per the `/typo3-workflows:typo3-upgrade` skill §7.1 for affected extensions.
+When Pass 2 or Pass 3 changes touch extension runtime behavior, the agent MUST run/update configuration-option coverage per the `/typo3:typo3-upgrade` skill §7.1 for affected extensions.
 
 Minimum requirement:
 - execute at least one high-impact option path per touched extension (if defined),

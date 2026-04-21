@@ -28,7 +28,7 @@ plugins/
   marketplaces/
     local/                    Local MOSAIQ marketplace
       plugins/
-        typo3-workflows/      TYPO3 workflow skills (upgrade, scanner, static-tests, full chain)
+        typo3/                TYPO3 workflow skills (upgrade, scanner, static-tests, full chain)
 settings.json.example         Template for ~/.claude/settings.json
 claude.json.example           Template for MCP server entries in ~/.claude.json
 setup.sh                      Automated install/update script
@@ -120,15 +120,15 @@ chmod +x ~/.claude/hooks/validate-commit-message.sh
 
 ```bash
 claude plugins marketplace add ~/.claude/plugins/marketplaces/local
-claude plugins install typo3-workflows@local
-claude plugins list  # verify: typo3-workflows@local should be enabled
+claude plugins install typo3@local
+claude plugins list  # verify: typo3@local should be enabled
 ```
 
 ### Manual update
 
 ```bash
 cd ~/.claude && git pull
-claude plugins update typo3-workflows@local
+claude plugins update typo3@local
 ```
 
 </details>
@@ -137,22 +137,22 @@ claude plugins update typo3-workflows@local
 
 ## TYPO3 Workflow Skills
 
-The `typo3-workflows` plugin provides four skills for structured TYPO3 upgrade work. Skills require **explicit activation** — the agent will not start a workflow until you invoke the skill. See `rules/TYPO3.md` §9 for full trigger patterns.
+The `typo3` plugin provides four skills for structured TYPO3 upgrade work. Skills require **explicit activation** — the agent will not start a workflow until you invoke the skill. See `rules/TYPO3.md` §9 for full trigger patterns.
 
 | Skill | Invoke with | Use when |
 |---|---|---|
-| TYPO3 Upgrade Workflow | `/typo3-workflows:typo3-upgrade` | Running an upgrade, fixing deprecations or breaking changes |
-| TYPO3 ExtensionScanner | `/typo3-workflows:typo3-scanner` | Running ExtensionScanner, triaging scanner findings |
-| TYPO3 Static Code Tests | `/typo3-workflows:typo3-static-tests` | Running phpstan, rector, fractor, php-cs-fixer, TypoScript lint |
-| TYPO3 Full Upgrade Chain | `/typo3-workflows:typo3-upgrade-full` | Running all three workflows in one chained session |
+| TYPO3 Upgrade Workflow | `/typo3:typo3-upgrade` | Running an upgrade, fixing deprecations or breaking changes |
+| TYPO3 ExtensionScanner | `/typo3:typo3-scanner` | Running ExtensionScanner, triaging scanner findings |
+| TYPO3 Static Code Tests | `/typo3:typo3-static-tests` | Running phpstan, rector, fractor, php-cs-fixer, TypoScript lint |
+| TYPO3 Full Upgrade Chain | `/typo3:typo3-upgrade-full` | Running all three workflows in one chained session |
 
 For the full chain, activate all four skills in the same session:
 
 ```
-/typo3-workflows:typo3-upgrade-full
-/typo3-workflows:typo3-upgrade
-/typo3-workflows:typo3-scanner
-/typo3-workflows:typo3-static-tests
+/typo3:typo3-upgrade-full
+/typo3:typo3-upgrade
+/typo3:typo3-scanner
+/typo3:typo3-static-tests
 ```
 
 ---

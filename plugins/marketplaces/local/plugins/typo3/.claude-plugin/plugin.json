@@ -1,5 +1,5 @@
 {
-  "name": "typo3-workflows",
+  "name": "typo3",
   "description": "TYPO3 upgrade, scanner, and static-test workflow skills (/typo3-upgrade, /typo3-scanner, /typo3-static-tests, /typo3-upgrade-full)",
   "author": { "name": "MOSAIQ GmbH" }
 }

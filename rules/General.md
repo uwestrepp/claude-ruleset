@@ -183,7 +183,7 @@ The agent MUST treat long-session continuity as fallible and MUST NOT rely solel
 # 3.5 Large-Scope Handoff To Batch Governance (MUST)
 
 When a task starts small but grows into a larger-scale, multi-file, multi-step, or
-multi-package operation, the agent MUST apply the `/core-workflows:batch` skill governance, including its
+multi-package operation, the agent MUST apply the `/core:batch` skill governance, including its
 reviewability and PR/split escalation thresholds.
 
 The agent MUST NOT keep treating such work as a small ad-hoc task merely because that
@@ -235,7 +235,7 @@ Per occurrence, the agent MUST:
 - compare old vs new signature shape (parameter count, order, defaults, nullability, variadic, by-reference, accepted types),
 - verify semantic mapping for removed/changed arguments (truly obsolete or explicitly migrated to the new mechanism),
 - classify unresolved or ambiguous dispatch as high risk and avoid auto-apply,
-- record the check result in the triage packet (see the `/core-workflows:batch` skill §9.1), naming the specific file+method, the checked callee location, and the evidence of signature compatibility.
+- record the check result in the triage packet (see the `/core:batch` skill §9.1), naming the specific file+method, the checked callee location, and the evidence of signature compatibility.
 
 After applying such changes, the agent MUST run scoped validation and report evidence:
 - checked callee/signature location,
@@ -281,7 +281,7 @@ If a required validation path cannot be executed, the agent MUST state:
 - why it could not be run,
 - the exact follow-up command or manual step.
 
-Note: the baseline requirement for larger-scale change cycles is defined in the `/core-workflows:batch` skill §3.3.
+Note: the baseline requirement for larger-scale change cycles is defined in the `/core:batch` skill §3.3.
 
 ---
 
@@ -310,7 +310,7 @@ When preparing commits, the agent MUST ensure Jira ticket traceability is determ
 - if mapping is missing or ambiguous, stop and ask (or update mapping before commit),
 - for non-extension commits, branch ticket fallback is acceptable when unambiguous.
 
-Note: the risk-sequenced change execution model (Pass 1/2/3 and the triage/compliance gate) is defined in the `/core-workflows:batch` skill §9.
+Note: the risk-sequenced change execution model (Pass 1/2/3 and the triage/compliance gate) is defined in the `/core:batch` skill §9.
 
 ---
 
@@ -351,7 +351,7 @@ If security implications are unclear → ask.
 
 Before creating or amending commits, the agent MUST:
 
-- apply the `/core-workflows:commits` skill as the authoritative schema,
+- apply the `/core:commits` skill as the authoritative schema,
 - validate subject format before running `git commit`,
 - stop and correct any non-compliant message immediately.
 
@@ -413,7 +413,7 @@ When delegating, the agent MUST:
 - state explicitly whether the sub-agent should write code or only research/report,
 - prefer parallel invocation for independent tasks (multiple `Agent` tool calls in a single message).
 
-Workflow-specific delegation patterns (for example test-runner after applying changes, or checkpoint at phase boundaries) are defined in the `/core-workflows:batch` skill §7 as specializations of this baseline.
+Workflow-specific delegation patterns (for example test-runner after applying changes, or checkpoint at phase boundaries) are defined in the `/core:batch` skill §7 as specializations of this baseline.
 
 ---
 

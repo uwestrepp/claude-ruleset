@@ -1,6 +1,6 @@
 ---
 name: typo3-static-tests
-description: "Activate with /typo3-workflows:typo3-static-tests before starting any TYPO3 static code analyzer or fixer run (php-cs-fixer, Rector, Fractor, TypoScript lint, PHPStan). Provides the full static code test workflow: toolchain prep, ordered execution, triage model, false-positive ledger, logging, and re-run/validation gates. Required before structured static-test cycles begin."
+description: "Activate with /typo3:typo3-static-tests before starting any TYPO3 static code analyzer or fixer run (php-cs-fixer, Rector, Fractor, TypoScript lint, PHPStan). Provides the full static code test workflow: toolchain prep, ordered execution, triage model, false-positive ledger, logging, and re-run/validation gates. Required before structured static-test cycles begin."
 argument-hint: [scope]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
