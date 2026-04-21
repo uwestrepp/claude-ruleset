@@ -29,7 +29,7 @@
     * Description: Composer version resolution order, tag-driven release flow for private/custom registries, dev-override patterns (narrow registry `exclude` + local path repo, consumer-side dev-constraint), canonical-priority trap and diagnostic order, lock-file discipline.
     * Activate with: `/core:composer` or let Claude auto-activate when editing composer.json/composer.lock, running composer/ddev composer commands, or debugging dependency resolution.
 * **TYPO3 projects** — the following rules apply when working on TYPO3-based projects:
-  * rules/TYPO3.md (path-gated: `**/packages/**`, `**/ext_emconf.php`, `**/Configuration/**`, `**/Resources/Private/**`, `**/config/sites/**`, `**/typo3conf/**`, `**/*.typoscript`, `**/*.tsconfig`)
+  * rules/TYPO3.md (path-gated: `**/packages/**`, `**/ext_{localconf,tables,emconf}.php`, `**/typo3conf/**`, `**/config/sites/**`, `**/*.typoscript`, `**/*.tsconfig`)
     * Description: TYPO3-specific operating policy, upgrade impact behavior, skill invocation gate (§9 — TYPO3 workflow skill registry and triggers). Composer and commit rules are covered by the `/core:*` skills.
     * When to use: TYPO3 project tasks (core/extensions/Extbase/TypoScript/Fluid/migrations).
 * **TYPO3 workflow skills** — explicit activation required; see `TYPO3.md` §9 for trigger patterns:
