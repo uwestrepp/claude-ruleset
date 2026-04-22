@@ -7,7 +7,7 @@
     * Description: Always-on meta-rules for knowledge persistence, durable agent memory, and visibly labeled rule-set governance/self-improvement checkpoints.
     * When to use: Always; re-read on every context revalidation event (General.md §3.4).
   * @rules/General.md `[CRITICAL]`
-    * Description: Global baseline behavior (assumptions, validation discipline, safety, environment-aware command routing, upstream contract verification, ticket traceability for commits, skill invocation gate, sub-agent delegation policy).
+    * Description: Global baseline behavior (assumptions, validation discipline, safety, environment-aware command routing, upstream contract verification, ticket traceability for commits, output-language policy for colleague-facing surfaces, skill invocation gate, sub-agent delegation policy).
     * When to use: Always; re-read on every context revalidation event (General.md §3.4).
   * @rules/CleanCode.md
     * Description: Project-specific clean-code opinions not already enforced by model defaults (searchable names / magic-number constants, flag-argument avoidance, command–query separation, no public mutable state, error-handling style, comment policy). Operating-mode split between code generation and legacy review.

@@ -357,6 +357,26 @@ Before creating or amending commits, the agent MUST:
 
 ---
 
+## 8.2 Output Language (MUST)
+
+Colleague-facing external content MUST be written in German:
+
+- Jira tickets (summary, description, comments),
+- Confluence pages (content, comments),
+- Bitbucket pull request titles and descriptions.
+
+The following MUST remain in English:
+
+- git commit messages (subject and body),
+- code comments, DocBlocks, and inline TODOs,
+- package- or repository-level `README.md` and equivalent in-repo developer docs,
+- agent-to-user chat replies (match the user's language; default English).
+
+If the target surface is ambiguous (for example a release-notes artifact that is
+both a repo file and published to Confluence), the agent MUST ask before writing.
+
+---
+
 # 9. Skill Invocation Gate
 
 ## 9.1 Require explicit skill activation (MUST)
