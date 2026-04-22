@@ -18,6 +18,7 @@
   * rules/PER-Application.md (path-gated: `**/*.php`)
     * Description: Practical application policy for PER in this project (generation vs legacy mode).
     * When to use: Creating/reviewing PHP code or enforcing PER/PER-CS conventions.
+* **Exports** — `./exports/` holds condensed or adapted versions of this repo's rule-set for use in external agents or harnesses. Files under `./exports/` are NOT loaded by this harness. When editing files under `./rules/`, check `./exports/` for any condensed version that needs corresponding sync in the same change-set. See `./exports/README.md`.
 * **Core workflow skills** — auto-activate on prompt relevance, or invoke explicitly:
   * `/core:batch` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/batch/`)
     * Description: Shared execution phase template (toolset gate, preflight, scope/inventory/baseline, scan, triage, implementation, validation, documentation, commits, handover), risk-sequenced Pass 1/2/3 model with triage/compliance gates, reviewability and PR-split thresholds, autonomous execution activation protocol, workflow chaining model, final reporting template. Foundation for all domain-specific workflow skills (TYPO3 upgrade/scanner/static-tests layer on this).
