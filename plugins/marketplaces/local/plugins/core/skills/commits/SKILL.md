@@ -129,6 +129,48 @@ Add a body **iff** the change:
 
 ------------------------------------------------------------------------
 
+## Enforcement Layers
+
+Commit-schema enforcement runs at two independent layers:
+
+1. **Claude-side PreToolUse hook** (`~/.claude/hooks/validate-commit-message.sh`, `block-forbidden-stages.sh`) — intercepts `git commit` tool calls from any Claude session before the shell runs them. Global, applies in every project, no per-project setup. Covers: subject-format validation, denylisted path soft-blocking (`settings.local.json`, `.aiassistant/scratch/`, override/secret patterns — see `rules/Meta.md` §1.4).
+2. **Project-native git hooks** (`<repo>/.githooks/` activated via `core.hooksPath`) — run at the git level regardless of commit source (Claude, IDE, CLI, colleague). Project-specific (ticket map, branch conventions, protected-branch guard). Installed via `/core:githooks-install`.
+
+Neither layer alone is sufficient:
+- Claude-side only protects against *this* agent's tool calls.
+- Native-hook only protects against `git commit`; it doesn't catch stage-time slips before the command is issued.
+
+Both layers SHOULD be present in any project with real ticket traceability or shared-repo discipline.
+
+Branch-confirmation (checking `git branch --show-current` before committing) is a *workflow* responsibility of this skill, not a hook check. Hooks can verify ticket-branch consistency but cannot decide whether the current branch is the right target for the work.
+
+------------------------------------------------------------------------
+
+## Session Precheck (MUST, once per session)
+
+Before executing the per-commit checklist for the first time in a session, the agent MUST run this precheck against the current project:
+
+1. Resolve repo root: `git rev-parse --show-toplevel`.
+2. Detect native-hook state:
+   - `<repo>/.githooks/` exists, OR
+   - `git config --get core.hooksPath` returns non-empty,
+   - → native hooks present; record and skip to step 4.
+3. Check opt-out/install marker at `<repo>/.aiassistant/state/githooks-install.yaml`:
+   - `status: installed` → treat as installed (skip step 4).
+   - `status: declined` → respect opt-out; do NOT suggest (skip step 4).
+   - missing → continue to step 4.
+4. If neither native hooks nor a marker is present: suggest installation once, with wording like:
+   > This project has no native commit-hook scaffold (`.githooks/` absent, `core.hooksPath` unset). `/core:githooks-install` adds format + ticket-traceability enforcement that catches slips from any commit source. Install now?
+   > - `yes` → invoke `/core:githooks-install`
+   > - `no` → record opt-out in `.aiassistant/state/githooks-install.yaml`; do not ask again
+   > - `later` → skip this session; re-ask next session
+
+The agent MUST NOT auto-install without explicit user confirmation (git-config mutation).
+
+The agent MUST NOT repeat the suggestion in the same session after the user has answered it, and MUST NOT repeat across sessions after a `declined` marker is recorded.
+
+------------------------------------------------------------------------
+
 ## Enforcement (MUST)
 
 Before running any `git commit`, the agent MUST execute this checklist:

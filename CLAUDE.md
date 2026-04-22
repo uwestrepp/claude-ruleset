@@ -29,6 +29,9 @@
   * `/core:composer` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/composer/`)
     * Description: Composer version resolution order, tag-driven release flow for private/custom registries, dev-override patterns (narrow registry `exclude` + local path repo, consumer-side dev-constraint), canonical-priority trap and diagnostic order, lock-file discipline.
     * Activate with: `/core:composer` or let Claude auto-activate when editing composer.json/composer.lock, running composer/ddev composer commands, or debugging dependency resolution.
+  * `/core:githooks-install` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/githooks-install/`)
+    * Description: Installs the reusable native git-hook scaffold (template under `plugins/core/resources/githooks-template/`) into a project — commit-subject format + ticket traceability (branch-name default; optional extension-ticket-map module; optional protected-branch pre-push guard). Handles fresh install and `--update` re-run; records outcome in `.aiassistant/state/githooks-install.yaml` (opt-out marker is respected).
+    * Activate with: `/core:githooks-install` or let `/core:commits` auto-suggest when the current project has neither `.githooks/` nor `core.hooksPath` set.
 * **TYPO3 projects** — the following rules apply when working on TYPO3-based projects:
   * rules/TYPO3.md (path-gated: `**/packages/**`, `**/ext_{localconf,tables,emconf}.php`, `**/typo3conf/**`, `**/config/sites/**`, `**/*.typoscript`, `**/*.tsconfig`)
     * Description: TYPO3-specific operating policy, upgrade impact behavior, skill invocation gate (§9 — TYPO3 workflow skill registry and triggers). Composer and commit rules are covered by the `/core:*` skills.

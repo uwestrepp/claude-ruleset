@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+msg_file="${1:?commit message file is required}"
+subject="$(sed -n '1p' "$msg_file")"
+
+# Merge commits are integration commits; subject policy does not apply.
+if git rev-parse -q --verify MERGE_HEAD >/dev/null 2>&1; then
+    exit 0
+fi
+
+bash "$(dirname "$0")/validate-commit-subject.sh" "$subject"

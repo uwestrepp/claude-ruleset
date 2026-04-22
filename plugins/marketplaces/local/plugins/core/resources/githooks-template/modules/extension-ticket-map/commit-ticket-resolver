@@ -1,0 +1,216 @@
+#!/usr/bin/env bash
+# Resolves the expected ticket for extension-scoped changes based on a
+# per-extension ticket map and optional branch-name overrides.
+#
+# Generalized from FEIN's mq-commit-ticket. The extension path regex comes
+# from HOOK_EXTENSION_PATH_REGEX in config.sh next to this script (or two
+# levels up if this script lives under modules/).
+
+set -euo pipefail
+
+usage() {
+    cat <<'EOF'
+Usage:
+  commit-ticket-resolver [--mode staged|commit] [--commit <sha>] [--branch <name>]
+                         [--map-file <path>] [--override-file <path>] [--quiet]
+
+Exit codes:
+  0  success; prints resolved ticket
+  2  invalid arguments or map file missing
+  3  no extension-scoped files found
+  4  missing extension mapping
+  5  conflicting tickets across touched extensions
+EOF
+}
+
+mode="staged"
+commit_sha=""
+branch_name=""
+map_file=""
+override_file=""
+quiet="0"
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --mode)          mode="${2:-}";            shift 2 ;;
+        --commit)        commit_sha="${2:-}";      shift 2 ;;
+        --branch)        branch_name="${2:-}";     shift 2 ;;
+        --map-file)      map_file="${2:-}";        shift 2 ;;
+        --override-file) override_file="${2:-}";   shift 2 ;;
+        --quiet)         quiet="1";                shift ;;
+        -h|--help)       usage; exit 0 ;;
+        *)               echo "ERROR: Unknown argument: $1" >&2; usage >&2; exit 2 ;;
+    esac
+done
+
+if [[ "$mode" != "staged" && "$mode" != "commit" ]]; then
+    echo "ERROR: --mode must be 'staged' or 'commit'." >&2
+    exit 2
+fi
+
+if [[ "$mode" == "commit" && -z "$commit_sha" ]]; then
+    echo "ERROR: --commit is required when --mode commit is used." >&2
+    exit 2
+fi
+
+if [[ -n "$branch_name" ]]; then
+    branch_name="${branch_name#refs/heads/}"
+fi
+
+project_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [[ -z "$project_root" ]]; then
+    echo "ERROR: Not inside a git repository." >&2
+    exit 2
+fi
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Load config from flat install location (script next to config.sh).
+HOOK_EXTENSION_PATH_REGEX='^packages/([a-z0-9_]+)/.+'
+if [[ -f "$script_dir/config.sh" ]]; then
+    # shellcheck disable=SC1091
+    source "$script_dir/config.sh"
+fi
+
+# Locate map and override files.
+if [[ -z "$map_file" ]]; then
+    if [[ -f "$script_dir/extension-ticket-map.yaml" ]]; then
+        map_file="$script_dir/extension-ticket-map.yaml"
+    else
+        map_file="$project_root/.aiassistant/state/extension-ticket-map.yaml"
+    fi
+fi
+if [[ -z "$override_file" ]]; then
+    if [[ -f "$script_dir/commit-ticket-overrides.yaml" ]]; then
+        override_file="$script_dir/commit-ticket-overrides.yaml"
+    else
+        override_file="$project_root/.aiassistant/state/commit-ticket-overrides.yaml"
+    fi
+fi
+
+if [[ ! -f "$map_file" ]]; then
+    echo "ERROR: Extension ticket map not found: $map_file" >&2
+    exit 2
+fi
+
+if [[ "$mode" == "staged" ]]; then
+    changed_files="$(git diff --cached --name-only --diff-filter=ACMRD)"
+else
+    changed_files="$(git diff-tree --no-commit-id --name-only -r "$commit_sha")"
+fi
+
+resolve_branch_override_ticket() {
+    local branch="$1"
+    local file="$2"
+
+    [[ -f "$file" ]] || return 0
+
+    awk -v branch="$branch" '
+        BEGIN { in_branches = 0 }
+        /^[[:space:]]*#/ { next }
+        /^[[:space:]]*$/ { next }
+        /^[[:space:]]*branches:[[:space:]]*$/ { in_branches = 1; next }
+        in_branches && /^[^[:space:]][^:]*:[[:space:]]*$/ { in_branches = 0 }
+        in_branches {
+            line = $0
+            sub(/^[[:space:]]+/, "", line)
+            if (line ~ /^[^:#]+:[[:space:]]*[A-Z]+-[0-9]+[[:space:]]*$/) {
+                key = line
+                sub(/:.*/, "", key)
+                gsub(/[[:space:]]+$/, "", key)
+                value = line
+                sub(/^[^:]+:[[:space:]]*/, "", value)
+                gsub(/[[:space:]]+$/, "", value)
+                if (key == branch) {
+                    print value
+                    exit
+                }
+            }
+        }
+    ' "$file"
+}
+
+current_branch="$branch_name"
+if [[ -z "$current_branch" && "$mode" == "staged" ]]; then
+    current_branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
+fi
+
+if [[ -n "$current_branch" ]]; then
+    branch_override_ticket="$(resolve_branch_override_ticket "$current_branch" "$override_file")"
+    if [[ -n "$branch_override_ticket" ]]; then
+        echo "$branch_override_ticket"
+        if [[ "$quiet" != "1" ]]; then
+            echo "Resolved by branch override: $current_branch -> $branch_override_ticket ($override_file)" >&2
+        fi
+        exit 0
+    fi
+fi
+
+# Extract extension keys from changed paths using the configured regex.
+# Using sed -E with # as delimiter (paths don't contain #) for portability
+# across sed implementations; regex MUST NOT contain literal # characters.
+mapfile -t touched_extensions < <(
+    printf '%s\n' "$changed_files" \
+    | sed -n -E "s#${HOOK_EXTENSION_PATH_REGEX}#\1#p" \
+    | sort -u
+)
+
+if [[ "${#touched_extensions[@]}" -eq 0 ]]; then
+    [[ "$quiet" == "1" ]] || echo "No extension-scoped files detected." >&2
+    exit 3
+fi
+
+resolve_ticket_for_extension() {
+    local extension="$1"
+    awk -v ext="$extension" '
+        /^[[:space:]]*#/ {next}
+        /^[[:space:]]*[a-zA-Z0-9_.-]+[[:space:]]*:[[:space:]]*[A-Z]+-[0-9]+[[:space:]]*$/ {
+            line = $0
+            gsub(/[[:space:]]/, "", line)
+            split(line, parts, ":")
+            if (parts[1] == ext) {
+                print parts[2]
+                exit
+            }
+        }
+    ' "$map_file"
+}
+
+declare -a missing_extensions=()
+declare -a tickets=()
+declare -a extension_ticket_pairs=()
+
+for extension in "${touched_extensions[@]}"; do
+    ticket="$(resolve_ticket_for_extension "$extension")"
+    if [[ -z "$ticket" ]]; then
+        missing_extensions+=("$extension")
+        continue
+    fi
+    tickets+=("$ticket")
+    extension_ticket_pairs+=("$extension:$ticket")
+done
+
+if [[ "${#missing_extensions[@]}" -gt 0 ]]; then
+    echo "ERROR: Missing extension-ticket mapping for: ${missing_extensions[*]}" >&2
+    echo "Map file: $map_file" >&2
+    exit 4
+fi
+
+mapfile -t unique_tickets < <(printf '%s\n' "${tickets[@]}" | sort -u)
+
+if [[ "${#unique_tickets[@]}" -ne 1 ]]; then
+    echo "ERROR: Conflicting tickets for touched extensions." >&2
+    printf 'Resolved: %s\n' "${extension_ticket_pairs[@]}" >&2
+    echo "Split commits per ticket or update map entries." >&2
+    exit 5
+fi
+
+expected_ticket="${unique_tickets[0]}"
+echo "$expected_ticket"
+
+if [[ "$quiet" != "1" ]]; then
+    echo "Resolved extensions: ${touched_extensions[*]}" >&2
+    echo "Expected ticket: $expected_ticket" >&2
+fi
+
+exit 0

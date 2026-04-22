@@ -1,5 +1,5 @@
 {
   "name": "core",
-  "description": "Generic workflow skills: batch governance (/core:batch), commit discipline (/core:commits), composer wiring (/core:composer)",
+  "description": "Generic workflow skills: batch governance (/core:batch), commit discipline (/core:commits), composer wiring (/core:composer), git-hooks install (/core:githooks-install)",
   "author": { "name": "MOSAIQ GmbH" }
 }

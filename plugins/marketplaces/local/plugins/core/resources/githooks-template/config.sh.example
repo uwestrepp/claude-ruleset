@@ -1,0 +1,35 @@
+# Git-hooks configuration.
+# Copy to `config.sh` next to the hooks and adjust per project.
+# All values here are the built-in defaults; this file only needs to define
+# the values you want to override.
+
+# --- commit subject schema (matches /core:commits) ---
+HOOK_COMMIT_TYPES="FEAT|FIX|BUILD|CHORE|CI|DOCS|STYLE|REFACTOR|PERF|TEST"
+HOOK_TICKET_REGEX="[A-Z]+-[0-9]+"
+HOOK_SCOPE_REGEX="[a-z0-9._/-]+"
+
+# --- ticket traceability ---
+# 0 = disable ticket check entirely (format-only validation)
+# 1 = require ticket; resolve via extension map (if enabled) then branch name
+HOOK_REQUIRE_TICKET=1
+
+# --- extension-ticket-map module (opt-in, monorepo/multi-package setups) ---
+# When 1, the hook will call `commit-ticket-resolver` (next to this config) to
+# look up the expected ticket based on which packages the commit touches.
+# Falls back to branch-ticket check when no extension-scoped files changed.
+HOOK_EXTENSION_TICKET_MAP=0
+# ERE matching a file path; group 1 = extension/package key.
+# Example for FEIN: '^packages/(mq_[a-z0-9_]+)/.+'
+HOOK_EXTENSION_PATH_REGEX='^packages/([a-z0-9_]+)/.+'
+
+# --- protected-branch pre-push guard (opt-in) ---
+HOOK_PROTECTED_BRANCH_GUARD=0
+# Command invoked as: <cmd> --branch <local_ref> --rev <local_sha>
+# Non-zero exit rejects the push. Project-specific; see modules/protected-branch-guard/README.md.
+HOOK_PROTECTED_BRANCH_GUARD_COMMAND=""
+# Space-separated glob patterns matching branch short-names.
+HOOK_PROTECTED_BRANCHES="release/* main master staging*"
+
+# --- emergency bypass ---
+# Env var name; set to 1 at commit time to skip all checks.
+HOOK_BYPASS_ENV="SKIP_COMMIT_MSG_CHECK"

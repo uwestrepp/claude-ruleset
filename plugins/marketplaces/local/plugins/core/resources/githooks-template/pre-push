@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# Pre-push hook: validates subjects of commits in the push range, and
+# optionally dispatches to a protected-branch guard command for pushes
+# targeting protected branches.
+
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# -------- defaults (overridable via config.sh) --------
+HOOK_PROTECTED_BRANCH_GUARD=0
+HOOK_PROTECTED_BRANCH_GUARD_COMMAND=""
+HOOK_PROTECTED_BRANCHES="release/* main master staging*"
+
+if [[ -f "$script_dir/config.sh" ]]; then
+    # shellcheck disable=SC1091
+    source "$script_dir/config.sh"
+fi
+
+validator="$script_dir/validate-commit-subject.sh"
+zero_oid="0000000000000000000000000000000000000000"
+
+is_protected_branch() {
+    local ref="$1"
+    local short="${ref#refs/heads/}"
+    local pattern
+    for pattern in $HOOK_PROTECTED_BRANCHES; do
+        # shellcheck disable=SC2053
+        if [[ "$short" == $pattern ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    # Skip deleted refs.
+    if [[ "$local_sha" == "$zero_oid" ]]; then
+        continue
+    fi
+
+    if [[ "$remote_sha" == "$zero_oid" ]]; then
+        revs="$(git rev-list "$local_sha" --not --remotes)"
+    else
+        revs="$(git rev-list "${remote_sha}..${local_sha}")"
+    fi
+
+    if [[ -z "$revs" ]]; then
+        continue
+    fi
+
+    # Optional protected-branch guard dispatch.
+    if [[ "$HOOK_PROTECTED_BRANCH_GUARD" == "1" \
+          && -n "$HOOK_PROTECTED_BRANCH_GUARD_COMMAND" ]] \
+       && is_protected_branch "$remote_ref"; then
+        # shellcheck disable=SC2086
+        $HOOK_PROTECTED_BRANCH_GUARD_COMMAND --branch "$local_ref" --rev "$local_sha"
+    fi
+
+    while read -r commit; do
+        # Skip merge commits.
+        parent_count="$(git rev-list --parents -n1 "$commit" | awk '{print NF-1}')"
+        if [[ "$parent_count" -gt 1 ]]; then
+            continue
+        fi
+
+        # Skip commits that already exist on any remote branch.
+        if git for-each-ref --format='%(refname:short)' refs/remotes --contains "$commit" | grep -q .; then
+            continue
+        fi
+
+        subject="$(git log -1 --format=%s "$commit")"
+        bash "$validator" "$subject" "$commit" "$local_ref"
+    done <<< "$revs"
+done
+
+exit 0

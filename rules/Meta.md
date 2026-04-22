@@ -70,12 +70,21 @@ Documentation updates MAY be bundled with the related work. If they are outside 
 
 ## 1.4 Workflow Artifact Retention (MUST)
 
-For agent process artifacts under `.aiassistant/state/workflow-triage/`:
+Agent process artifacts MUST be organized by durability:
 
-- keep durable final triage packets/evidence summaries only when they remain useful for future audits or continuation,
-- treat transient backup/scratch artifacts (for example precompare patches, status snapshots, ad-hoc working-delta dumps) as temporary,
-- do not commit transient artifacts by default,
-- remove transient artifacts before finalizing unless the user explicitly requests retention.
+- `.aiassistant/state/` — durable, committed. Holds ticket maps, ledgers, final triage packets, evidence summaries, and any artifact intended to survive the session and remain reviewable.
+- `.aiassistant/scratch/` — transient, gitignored. Holds WIP notes, backups, snapshots, precompare patches, ad-hoc working-delta dumps, and any artifact not intended to outlive the current task.
+
+The agent MUST:
+
+- write new transient artifacts under `.aiassistant/scratch/` by default,
+- only promote an artifact into `.aiassistant/state/` when it has durable audit or continuation value,
+- not commit `.aiassistant/scratch/` contents,
+- remove `.aiassistant/scratch/` artifacts before finalizing unless the user explicitly requests retention.
+
+For the legacy `.aiassistant/state/workflow-triage/` location: keep only durable final packets and evidence summaries there; transient working artifacts MUST move to `.aiassistant/scratch/`.
+
+Projects SHOULD add `.aiassistant/scratch/**` to `.gitignore`.
 
 If retention value is unclear, ask the user before committing artifact files.
 

@@ -1,0 +1,6 @@
+# Extension → ticket mapping.
+# Keys must match the capture group from HOOK_EXTENSION_PATH_REGEX.
+# Values must match the ticket regex (default [A-Z]+-[0-9]+).
+
+# example_extension: PROJ-123
+# another_extension: PROJ-456

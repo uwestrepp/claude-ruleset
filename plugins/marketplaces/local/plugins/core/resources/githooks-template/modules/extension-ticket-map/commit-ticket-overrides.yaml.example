@@ -1,0 +1,8 @@
+# Branch → ticket overrides.
+# When the current branch matches a key here, the mapped ticket wins over the
+# extension-map resolution. Useful for hotfix/integration branches that touch
+# multiple extensions but belong to a single ticket.
+
+# branches:
+#   feature/PROJ-123-cross-cutting-change: PROJ-123
+#   hotfix/PROJ-999-urgent: PROJ-999
