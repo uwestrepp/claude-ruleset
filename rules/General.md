@@ -402,6 +402,30 @@ both a repo file and published to Confluence), the agent MUST ask before writing
 
 ---
 
+## 8.3 Topic-Close Commit Proposal (MUST)
+
+When a clearly-delineated work item, topic, or task is completed and has produced committable changes (edits, new/deleted files) that have not been committed, the agent MUST propose a commit before starting the next topic.
+
+A topic is closed when any of the following apply:
+
+- the user has acknowledged the work item as done,
+- the work item's stated acceptance criteria are met,
+- the agent is about to pivot to a different topic/subject/request.
+
+The proposal MUST:
+
+- state what changed (affected files/areas) and which commit schema applies (per `/core:commits`),
+- ask whether to commit now, batch with the next topic, or defer.
+
+The user MAY defer or batch; the proposal MUST be made regardless. The agent MUST NOT silently carry accumulated uncommitted work across multiple topics without raising the question at each topic boundary.
+
+Rationale:
+- Converts topic boundaries into natural commit points, preserving history granularity and rollback scope.
+- Prevents session-long uncommitted accumulations that become hard to split cleanly later.
+- Complements `/core:batch` §11.1 (within-topic resumption safety): §11.1 ensures resumability during a topic; §8.3 ensures durability between topics.
+
+---
+
 # 9. Skill Invocation Gate
 
 ## 9.1 Require explicit skill activation (MUST)

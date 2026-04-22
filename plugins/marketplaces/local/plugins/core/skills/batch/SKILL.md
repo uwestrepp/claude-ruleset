@@ -433,3 +433,28 @@ The proposal MUST include:
 - a short risk note.
 
 The agent MUST NOT pause after commit without this explicit next-step proposal unless the user asks to stop.
+
+### 11.1 Resumption-Safe Checkpoints (MUST)
+
+Batch cycles often span hours or multiple sessions and are subject to interruption (usage limits, tool failures, context compaction, user pause). The agent MUST keep work in a resumable state at all times.
+
+At each phase boundary (per §1 Execution Phase Template), the work state MUST be one of:
+
+- a clean commit representing the completed phase, OR
+- a persisted handoff note at `.aiassistant/scratch/<scope>-handoff.md` documenting:
+  - current phase and step,
+  - concrete progress (what was completed, what is in-flight),
+  - next concrete step (file, command, or decision),
+  - any in-flight triage decisions not yet committed.
+
+For cycles expected to span multiple sessions or where phases exceed a single natural chunk, the agent MUST:
+
+- create the handoff note at Phase 2 (Preflight/Inventory) and update it at each subsequent phase boundary,
+- on continuation (new session or resumed after interruption), read the handoff note as the first orientation step, before `General.md` §3.4 revalidation.
+
+The handoff note MUST NOT be committed (it lives in `.aiassistant/scratch/` per `Meta.md` §1.4) unless the user explicitly requests retention and promotes it to `.aiassistant/state/`.
+
+Rationale:
+- Converts session interruption from a recovery event into a bookmark.
+- Leverages the `.aiassistant/scratch/` convention from `Meta.md` §1.4.
+- Compatible with `General.md` §3.4 revalidation on resume and `General.md` §8.3 topic-close commit proposal at topic boundaries.
