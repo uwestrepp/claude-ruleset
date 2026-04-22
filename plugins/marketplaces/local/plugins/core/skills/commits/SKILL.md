@@ -209,3 +209,9 @@ If a non-compliant commit was already created in the current session:
 
 - immediately notify the user,
 - rewrite the commit message to compliant format before proceeding.
+
+------------------------------------------------------------------------
+
+## Mechanics tips
+
+- **Splitting a single file across commits when sections are adjacent**: `git add -p` cannot separate hunks that share diff context (e.g. two new sections with no unchanged line between them get merged into one hunk). Instead: copy the working-tree file to `.aiassistant/scratch/<name>-full.md`, `git checkout HEAD -- <file>`, then re-apply sections via `Edit` one commit at a time, committing between each application.
