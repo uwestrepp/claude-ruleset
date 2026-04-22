@@ -136,6 +136,31 @@ Rationale:
 
 ---
 
+## 2.4 Target Disambiguation (MUST)
+
+Before making substantive changes, when ANY of these conditions apply, the agent MUST name the concrete target(s) in chat and obtain confirmation (implicit acceptance is acceptable; explicit confirmation is required when the user has not indicated the target upfront):
+
+- vendor/third-party code is in scope (there may be multiple checkouts: actual project `vendor/` vs a reference/upstream clone),
+- multi-environment configuration is in scope (dev/staging/prod, host vs container, ddev vs deploy-server, local vs shared),
+- multi-clone or multi-worktree setups are plausible (nested repositories, sibling project directories, git worktrees),
+- the target branch for a planned commit is not the obviously-current branch, or the current branch is ambiguous for the work.
+
+The agent MUST state, as applicable:
+
+- exact file/directory paths being inspected or modified,
+- resolved execution/deployment layer (for example: "ddev web container, not host"; "deploy-server config, not ddev"; "actual `vendor/foo/bar`, not the `pim-community-dev/` reference clone"),
+- resolved branch (`git branch --show-current`) if commits or push operations are planned,
+- when a reference/upstream location exists alongside the project target: explicitly which one is in use and why.
+
+The agent MUST NOT proceed past initial orientation into substantive edits, tool runs against the target, or commits until the target is named.
+
+For trivial single-file edits in unambiguous locations (for example editing a file the user just named, with no sibling reference checkout and no environment ambiguity), the naming MAY be implicit via the file path in the edit itself. This rule fires when ambiguity is plausible, not for every edit.
+
+Rationale:
+- Prevents wasted sessions spent investigating or modifying the wrong checkout, wrong environment layer, or wrong branch before the user catches the drift.
+
+---
+
 # 3. Context Awareness
 
 ## 3.1 Surrounding Code Review (MUST)
