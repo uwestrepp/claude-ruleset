@@ -176,6 +176,11 @@ The agent MUST NOT repeat the suggestion in the same session after the user has 
 Before running any `git commit`, the agent MUST execute this checklist:
 
 1. Confirm `General.md` section `5.2 Test Path Selection & Execution` is completed (or blocked with explicit reason and follow-up command).
+1a. **State runtime evidence** in chat before drafting the subject:
+    - (a) executed path/command that exercised the changed code/config (not a form-check or availability probe — see `General.md` §5.2),
+    - (b) observed outcome.
+    If execution is blocked (environment, tool, privilege, no test env, sudo required): state blocker and the exact follow-up command/manual step per `General.md` §5.2; do not commit without either concrete evidence or an acknowledged blocker.
+    Required even for subject-only commits where the body-decision gate produces no "How to test" section. Chat-stated evidence is sufficient; persistence is not required.
 2. Resolve expected Jira ticket — if the project provides a resolver script (e.g. `bin/script/mq-commit-ticket`), run it; otherwise apply the resolution rules above manually:
    - branch overrides: `.aiassistant/state/commit-ticket-overrides.yaml` (if applicable)
    - extension-scoped changes: resolver output from `.aiassistant/state/extension-ticket-map.yaml` (if present)

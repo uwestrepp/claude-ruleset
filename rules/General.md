@@ -270,7 +270,7 @@ For every code/configuration change, the agent MUST:
   - high risk/impact: concrete before/after runtime checks on affected API/FE/BE paths,
   - medium/low risk/impact: focused smoke checks or functional-analogy checks.
 - Treat static analyzers/linters as rule-compliance evidence only.
-- Static analyzer/lint output MUST NOT be used as the sole behavioral validation or before/after regression proof.
+- Form-validation tools — static analyzers, linters, parsers/syntax checkers (`bash -n`, `php -l`, `nginx -t`, `yaml-lint`, etc.), type-checkers, compilers, and availability/reachability probes that do not exercise the changed code path — MUST NOT be used as the sole behavioral validation or before/after regression proof. They are supplementary compliance signal only.
 - Execute selected checks after applying changes.
 - Report what was executed and the result.
 
