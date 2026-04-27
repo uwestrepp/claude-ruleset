@@ -64,17 +64,40 @@ The agent MUST NOT persist temporary hypotheses, one-off scratch notes, or infor
 
 ## 2.2 Storage targets (MUST)
 
-The agent MUST store relevant knowledge in the narrowest durable scope that fits the information:
+The agent MUST store relevant knowledge in the narrowest durable scope that fits the information. Scope layers, narrowest to broadest:
 
-- maintainer-facing code rationale belongs in code comments only when future readers cannot reasonably infer it from the code itself,
-- API or contract semantics belong in DocBlocks only when that location is the established source of truth,
-- package, extension, or subsystem knowledge belongs in an existing local `README.md` or equivalent local documentation when that document is the best durable maintainer-facing location,
-- project-wide operational knowledge belongs in an existing project-level documentation file when the impact is project-wide,
-- durable project-specific agent memory that is not appropriate for maintainer-facing documentation belongs under `.aiassistant/state/`,
-- global reusable agent behavior rules belong under `~/.claude/rules/`; project-level reusable agent behavior rules belong under `.aiassistant/rules/`,
-- cross-cutting environment, tooling, or integration findings (host capabilities, tool quirks, API/protocol behaviors) that don't fit a maintainer-facing doc belong in agent memory (auto-memory `reference` type) or, when project-scoped, in `.aiassistant/state/notes/<topic>.md`.
+**In-code (maintainer-facing, in-repo)**:
+
+- code comments — non-obvious local rationale future readers cannot reasonably infer from the code itself,
+- DocBlocks — API or contract semantics where DocBlocks are the established source of truth,
+- package/extension `README.md` or equivalent local documentation — subsystem-level knowledge,
+- project-level documentation (`docs/`, `CHANGELOG.md`, equivalent) — project-wide operational knowledge,
+- per-project `CLAUDE.md` — project-specific agent instructions and rule overrides.
+
+**Agent state (project-specific, in-repo)**:
+
+- `.aiassistant/state/` — durable, committed agent memory not appropriate for maintainer-facing documentation (ticket maps, ledgers, triage packets, evidence summaries),
+- `.aiassistant/state/notes/<topic>.md` — project-scoped cross-cutting findings (this project's CI quirks, client-specific deploy peculiarities) without a maintainer-facing home.
+
+**Reusable behavior rules**:
+
+- `~/.claude/rules/` — global agent behavior rules,
+- `.aiassistant/rules/` — project-level agent behavior rules.
+
+**Cross-project agent memory (out-of-repo)**:
+
+- auto-memory at `~/.claude/projects/<...>/memory/` — findings about the agent's own host environment, host capabilities, tool quirks, and integration patterns reusable across sessions and projects in this account. Choose memory `type` per the memory-system conventions (user / feedback / project / reference). Distinct from `.aiassistant/state/notes/`: auto-memory is for *agent host* findings, `.aiassistant/state/notes/` is for *project environment* findings.
+
+**Colleague-facing external (MCP-mediated, when available)**:
+
+- Confluence (via atlassian-rovo MCP) — knowledge other team members will need; durable team-wide reference.
+- Jira (via atlassian-rovo MCP) — ticket-scoped findings, decisions, follow-ups that should be visible on the ticket.
+- Bitbucket PR descriptions — PR-specific rationale, reviewer guidance, and decisions captured at merge time.
+- Language for all colleague-facing surfaces per `General.md` §8.2 (German).
 
 The agent MUST prefer updating an existing source of truth over creating a new one.
+
+When the appropriate scope is ambiguous, the agent MUST ask rather than silently default to either extreme. Wider scope (greater discoverability across colleagues/sessions) is often safer than narrower scope (better fit but easier to lose), so ambiguity SHOULD NOT be resolved by reflexively picking the narrowest target.
 
 If no appropriate durable location exists and creating one would materially change project documentation structure, the agent MUST ask before doing so.
 
