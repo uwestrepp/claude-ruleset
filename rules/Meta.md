@@ -1,12 +1,13 @@
 ---
 apply: always
-instructions: Apply for knowledge persistence, durable agent memory, and rule-set governance across all tasks.
+instructions: Apply for meta-checkpoints, knowledge persistence, durable agent memory, and rule-set governance across all tasks.
 ---
 
 # Meta Rules
 
 This document defines always-on meta-rules for:
 
+- a unified meta-checkpoint mechanism that ties knowledge and rule-set evaluation together with a single auditable output,
 - minimizing preventable information loss between agent sessions,
 - storing durable knowledge in the right place with minimal noise,
 - improving the rule-set itself without fragmenting it.
@@ -15,11 +16,41 @@ Normative keywords are defined in `General.md`.
 
 ---
 
-# 1. Knowledge Is Transient
+# 1. Meta Checkpoints
+
+## 1.1 Combined checkpoint mechanism (MUST)
+
+At each of: task start, major milestone, and task end, the agent MUST produce a labeled checkpoint output covering BOTH aspects defined in §2 (Knowledge Persistence) and §3 (Rule-Set Governance), in the form:
+
+```
+Meta checkpoint:
+  Knowledge: <persistence actions taken with target paths | "no persistence-relevant items identified">
+  Rule-set:  <improvement proposals | "no meaningful improvement identified">
+```
+
+Both lines MUST be present. Collapsing both aspects into a single combined statement (for example "Meta checkpoint: no findings") is NOT sufficient — each aspect must be explicitly addressed in its own line.
+
+Workflow-specific rules MAY concretize these checkpoint triggers into named phase boundaries; when such concretization exists, the phase-level triggers supplement — but do not replace — the baseline triggers defined here.
+
+The agent MUST perform checkpoint evaluations continuously during delivery, but MUST batch non-critical findings only to the next defined checkpoint (major milestone or task end), not beyond, to avoid workflow disruption. The continuous-evaluation requirement of §2.3 still applies between checkpoints: persistence-relevant knowledge MUST be persisted as soon as the §2.3 risk signals warrant, regardless of checkpoint cadence.
+
+For task-end and Phase 9 checkpoints: if the checkpoint produces substantive findings (knowledge persisted at non-trivial targets, or rule-improvement proposals), the findings MUST also be appended to a durable committed artifact (triage packet, closure log, or equivalent named session artifact). A chat-only label is not sufficient evidence for auditability when committed session artifacts exist. The checkpoint is not complete until either (a) no substantive findings were identified and this is stated in the labeled output, or (b) substantive findings are persisted to the named artifact.
+
+At task start, the agent MUST record an initial checkpoint internally and SHOULD surface it immediately when there is a meaningful finding to raise. If there is no meaningful finding at task start, the agent MAY defer a no-op statement to the first major milestone.
+
+At each major milestone, the agent MUST provide one explicit checkpoint result with both lines.
+
+At task end, the agent MUST always provide one explicit batched checkpoint result with both lines.
+
+When a checkpoint involves reviewing multiple files, inspecting rule-set coverage, or drafting substantive proposals, the agent SHOULD delegate to the `checkpoint` sub-agent per `General.md` §10.1 rather than performing the review inline. Inline checkpoint is acceptable only when the result is a brief no-op (no new knowledge persistence, no rule improvements).
+
+---
+
+# 2. Knowledge Persistence
 
 Session memory is transient. Information that is not written to a durable project location will be lost when the session ends.
 
-## 1.1 Relevant knowledge (MUST)
+## 2.1 Relevant knowledge (MUST)
 
 The agent MUST treat newly learned knowledge as persistence-relevant when any of the following triggers apply:
 
@@ -31,7 +62,7 @@ The agent MUST treat newly learned knowledge as persistence-relevant when any of
 
 The agent MUST NOT persist temporary hypotheses, one-off scratch notes, or information that is already obvious from code, tests, or existing documentation.
 
-## 1.2 Storage targets (MUST)
+## 2.2 Storage targets (MUST)
 
 The agent MUST store relevant knowledge in the narrowest durable scope that fits the information:
 
@@ -40,13 +71,14 @@ The agent MUST store relevant knowledge in the narrowest durable scope that fits
 - package, extension, or subsystem knowledge belongs in an existing local `README.md` or equivalent local documentation when that document is the best durable maintainer-facing location,
 - project-wide operational knowledge belongs in an existing project-level documentation file when the impact is project-wide,
 - durable project-specific agent memory that is not appropriate for maintainer-facing documentation belongs under `.aiassistant/state/`,
-- global reusable agent behavior rules belong under `~/.claude/rules/`; project-level reusable agent behavior rules belong under `.aiassistant/rules/`.
+- global reusable agent behavior rules belong under `~/.claude/rules/`; project-level reusable agent behavior rules belong under `.aiassistant/rules/`,
+- cross-cutting environment, tooling, or integration findings (host capabilities, tool quirks, API/protocol behaviors) that don't fit a maintainer-facing doc belong in agent memory (auto-memory `reference` type) or, when project-scoped, in `.aiassistant/state/notes/<topic>.md`.
 
 The agent MUST prefer updating an existing source of truth over creating a new one.
 
 If no appropriate durable location exists and creating one would materially change project documentation structure, the agent MUST ask before doing so.
 
-## 1.3 Timing and duplication (MUST)
+## 2.3 Timing and duplication (MUST)
 
 The agent MUST continuously evaluate whether newly confirmed knowledge should be persisted.
 
@@ -68,7 +100,7 @@ The agent MUST NOT create duplicate, stale, or low-signal documentation.
 
 Documentation updates MAY be bundled with the related work. If they are outside that scope, they SHOULD be separated into a dedicated documentation change.
 
-## 1.4 Workflow Artifact Retention (MUST)
+## 2.4 Workflow Artifact Retention (MUST)
 
 Agent process artifacts MUST be organized by durability:
 
@@ -90,27 +122,20 @@ If retention value is unclear, ask the user before committing artifact files.
 
 ---
 
-# 2. Rule-Set Governance
+# 3. Rule-Set Governance
 
-## 2.1 Improvement checkpoints (MUST)
+## 3.1 Improvement policy (MUST)
 
-The agent MUST evaluate the project rule-set defined in `CLAUDE.md` for effectiveness and efficiency at defined checkpoints: task start, major milestone, and task end. Workflow-specific rules MAY concretize these checkpoints into named phase boundaries; when such concretization exists, those phase-level triggers supplement — but do not replace — the baseline checkpoints defined here.
+Rule-set effectiveness and efficiency MUST be evaluated at each meta-checkpoint per §1.1. The Rule-set line of the checkpoint output reports the result.
 
-The agent MUST perform checkpoint evaluations continuously during delivery, but MUST batch non-critical rule-improvement feedback only to the next defined checkpoint (major milestone or task end), not beyond, to avoid workflow disruption.
+If the agent identifies a meaningful improvement, it MUST propose it in a concise structure:
 
-Checkpoint results MUST be visibly labeled in user-facing output, for example with the prefix `Meta checkpoint:`. For task-end and Phase 9 checkpoints: if the checkpoint finds substantive improvements or knowledge items, the result MUST also be appended to a durable committed artifact (the triage packet, the closure log, or an equivalent named session artifact). A chat-only label is not sufficient evidence for auditability when committed session artifacts exist. The checkpoint is not complete until either (a) no meaningful improvements were identified and this is stated in the next user-facing update, or (b) substantive findings are persisted to the named artifact.
+- problem,
+- proposed change,
+- expected impact,
+- risk/tradeoff.
 
-At task start, the agent MUST record an initial checkpoint internally and SHOULD surface it immediately when there is a meaningful improvement to raise. If there is no meaningful improvement at task start, the agent MAY defer a no-op statement to the first major milestone.
-
-At task end, the agent MUST always provide one explicit batched checkpoint result: either concise improvement proposals or a concise "no meaningful improvement identified" statement.
-
-At each major milestone, the agent MUST provide one explicit checkpoint result line: either concise improvement proposals or a concise "no meaningful improvement identified" statement.
-
-When the checkpoint involves reviewing multiple files, inspecting rule-set coverage, or drafting substantive rule improvements, the agent SHOULD delegate to the `checkpoint` sub-agent per `General.md` §10.1 rather than performing the review inline. Inline checkpoint is acceptable only when the result is a brief no-op (no new knowledge, no rule improvements to propose).
-
-If the agent identifies a meaningful improvement, it MUST propose it in a concise structure: problem, proposed change, expected impact, and risk/tradeoff.
-
-## 2.2 Change policy (SHOULD / MUST)
+## 3.2 Change policy (SHOULD / MUST)
 
 New rule patterns SHOULD be added when backed by official migration guidance or repeated project-level friction, and SHOULD include a short rationale.
 

@@ -102,9 +102,9 @@ what is missing and why.
 This section makes the functional baseline mandatory for all batch workflow cycles
 (see also §3.3).
 
-At the conclusion of Phase 2, perform a knowledge persistence and rule-set governance
-checkpoint per `Meta.md §2.1` and report it as an explicit labeled user-facing line
-(for example `Meta checkpoint: ...`).
+At the conclusion of Phase 2, perform a combined meta checkpoint per `Meta.md §1.1`
+and report it as an explicit labeled user-facing block with both Knowledge and
+Rule-set lines (for example `Meta checkpoint:\n  Knowledge: ...\n  Rule-set: ...`).
 
 ### 3.3 Baseline Requirement for Larger-Scale Changes (MUST)
 
@@ -255,7 +255,8 @@ the main agent MUST/SHOULD delegate as follows. This section specializes the bas
 delegation policy in `General.md` §10.
 
 - **`checkpoint` (MUST at phases 2, 5, 9)**: spawn in background at each phase boundary
-  to handle `Meta.md §2.1` knowledge persistence and rule-set governance evaluation.
+  to handle `Meta.md §1.1` combined meta checkpoint (knowledge persistence + rule-set
+  governance evaluation, dual-aspect labeled output).
   Collect results before producing the phase report. Inline checkpoint is acceptable
   ONLY when the phase's work was minimal and no multi-file review is warranted.
 - **`test-runner` (SHOULD after applying changes)**: spawn in background after each
@@ -283,7 +284,7 @@ Pass 3 / Manual), report:
 - changes applied (file + line references where relevant)
 - residual findings / backlog for subsequent passes
 - explicit next-step proposal
-- knowledge persistence checkpoint per `Meta.md §2.1` as an explicit labeled line (persist any newly confirmed findings before continuing and mention the target path when something was persisted)
+- combined meta checkpoint per `Meta.md §1.1` as an explicit labeled block with both Knowledge and Rule-set lines (persist any newly confirmed findings before continuing and mention the target path when something was persisted)
 
 ### 8.2 Final cycle report (MUST)
 
@@ -294,7 +295,7 @@ At Phase 9, report:
 - unresolved risks and backlog items with rationale and follow-up
 - explicit next commands for operator/developer
 - compliance checklist from §9.1
-- knowledge persistence and rule-set governance checkpoint result per `Meta.md §2.1` as an explicit labeled line (either concise improvement proposals or "no new relevant knowledge or rule improvements identified")
+- combined meta checkpoint per `Meta.md §1.1` as an explicit labeled block with both Knowledge and Rule-set lines (each either substantive findings or the explicit no-op statement; substantive findings additionally appended to the durable session artifact)
 
 ---
 

@@ -102,7 +102,7 @@ Let `REPO="$(git rev-parse --show-toplevel)"` and
    git -C "$REPO" config core.hooksPath "$HOOKS_DIR"
    ```
 8. Suggest `.gitignore` additions (ask before editing `.gitignore`):
-   - `.aiassistant/scratch/**` (per Meta.md §1.4)
+   - `.aiassistant/scratch/**` (per Meta.md §2.4)
 9. Write the success marker:
    ```yaml
    # .aiassistant/state/githooks-install.yaml
