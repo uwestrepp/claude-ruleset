@@ -1,0 +1,240 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
+use TYPO3\CMS\Install\Controller\UpgradeController;
+use TYPO3\CMS\Install\ExtensionScanner\CodeScannerInterface;
+use TYPO3\CMS\Install\ExtensionScanner\Php\CodeStatistics;
+use TYPO3\CMS\Install\ExtensionScanner\Php\GeneratorClassesResolver;
+use TYPO3\CMS\Install\ExtensionScanner\Php\MatcherFactory;
+
+$argvCopy = $argv;
+array_shift($argvCopy);
+
+$projectRoot = getcwd();
+$jsonOnly = false;
+$summaryOnly = false;
+$extensions = [];
+
+while (($arg = array_shift($argvCopy)) !== null) {
+    if ($arg === '--') {
+        continue;
+    }
+    if ($arg === 'summary') {
+        $summaryOnly = true;
+        continue;
+    }
+    if ($arg === 'json') {
+        $jsonOnly = true;
+        continue;
+    }
+    if ($arg === '--json') {
+        $jsonOnly = true;
+        continue;
+    }
+    if ($arg === '--summary') {
+        $summaryOnly = true;
+        continue;
+    }
+    if (str_starts_with($arg, '--project-root=')) {
+        $projectRoot = (string)substr($arg, strlen('--project-root='));
+        continue;
+    }
+    if ($arg === '--project-root') {
+        $projectRoot = (string)(array_shift($argvCopy) ?? '');
+        continue;
+    }
+    if ($arg === '-h' || $arg === '--help') {
+        fwrite(STDOUT, "Usage: php typo3-extension-scanner [--project-root PATH] [--summary|--json] [extKey ...]\n");
+        fwrite(STDOUT, "Runs the TYPO3 Install-tool ExtensionScanner headlessly. With no extKey,\n");
+        fwrite(STDOUT, "scans every directory under <project-root>/packages/.\n");
+        exit(0);
+    }
+    $extensions[] = $arg;
+}
+
+$projectRoot = rtrim($projectRoot, '/');
+if ($projectRoot === '' || !is_dir($projectRoot)) {
+    fwrite(STDERR, "Invalid project root: {$projectRoot}\n");
+    exit(1);
+}
+
+$autoload = $projectRoot . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    fwrite(STDERR, "Missing autoload file at {$autoload}\n");
+    exit(1);
+}
+
+require $autoload;
+
+if ($extensions === []) {
+    $extensions = [];
+    foreach (glob($projectRoot . '/packages/*', GLOB_ONLYDIR) ?: [] as $dir) {
+        $extensions[] = basename($dir);
+    }
+    sort($extensions);
+}
+
+$defaults = (new ReflectionClass(UpgradeController::class))->getDefaultProperties();
+$matcherConfigs = $defaults['matchers'] ?? [];
+$resolvedMatcherConfigs = [];
+
+foreach ($matcherConfigs as $matcherConfig) {
+    if (!is_array($matcherConfig) || !isset($matcherConfig['class'])) {
+        continue;
+    }
+
+    if (isset($matcherConfig['configurationArray']) && is_array($matcherConfig['configurationArray'])) {
+        $resolvedMatcherConfigs[] = [
+            'class' => $matcherConfig['class'],
+            'configurationArray' => $matcherConfig['configurationArray'],
+        ];
+        continue;
+    }
+
+    $configFile = (string)($matcherConfig['configurationFile'] ?? '');
+    if ($configFile === '' || !str_starts_with($configFile, 'EXT:install/')) {
+        continue;
+    }
+
+    $absConfigFile = $projectRoot . '/vendor/typo3/cms-install/' . substr($configFile, strlen('EXT:install/'));
+    if (!is_file($absConfigFile)) {
+        continue;
+    }
+
+    $configuration = require $absConfigFile;
+    if (!is_array($configuration)) {
+        continue;
+    }
+
+    $resolvedMatcherConfigs[] = [
+        'class' => $matcherConfig['class'],
+        'configurationArray' => $configuration,
+    ];
+}
+
+$parser = (new ParserFactory())->createForVersion(PhpVersion::fromComponents(8, 2));
+$factory = new MatcherFactory();
+$report = [];
+
+foreach ($extensions as $extensionKey) {
+    $extensionPath = null;
+    foreach ([$projectRoot . '/packages/' . $extensionKey, $projectRoot . '/typo3conf/ext/' . $extensionKey] as $candidate) {
+        if (is_dir($candidate)) {
+            $extensionPath = $candidate;
+            break;
+        }
+    }
+
+    if ($extensionPath === null) {
+        $report[$extensionKey] = [
+            'error' => 'Extension path not found',
+            'scannedFiles' => 0,
+            'totalMatches' => 0,
+            'strong' => 0,
+            'weak' => 0,
+            'findings' => [],
+        ];
+        continue;
+    }
+
+    $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($extensionPath, FilesystemIterator::SKIP_DOTS));
+    $phpFiles = [];
+    foreach ($rii as $fileInfo) {
+        if ($fileInfo->isFile() && strtolower($fileInfo->getExtension()) === 'php') {
+            $phpFiles[] = $fileInfo->getPathname();
+        }
+    }
+    sort($phpFiles);
+
+    $findings = [];
+
+    foreach ($phpFiles as $phpFile) {
+        $relativeFile = ltrim((string)str_replace($extensionPath, '', $phpFile), '/');
+        $code = file_get_contents($phpFile);
+        if ($code === false) {
+            continue;
+        }
+
+        try {
+            $statements = $parser->parse($code) ?? [];
+            $traverser = new NodeTraverser();
+            $traverser->addVisitor(new NameResolver());
+            $statements = $traverser->traverse($statements);
+
+            $traverser = new NodeTraverser();
+            $codeStatistics = new CodeStatistics();
+            $traverser->addVisitor(new GeneratorClassesResolver());
+            $traverser->addVisitor($codeStatistics);
+
+            $matchers = $factory->createAll($resolvedMatcherConfigs);
+            foreach ($matchers as $matcher) {
+                $traverser->addVisitor($matcher);
+            }
+
+            $traverser->traverse($statements);
+
+            if ($codeStatistics->isFileIgnored()) {
+                continue;
+            }
+
+            $matches = [];
+            foreach ($matchers as $matcher) {
+                if ($matcher instanceof CodeScannerInterface) {
+                    $matches = array_merge($matches, $matcher->getMatches());
+                }
+            }
+
+            foreach ($matches as $match) {
+                $findings[] = [
+                    'file' => $relativeFile,
+                    'line' => (int)($match['line'] ?? 0),
+                    'indicator' => (string)($match['indicator'] ?? ''),
+                    'message' => (string)($match['message'] ?? ''),
+                ];
+            }
+        } catch (Throwable) {
+            // Ignore parse/runtime errors for scanner robustness and continue with next file.
+        }
+    }
+
+    $report[$extensionKey] = [
+        'scannedFiles' => count($phpFiles),
+        'totalMatches' => count($findings),
+        'strong' => count(array_filter($findings, static fn(array $f): bool => $f['indicator'] === 'strong')),
+        'weak' => count(array_filter($findings, static fn(array $f): bool => $f['indicator'] === 'weak')),
+        'findings' => $findings,
+    ];
+}
+
+if ($summaryOnly) {
+    foreach ($report as $extKey => $data) {
+        $error = isset($data['error']) ? ' (error: ' . $data['error'] . ')' : '';
+        fwrite(STDOUT, sprintf(
+            "%s: files=%d, matches=%d, strong=%d, weak=%d%s\n",
+            $extKey,
+            (int)$data['scannedFiles'],
+            (int)$data['totalMatches'],
+            (int)$data['strong'],
+            (int)$data['weak'],
+            $error
+        ));
+    }
+    exit(0);
+}
+
+if (!$jsonOnly) {
+    foreach ($report as $extKey => $data) {
+        fwrite(STDOUT, sprintf("\n[%s] files=%d matches=%d strong=%d weak=%d\n", $extKey, (int)$data['scannedFiles'], (int)$data['totalMatches'], (int)$data['strong'], (int)$data['weak']));
+        foreach ($data['findings'] as $finding) {
+            fwrite(STDOUT, sprintf("  - %s | %s | %s:%d\n", $finding['indicator'], $finding['message'], $finding['file'], (int)$finding['line']));
+        }
+    }
+    fwrite(STDOUT, "\n");
+}
+
+fwrite(STDOUT, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");

@@ -42,6 +42,11 @@ Use the project command wrapper:
 
 If extension scope is not explicitly given, ask once before scanning all extensions.
 
+If the project does not yet have a `ddev typo3-extensionscanner` wrapper,
+`resources/typo3-extension-scanner` is the canonical headless runner. See
+`resources/README.md` for the recommended project wiring (script copy +
+ddev command stub).
+
 ---
 
 ## 2. Pass Model (MUST)
