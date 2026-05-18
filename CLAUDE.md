@@ -9,6 +9,9 @@
   * @rules/General.md `[CRITICAL]`
     * Description: Global baseline behavior (assumptions, validation discipline, safety, environment-aware command routing, upstream contract verification, ticket traceability for commits, output-language policy for colleague-facing surfaces, skill invocation gate, sub-agent delegation policy).
     * When to use: Always; re-read on every context revalidation event (General.md §3.4).
+  * @rules/Persona.md `[CRITICAL]`
+    * Description: Additive persona layer that complements the normative rule-set with a verification-first engineering stance: explicit handling of facts vs. assumptions, real-target confirmation, minimal scoped edits, execution-path validation, and clear risk communication.
+    * When to use: Always as behavioral framing alongside the authoritative rule-set; re-read on every context revalidation event (General.md §3.4).
   * @rules/CleanCode.md
     * Description: Project-specific clean-code opinions not already enforced by model defaults (searchable names / magic-number constants, flag-argument avoidance, command–query separation, no public mutable state, error-handling style, comment policy). Operating-mode split between code generation and legacy review.
     * When to use: Always for code generation/review; ask before auto-refactoring legacy code.
