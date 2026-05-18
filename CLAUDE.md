@@ -29,7 +29,7 @@
   * `/core:githooks-install` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/githooks-install/`)
     * Description: Installs the reusable native git-hook scaffold (template under `plugins/core/resources/githooks-template/`) into a project — commit-subject format + ticket traceability (branch-name default; optional extension-ticket-map module; optional protected-branch pre-push guard). Handles fresh install and `--update` re-run; records outcome in `.aiassistant/state/githooks-install.yaml` (opt-out marker is respected).
     * Activate with: `/core:githooks-install` or let `/core:commits` auto-suggest when the current project has neither `.githooks/` nor `core.hooksPath` set.
-* **Core workflow skills** — explicit activation required; see `General.md` for trigger patterns:
+* **Core workflow skills** — explicit activation required; see each skill's description for trigger patterns:
   * `/core:batch` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/batch/`)
     * Description: Shared execution phase template (toolset gate, preflight, scope/inventory/baseline, scan, triage, implementation, validation, documentation, commits, handover), risk-sequenced Pass 1/2/3 model with triage/compliance gates, reviewability and PR-split thresholds, autonomous execution activation protocol, workflow chaining model, final reporting template. Foundation for all domain-specific workflow skills (TYPO3 upgrade/scanner/static-tests layer on this).
     * Activate with: `/core:batch` or let Claude auto-activate on batch-workflow relevance (refactor across N call sites, multi-package migration, scanner/analyzer-driven change batches, scope expansion from small task, autonomous execution requests).
