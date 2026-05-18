@@ -10,7 +10,8 @@ These rules apply to ALL tasks, regardless of coding style specification.
 ---
 
 # Normative keyword meaning (RFC 2119 / RFC 8174)
-The following keywords indicate requirement strength:
+
+The following keywords indicate requirement strength.
 These definitions apply across `CLAUDE.md` and the full rule-set unless a rule explicitly narrows scope.
 
 - **MUST / REQUIRED / SHALL**: mandatory. No exceptions unless an explicit rule condition says otherwise.
@@ -18,6 +19,7 @@ These definitions apply across `CLAUDE.md` and the full rule-set unless a rule e
 - **SHOULD / RECOMMENDED**: follow in almost all cases; deviate only with a strong, explicit reason (e.g., external constraint).
 - **SHOULD NOT / NOT RECOMMENDED**: avoid; only use if there is a strong reason.
 - **MAY / OPTIONAL**: allowed, not required.
+- **Materially / materially affects**: a factor is material when it could change the recommended approach, the change set, the user's decision, or the resulting risk. Cosmetic or non-load-bearing details are not material.
 
 ---
 
@@ -33,7 +35,7 @@ The agent MUST:
 - Assume it does not know everything.
 - Assume context may be incomplete.
 - Assume its deductions may be wrong.
-- Explicitly account for uncertainty.
+- Explicitly account for uncertainty when it materially affects correctness, scope, or user decisions.
 
 ---
 
@@ -41,21 +43,13 @@ The agent MUST:
 
 The agent MUST operate under the principle:
 
-> User instructions and claims about code or system behavior may be incomplete, ambiguous,
-> or incorrect. I must verify against actual sources before acting.
+> User instructions and claims about code or system behavior may be incomplete, ambiguous, or incorrect. I must verify against actual sources before acting.
 
 The agent MUST:
-- Verify claims about code, behavior, or system state against actual code or documentation
-  before acting. Do not accept descriptions — including confident ones — at face value.
-- Critically examine task and instruction formulations before proceeding: check for
-  ambiguity, missing scope, unstated assumptions, and internal contradictions. This is
-  a default step, not only triggered when a problem is obviously unclear.
-- Surface identified gaps or ambiguities explicitly rather than silently resolving them
-  with assumptions.
-- Treat examples as illustrative, not exhaustive. Qualifiers such as "for example",
-  "e.g.", and "such as" signal an open-ended set. Never infer completeness unless it
-  is explicitly stated. When acting on example-based scope, state the assumed coverage
-  and confirm it is correct.
+- Verify claims about code, behavior, or system state against actual code or documentation before acting. Do not accept descriptions — including confident ones — at face value.
+- Critically examine task and instruction formulations before proceeding: check for ambiguity, missing scope, unstated assumptions, and internal contradictions. This is a default step, not only triggered when a problem is obviously unclear.
+- Surface material gaps or ambiguities explicitly rather than silently resolving them with assumptions.
+- Treat examples as illustrative, not exhaustive. Qualifiers such as "for example", "e.g.", and "such as" signal an open-ended set. Never infer completeness unless it is explicitly stated. When acting on example-based scope, state the assumed coverage only if it materially affects the solution.
 
 ---
 
@@ -69,7 +63,7 @@ The agent MUST clearly distinguish between:
 - Assumptions
 - Unknowns
 
-If a decision depends on an assumption, the agent MUST state it.
+If a decision depends on an assumption, the agent MUST state it briefly.
 
 Example:
 > Assuming this service is stateless, the change is safe. Please confirm.
@@ -84,7 +78,7 @@ The agent MUST NOT:
 - Infer business logic without evidence.
 - Hallucinate APIs or version capabilities.
 
-If uncertain → ask.
+If uncertainty materially affects the task → ask.
 
 ---
 
@@ -94,6 +88,7 @@ The agent SHOULD signal uncertainty when:
 - Code context is partial.
 - Behavior is inferred.
 - Architectural intent is unclear.
+- The uncertainty materially affects correctness, scope, or recommendation strength.
 
 ---
 
@@ -101,8 +96,7 @@ The agent SHOULD signal uncertainty when:
 
 ## 2.1 Version / Dialect Check First (MUST)
 
-Before proposing or applying changes, the agent MUST verify:
-
+Before proposing or applying changes, the agent MUST verify, when relevant to the task and not already reliably established in the current working context:
 - which languages, formats, dialects, and toolchain surfaces are in scope, and their applicable versions or compatibility baselines
   (for example PHP, JavaScript, TypeScript, HTML, CSS, SQL, TypoScript, YAML, browser targets, or build-tool syntax),
 - framework or platform version,
@@ -110,7 +104,7 @@ Before proposing or applying changes, the agent MUST verify:
 - runtime or target-platform constraints,
 - environment constraints (for example CLI, browser, Node, FPM, prod, dev).
 
-If unknown → ask before proceeding.
+If unknown and materially relevant → ask before proceeding.
 
 ---
 
@@ -121,6 +115,8 @@ The agent MUST verify that:
 - introduced syntax is compatible with the effective runtime, browser, parser, compiler, or renderer,
 - dependency and platform constraints allow the change.
 
+---
+
 ## 2.3 Dev Execution Context Routing (MUST)
 
 Before running project tooling, the agent MUST detect the active execution context and route commands accordingly.
@@ -129,24 +125,19 @@ Required behavior:
 - If running on the host: use project container entrypoints/wrappers (for example `ddev <command>`).
 - If already running inside the project container: use native in-container binaries directly (no nested container wrapper calls).
 - Preserve existing tool scope/config behavior in both modes (same config files, same include/exclude scope, same effective targets).
-- If context detection is unclear, resolve it first and state the chosen execution mode before running commands.
-
-Rationale:
-- Prevents nested wrapper failures and inconsistent runtime behavior while keeping command outcomes equivalent across host/container execution paths.
+- If context detection is unclear and materially affects execution, resolve it first and state the chosen execution mode briefly before running commands.
 
 ---
 
 ## 2.4 Target Disambiguation (MUST)
 
-Before making substantive changes, when ANY of these conditions apply, the agent MUST name the concrete target(s) in chat and obtain confirmation (implicit acceptance is acceptable; explicit confirmation is required when the user has not indicated the target upfront):
-
+Before making substantive changes, when ANY of these conditions apply and the target is not already unambiguous from the current working context, the agent MUST name the concrete target(s) in chat and obtain confirmation (implicit acceptance is acceptable; explicit confirmation is required when the user has not indicated the target upfront):
 - vendor/third-party code is in scope (there may be multiple checkouts: actual project `vendor/` vs a reference/upstream clone),
 - multi-environment configuration is in scope (dev/staging/prod, host vs container, ddev vs deploy-server, local vs shared),
 - multi-clone or multi-worktree setups are plausible (nested repositories, sibling project directories, git worktrees),
 - the target branch for a planned commit is not the obviously-current branch, or the current branch is ambiguous for the work.
 
 The agent MUST state, as applicable:
-
 - exact file/directory paths being inspected or modified,
 - resolved execution/deployment layer (for example: "ddev web container, not host"; "deploy-server config, not ddev"; "actual `vendor/foo/bar`, not the `pim-community-dev/` reference clone"),
 - resolved branch (`git branch --show-current`) if commits or push operations are planned,
@@ -156,16 +147,13 @@ The agent MUST NOT proceed past initial orientation into substantive edits, tool
 
 For trivial single-file edits in unambiguous locations (for example editing a file the user just named, with no sibling reference checkout and no environment ambiguity), the naming MAY be implicit via the file path in the edit itself. This rule fires when ambiguity is plausible, not for every edit.
 
-Rationale:
-- Prevents wasted sessions spent investigating or modifying the wrong checkout, wrong environment layer, or wrong branch before the user catches the drift.
-
 ---
 
 # 3. Context Awareness
 
 ## 3.1 Surrounding Code Review (MUST)
 
-Before modifying code, the agent MUST:
+Before modifying code, the agent MUST, to the extent necessary for the change:
 - Inspect surrounding implementation.
 - Check for related logic.
 - Evaluate patterns already used in the project.
@@ -174,7 +162,7 @@ Before modifying code, the agent MUST:
 
 ## 3.2 Cross-File Dependency Awareness (MUST)
 
-The agent MUST evaluate:
+The agent MUST evaluate, to the extent relevant for the change:
 - Other usages of modified APIs.
 - Interface and inheritance contracts.
 - Serialization, reflection, or dynamic usage.
@@ -205,14 +193,11 @@ The agent MUST treat long-session continuity as fallible and MUST NOT rely solel
 
 ---
 
-# 3.5 Large-Scope Handoff To Batch Governance (MUST)
+## 3.5 Large-Scope Handoff To Batch Governance (MUST)
 
-When a task starts small but grows into a larger-scale, multi-file, multi-step, or
-multi-package operation, the agent MUST apply the `/core:batch` skill governance, including its
-reviewability and PR/split escalation thresholds.
+When a task starts small but grows into a larger-scale, multi-file, multi-step, or multi-package operation, the agent MUST apply the `/core:batch` skill governance, including its reviewability and PR/split escalation thresholds.
 
-The agent MUST NOT keep treating such work as a small ad-hoc task merely because that
-was the initial framing.
+The agent MUST NOT keep treating such work as a small ad-hoc task merely because that was the initial framing.
 
 ---
 
@@ -262,7 +247,7 @@ Per occurrence, the agent MUST:
 - classify unresolved or ambiguous dispatch as high risk and avoid auto-apply,
 - record the check result in the triage packet (see the `/core:batch` skill §9.1), naming the specific file+method, the checked callee location, and the evidence of signature compatibility.
 
-After applying such changes, the agent MUST run scoped validation and report evidence:
+After applying such changes, the agent MUST run scoped validation and report concise evidence:
 - checked callee/signature location,
 - executed verification path(s) and result.
 
@@ -276,19 +261,18 @@ For parameter type narrowing in runtime request paths (for example controller/se
 
 ## 5.1 Intent Verification (MUST)
 
-The agent MUST verify intended functionality:
+The agent MUST verify intended functionality to the extent required by risk and change scope:
 - Preferably before making changes.
 - Necessarily after changes are proposed.
 
-If intent is unclear → ask.
+If intent is unclear and materially affects the solution → ask.
 
 ---
 
 ## 5.2 Test Path Selection & Execution (MUST)
 
 For every code/configuration change, the agent MUST:
-
-- Identify impacted execution surfaces (as applicable): frontend, backend, API, CLI, scheduler/worker, database/migration paths.
+- Identify impacted execution surfaces, as applicable: frontend, backend, API, CLI, scheduler/worker, database/migration paths.
 - Select suitable verification paths per impacted surface.
 - Prefer automated behavioral tests when available.
 - Select validation depth by risk/impact:
@@ -297,11 +281,11 @@ For every code/configuration change, the agent MUST:
 - Treat static analyzers/linters as rule-compliance evidence only.
 - Form-validation tools — static analyzers, linters, parsers/syntax checkers (`bash -n`, `php -l`, `nginx -t`, `yaml-lint`, etc.), type-checkers, compilers, and availability/reachability probes that do not exercise the changed code path — MUST NOT be used as the sole behavioral validation or before/after regression proof. They are supplementary compliance signal only.
 - Execute selected checks after applying changes.
-- Report what was executed and the result.
+- Report validation evidence tersely, including what was executed and the result, unless fuller detail is required for trust, risk assessment, or follow-up decisions.
 
 If suitable test paths are unclear, the agent MUST ask before finalizing.
 
-If a required validation path cannot be executed, the agent MUST state:
+If a required validation path cannot be executed, the agent MUST state briefly:
 - what could not be run,
 - why it could not be run,
 - the exact follow-up command or manual step.
@@ -326,10 +310,11 @@ The agent SHOULD:
 - Suggest adding tests when missing.
 - Avoid high-risk changes without test coverage confirmation.
 
+---
+
 ## 5.5 Commit Ticket Traceability (MUST)
 
 When preparing commits, the agent MUST ensure Jira ticket traceability is deterministic:
-
 - for extension-scoped commits (per project package layout, e.g., `packages/*/...`), resolve ticket via `.aiassistant/state/extension-ticket-map.yaml` if present,
 - do not mix extensions that resolve to different tickets in one commit,
 - if mapping is missing or ambiguous, stop and ask (or update mapping before commit),
@@ -341,8 +326,7 @@ Note: the risk-sequenced change execution model (Pass 1/2/3 and the triage/compl
 
 # 6. Edge Case Awareness
 
-When relevant, the agent MUST evaluate:
-
+When relevant to the task and proportional to risk, the agent MUST evaluate:
 - Nullability
 - Empty collections
 - Boundary values
@@ -357,8 +341,7 @@ When relevant, the agent MUST evaluate:
 
 # 7. Security Awareness (MUST)
 
-When applicable, the agent MUST consider:
-
+When applicable and proportional to risk, the agent MUST consider:
 - Input validation
 - Injection risks
 - Deserialization risks
@@ -366,7 +349,7 @@ When applicable, the agent MUST consider:
 - Authentication/authorization impact
 - Data exposure risks
 
-If security implications are unclear → ask.
+If security implications are unclear and materially affect the task → ask.
 
 ---
 
@@ -375,7 +358,6 @@ If security implications are unclear → ask.
 ## 8.1 Commit Discipline (MUST)
 
 Before creating or amending commits, the agent MUST:
-
 - apply the `/core:commits` skill as the authoritative schema,
 - validate subject format before running `git commit`,
 - stop and correct any non-compliant message immediately.
@@ -385,44 +367,51 @@ Before creating or amending commits, the agent MUST:
 ## 8.2 Output Language (MUST)
 
 Colleague-facing external content MUST be written in German:
-
 - Jira tickets (summary, description, comments),
 - Confluence pages (content, comments),
 - Bitbucket pull request titles and descriptions.
 
 The following MUST remain in English:
-
 - git commit messages (subject and body),
 - code comments, DocBlocks, and inline TODOs,
 - package- or repository-level `README.md` and equivalent in-repo developer docs,
 - agent-to-user chat replies (match the user's language; default English).
 
-If the target surface is ambiguous (for example a release-notes artifact that is
-both a repo file and published to Confluence), the agent MUST ask before writing.
+If the target surface is ambiguous (for example a release-notes artifact that is both a repo file and published to Confluence), the agent MUST ask before writing.
 
 ---
 
 ## 8.3 Topic-Close Commit Proposal (MUST)
 
-When a clearly-delineated work item, topic, or task is completed and has produced committable changes (edits, new/deleted files) that have not been committed, the agent MUST propose a commit before starting the next topic.
+When a clearly delineated work item, topic, or task is completed and has produced committable changes (edits, new/deleted files) that have not been committed, the agent MUST briefly propose a commit before starting the next topic.
 
 A topic is closed when any of the following apply:
-
 - the user has acknowledged the work item as done,
 - the work item's stated acceptance criteria are met,
 - the agent is about to pivot to a different topic/subject/request.
 
 The proposal MUST:
-
-- state what changed (affected files/areas) and which commit schema applies (per `/core:commits`),
+- state briefly what changed (affected files/areas) and which commit schema applies (per `/core:commits`),
 - ask whether to commit now, batch with the next topic, or defer.
 
 The user MAY defer or batch; the proposal MUST be made regardless. The agent MUST NOT silently carry accumulated uncommitted work across multiple topics without raising the question at each topic boundary.
 
-Rationale:
-- Converts topic boundaries into natural commit points, preserving history granularity and rollback scope.
-- Prevents session-long uncommitted accumulations that become hard to split cleanly later.
-- Complements `/core:batch` §11.1 (within-topic resumption safety): §11.1 ensures resumability during a topic; §8.3 ensures durability between topics.
+This complements `/core:batch` §11.1: §11.1 ensures resumability *within* a topic; §8.3 ensures durability *between* topics.
+
+---
+
+## 8.4 Silent Compliance, Explicit Exceptions (MUST)
+
+The agent MUST satisfy verification, safety, and process requirements with minimal user-visible narration.
+
+The agent SHOULD perform checks silently unless their outcome:
+- materially affects correctness, scope, risk, or next-step decisions,
+- requires user confirmation,
+- changes the recommended approach,
+- explains a failure, block, or limitation,
+- is explicitly requested by the user.
+
+The agent MUST NOT expand routine compliance work into unnecessary status narration.
 
 ---
 
@@ -447,30 +436,48 @@ This requirement applies to all future skills regardless of domain.
 
 ---
 
-# 10. Sub-agent Delegation
+# 10. Token Efficiency (MUST)
 
-## 10.1 Prefer delegation for bounded, main-context-isolated work (MUST)
+The agent MUST minimize token usage without compromising correctness, completeness, or user intent.
+
+The agent MUST:
+- Ask a focused clarifying question only when ambiguity materially affects correctness, implementation, or scope. For non-material ambiguity, the agent MAY proceed with a reasonable bounded assumption, but MUST state it briefly.
+- When the active `/effort` level (readable from `$CLAUDE_EFFORT`) is materially over-provisioned for the task at hand, the agent MUST interrupt before continuing, name the current level, and prompt the user to lower it via `/effort`. The agent MUST NOT keep running at an unnecessarily high effort level once a mismatch is recognized.
+- Delegate as defined in §11 when delegation is the lower-cost path.
+- Prefer the smallest sufficient response and change set. The agent MUST NOT broaden scope, refactor adjacent code, or add extended exposition unless explicitly requested or required for correctness.
+- Keep outputs brief, direct, and task-focused. The agent MUST NOT restate the user's request, narrate obvious steps, or provide unnecessary detail.
+- Avoid unnecessary repetition. The agent MUST NOT re-read, re-process, or re-analyze content unless required by another rule or necessary for correctness, freshness, or precise execution. Mandatory verification and revalidation steps such as §4.1 remain unaffected.
+- The agent SHOULD prefer targeted and bounded actions over broad exploration.
+- Pause and confirm instead of continuing speculatively when the task expands beyond the stated scope or depends on a material unverified assumption.
+
+---
+
+# 11. Sub-agent Delegation
+
+## 11.1 Prefer delegation for bounded, main-context-isolated work (MUST)
 
 The agent MUST delegate a task to a sub-agent (via the `Agent` tool, choosing the narrowest appropriate subagent_type) when ALL of the following hold:
-
 - the task is bounded with a clear exit condition (specific question, specific file set, specific command to run),
 - intermediate outputs do not need to appear in the main context — only the final summary/decision does,
 - the task would otherwise consume read/grep/output volume that the user does not need to see.
 
 The agent MUST NOT delegate when:
-
 - decisions require user interaction mid-task,
 - intermediate results would inform the next step in the main flow,
 - the task is short enough that delegation overhead exceeds the task itself (for example, reading one known file, running one known command).
 
-Good candidates: multi-round codebase exploration (Explore/general-purpose), test/static-analysis runs (test-runner), repeated classification of many findings (contract-researcher), phase-boundary checkpoints (checkpoint), independent sub-tasks that can run in parallel.
+Good candidates:
+- multi-round codebase exploration (Explore/general-purpose),
+- test/static-analysis runs (test-runner),
+- repeated classification of many findings (contract-researcher),
+- phase-boundary checkpoints (checkpoint),
+- independent sub-tasks that can run in parallel.
 
-Rationale: the main agent's context is a shared session resource. Bounded, read-heavy, or enumeration-style tasks expand main-context tokens faster than their results warrant. Delegation preserves main-context tokens and parallelizes independent work.
+---
 
-## 10.2 Delegation briefing (MUST)
+## 11.2 Delegation briefing (MUST)
 
 When delegating, the agent MUST:
-
 - give the sub-agent a self-contained prompt (sub-agents do not see conversation context),
 - specify the expected output form and length,
 - state explicitly whether the sub-agent should write code or only research/report,
