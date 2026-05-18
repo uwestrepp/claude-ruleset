@@ -430,24 +430,18 @@ Rationale:
 
 ## 9.1 Require explicit skill activation (MUST)
 
-When a defined skill exists for a workflow type and a user request matches that workflow,
-the agent MUST interrupt and prompt for explicit skill invocation rather than proceeding
-ad-hoc. The agent MUST NOT begin workflow execution as if the skill were active when it
-has not been invoked. Show the exact invocation command and explain that it must be
-activated first.
+This rule applies only to skills marked "explicit activation required" in the CLAUDE.md skill ledger; all other skills follow their own auto-activation configuration.
 
-The concrete skill registry (which skills exist and what patterns trigger them) is
-maintained in the most general applicable rule file for that domain — for example,
-`TYPO3.md` §9 for TYPO3 workflow skills.
+When a user request matches a skill marked "explicit activation required", the agent MUST interrupt and prompt for explicit invocation rather than proceeding ad hoc. The authoritative source of trigger patterns for each skill is the skill's own description (SKILL.md or equivalent); the CLAUDE.md ledger entry summarizes them.
+
+---
 
 ## 9.2 Skill ledger maintenance (MUST)
 
-When a new skill is created for a workflow:
-- its name, invocation command, and trigger patterns MUST be recorded in the most
-  general applicable rule file that covers that domain before the skill is considered
-  complete,
-- `General.md` is the fallback location only when no more specific domain rule applies,
-- the skill MUST NOT be created without a corresponding ledger entry.
+When a new skill is created:
+- it MUST be recorded in the CLAUDE.md skill ledger (path, description, activation policy) before the skill is considered complete,
+- if it requires explicit activation per §9.1, it MUST be marked "explicit activation required" in the ledger entry,
+- the skill's own description (SKILL.md or equivalent) is the authoritative source of trigger patterns; the ledger entry SHOULD summarize them, not duplicate them in detail.
 
 This requirement applies to all future skills regardless of domain.
 

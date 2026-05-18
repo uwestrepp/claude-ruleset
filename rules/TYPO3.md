@@ -196,30 +196,4 @@ When a clean migration path exists, prefer these replacements:
 
 ---
 
-## 9. TYPO3 Workflow Skills — Invocation Gate (MUST)
-
-The following skills provide structured TYPO3 workflow execution. When a user request
-matches a trigger pattern below and the corresponding skill has **not** been invoked in
-the current session, the agent MUST interrupt, decline to proceed ad-hoc, show the exact
-invocation command, and explain that the skill must be activated first.
-
-| Skill | Invoke with | Trigger patterns |
-|---|---|---|
-| TYPO3 Upgrade Workflow | `/typo3:upgrade` | upgrade task, migration execution, deprecation/breaking-change remediation, version compatibility work, TYPO3 major/minor migration |
-| TYPO3 ExtensionScanner | `/typo3:scanner` | ExtensionScanner run, scanner triage, scanner findings, scanner pass, scanner-driven migration |
-| TYPO3 Static Code Tests | `/typo3:static-tests` | static test run, phpstan, rector, fractor, php-cs-fixer, TypoScript lint, static analyzer cycle, static code quality pass |
-| TYPO3 Full Upgrade Chain | `/typo3:upgrade-full` | full upgrade chain, run all three workflows, consecutive upgrade + scanner + static tests, chained upgrade execution |
-
-The agent MUST NOT begin workflow execution as if the skill were active when it has not
-been invoked. This is the primary compliance gate replacing the former `apply: by model
-decision` automatic triggering of the retired rule files.
-
-**Skill ledger maintenance:** When a new TYPO3 workflow skill is created, its name,
-invocation command, and trigger patterns MUST be added to the table above before the
-skill is considered complete. For skills covering non-TYPO3 domains, the equivalent
-ledger entry belongs in the most general applicable rule file for that domain; see
-`General.md` §9 for the cross-domain skill registration requirement.
-
----
-
 End of policy.
