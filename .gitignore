@@ -12,6 +12,7 @@ cache/
 downloads/
 file-history/
 ide/
+.last-cleanup
 memory/
 paste-cache/
 plans/
