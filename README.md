@@ -11,10 +11,11 @@ CLAUDE.md                     Rule index (entry point for all projects)
 rules/
   General.md                  Global baseline behavior [CRITICAL]
   Meta.md                     Knowledge persistence and rule governance [CRITICAL]
+  Persona.md                  Verification-first behavioral framing [CRITICAL]
   CleanCode.md                Clean code principles
   PER.md                      PHP PER-CS 3.0 coding style (path-gated: **/*.php)
   PER-Application.md          PER application policy (path-gated: **/*.php)
-  TYPO3.md                    TYPO3 upgrade impact policy and skill invocation gate (§9) (path-gated)
+  TYPO3.md                    TYPO3 upgrade impact policy (path-gated)
 agents/
   checkpoint.md               Knowledge persistence agent
   contract-researcher.md      Upstream contract verification agent
@@ -26,7 +27,7 @@ plugins/
   marketplaces/
     local/                    Local MOSAIQ marketplace
       plugins/
-        core/                 Generic workflow skills (batch, commits, composer)
+        core/                 Generic workflow and config skills (batch, commits, composer, githooks-install)
         typo3/                TYPO3 workflow skills (upgrade, scanner, static-tests, upgrade-full)
 settings.json.example         Template for ~/.claude/settings.json
 claude.json.example           Template for MCP server entries in ~/.claude.json
@@ -136,7 +137,7 @@ claude plugins update typo3@local
 
 ## TYPO3 Workflow Skills
 
-The `typo3` plugin provides four skills for structured TYPO3 upgrade work. Skills require **explicit activation** — the agent will not start a workflow until you invoke the skill. See `rules/TYPO3.md` §9 for full trigger patterns.
+The `typo3` plugin provides four skills for structured TYPO3 upgrade work. Skills require **explicit activation** — the agent will not start a workflow until you invoke the skill. See each skill's description for full trigger patterns.
 
 | Skill | Invoke with | Use when |
 |---|---|---|
