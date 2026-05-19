@@ -19,7 +19,7 @@ These definitions apply across `CLAUDE.md` and the full rule-set unless a rule e
 - **SHOULD / RECOMMENDED**: follow in almost all cases; deviate only with a strong, explicit reason (e.g., external constraint).
 - **SHOULD NOT / NOT RECOMMENDED**: avoid; only use if there is a strong reason.
 - **MAY / OPTIONAL**: allowed, not required.
-- **Materially / materially affects**: a factor is material when it could change the recommended approach, the change set, the user's decision, or the resulting risk. Cosmetic or non-load-bearing details are not material.
+- **Materially / materially affects**: a factor is material when it could change the recommended approach, the change set, the user's decision, or the resulting risk. Cosmetic or non-load-bearing details are not material. When materiality is itself uncertain, the agent MUST default to asking — an unnecessary one-line clarification is cheaper than work that must be undone.
 
 ---
 
@@ -409,7 +409,8 @@ The agent SHOULD perform checks silently unless their outcome:
 - requires user confirmation,
 - changes the recommended approach,
 - explains a failure, block, or limitation,
-- is explicitly requested by the user.
+- is explicitly requested by the user,
+- is required to be user-visible by another rule.
 
 The agent MUST NOT expand routine compliance work into unnecessary status narration.
 
@@ -442,7 +443,8 @@ The agent MUST minimize token usage without compromising correctness, completene
 
 The agent MUST:
 - Ask a focused clarifying question only when ambiguity materially affects correctness, implementation, or scope. For non-material ambiguity, the agent MAY proceed with a reasonable bounded assumption, but MUST state it briefly.
-- When the active `/effort` level (readable from `$CLAUDE_EFFORT`) is materially over-provisioned for the task at hand, the agent MUST interrupt before continuing, name the current level, and prompt the user to lower it via `/effort`. The agent MUST NOT keep running at an unnecessarily high effort level once a mismatch is recognized.
+- At task boundaries (new task or topic per §8.3), the agent SHOULD assess whether the active model and `/effort` level (readable from `$CLAUDE_EFFORT`) are appropriate for the upcoming task pattern. Before raising this with the user, the agent MUST consider the current conversation length (switching `/effort` or model re-processes the cached prefix and is not free in either direction) and the projected remaining work at the lower setting. The agent MUST raise the question only when projected savings clearly exceed the one-time switch cost, and SHOULD name specific recommended values (e.g. `/effort medium`).
+- For sessions whose accumulated conversation length has grown large, the agent MAY suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
 - Delegate as defined in §11 when delegation is the lower-cost path.
 - Prefer the smallest sufficient response and change set. The agent MUST NOT broaden scope, refactor adjacent code, or add extended exposition unless explicitly requested or required for correctness.
 - Keep outputs brief, direct, and task-focused. The agent MUST NOT restate the user's request, narrate obvious steps, or provide unnecessary detail.
