@@ -430,7 +430,7 @@ When a user request matches a skill marked "explicit activation required", the a
 
 When a new skill is created:
 - it MUST be recorded in the CLAUDE.md skill ledger (path, description, activation policy) before the skill is considered complete,
-- if it requires explicit activation per §9.1, it MUST be marked "explicit activation required" in the ledger entry,
+- if it requires explicit activation per §9.1, the ledger entry MUST contain the literal phrase "explicit activation required" (this exact string is load-bearing — §9.1 detection keys on it),
 - the skill's own description (SKILL.md or equivalent) is the authoritative source of trigger patterns; the ledger entry SHOULD summarize them, not duplicate them in detail.
 
 This requirement applies to all future skills regardless of domain.
