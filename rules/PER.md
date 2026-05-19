@@ -11,13 +11,20 @@ paths:
 1) **When generating or editing new code:**
     - Always follow the rules in this document.
     - If a rule depends on a PHP language feature, only apply it when that feature exists in the target PHP version(s). (This org baseline is **PHP >= 7.4**.)
+    - Prefer `declare(strict_types=1)` unless the project explicitly disallows it.
 
 2) **When reviewing existing/legacy code:**
     - If you see deviations, **recommend a refactoring** aligned with these rules.
     - **Do not change legacy code automatically**. Propose the change and wait for explicit confirmation before modifying.
+    - General.md §4.2 (minimal change) and §4.4 (no silent semantic changes) govern scope; in particular, naming-convention changes are PSR-4-relevant and MUST NOT be applied silently.
 
 3) **Uncertainty handling:**
-    - If the project's PHP version range is unknown, assume **PHP 7.4+** as the minimum and **flag rules that require 8.x or 8.4**.
+    - If the project's PHP version range is unknown, assume **PHP 7.4+** as the minimum.
+    - Flag usage of features that require:
+        - PHP 8.0 (union types, attributes, `match`, named arguments)
+        - PHP 8.1 (enums, `readonly` properties, intersection types)
+        - PHP 8.2 (`readonly` classes)
+        - PHP 8.4 (property hooks, set-visibility)
 
 ---
 

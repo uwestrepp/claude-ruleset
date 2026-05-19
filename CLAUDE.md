@@ -16,11 +16,8 @@
     * Description: Project-specific clean-code opinions not already enforced by model defaults (searchable names / magic-number constants, flag-argument avoidance, command–query separation, no public mutable state, error-handling style, comment policy). Operating-mode split between code generation and legacy review.
     * When to use: Always for code generation/review; ask before auto-refactoring legacy code.
   * rules/PER.md (path-gated: `**/*.php`)
-    * Description: Normative PER/PSR coding-style rules for PHP.
+    * Description: Normative PER/PSR coding-style rules for PHP, including the agent's operating-mode block (generation vs legacy review, PHP 7.4 baseline, explicit 8.0/8.1/8.2/8.4 feature flagging).
     * When to use: Creating/editing/reviewing PHP code.
-  * rules/PER-Application.md (path-gated: `**/*.php`)
-    * Description: Practical application policy for PER in this project (generation vs legacy mode).
-    * When to use: Creating/reviewing PHP code or enforcing PER/PER-CS conventions.
 * **Exports** — `./exports/` holds condensed or adapted versions of this repo's rule-set for use in external agents or harnesses. Files under `./exports/` are NOT loaded by this harness. When editing files under `./rules/`, check `./exports/` for any condensed version that needs corresponding sync in the same change-set. See `./exports/README.md`.
 * **Core skills** — auto-activate on prompt relevance, or invoke explicitly:
   * `/core:commits` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/commits/`)

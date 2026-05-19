@@ -13,8 +13,7 @@ rules/
   Meta.md                     Knowledge persistence and rule governance [CRITICAL]
   Persona.md                  Verification-first behavioral framing [CRITICAL]
   CleanCode.md                Clean code principles
-  PER.md                      PHP PER-CS 3.0 coding style (path-gated: **/*.php)
-  PER-Application.md          PER application policy (path-gated: **/*.php)
+  PER.md                      PHP PER-CS 3.0 coding style + application policy (path-gated: **/*.php)
   TYPO3.md                    TYPO3 upgrade impact policy (path-gated)
 agents/
   checkpoint.md               Knowledge persistence agent
