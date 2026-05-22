@@ -13,6 +13,7 @@ downloads/
 file-history/
 ide/
 .last-cleanup
+mcp-needs-auth-cache.json
 memory/
 paste-cache/
 plans/
