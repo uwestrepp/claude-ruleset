@@ -165,9 +165,9 @@ When reporting findings, the agent SHOULD output:
 
 ---
 
-## 8. Practical migration patterns for TYPO3 13.4 (SHOULD)
+## 8. Practical migration patterns (SHOULD)
 
-When a clean migration path exists, prefer these replacements:
+When updating, cleaning up, or migrating a TYPO3 installation, and a clean migration path exists, prefer these replacements:
 
 - **Extbase request mutation**:
   - avoid legacy :php:`$this->request->setArgument(...)`
@@ -193,6 +193,10 @@ When a clean migration path exists, prefer these replacements:
   - keep or add inline :php:`@var` type hints directly above assignments from :php:`GeneralUtility::makeInstance(...)`
   - if correcting such annotations, ensure the annotated variable name matches the assigned variable exactly
   - when directly calling a method on a value returned from :php:`GeneralUtility::makeInstance(...)`, prefer :php:`?->` over :php:`->` unless non-nullability is already proven locally and the direct call form is required
+- **TypoScript / TSconfig condition array access** (Symfony ExpressionLanguage in `Page.typoscript`, `User.typoscript`, TypoScript condition blocks):
+  - avoid direct index access on keys not guaranteed to exist (emits PHP 8.0+ "Undefined array key" warnings from `symfony/expression-language/Node/GetAttrNode.php`); applies to `page`, `tree`, `site`, `siteLanguage`, `applicationContext`, `request`, custom arrays
+  - use `traverse(<array>, "<key>")` — returns `null` for missing keys, accepts dotted paths for nested access (`traverse(page, "tx_foo.bar")`), registered in `\TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\DefaultFunctionsProvider`, documented safe accessor in TYPO3 12+
+  - example: `[page["is_siteroot"] != 1]` → `[traverse(page, "is_siteroot") != 1]`; semantically equivalent for absence-as-not-equal comparisons (no separate behavior confirmation needed)
 
 ---
 
