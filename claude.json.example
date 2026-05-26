@@ -9,7 +9,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "chrome-devtools-mcp@0.18.1",
+        "chrome-devtools-mcp@^1.0.1",
         "--headless=true",
         "--isolated=true",
         "--no-performance-crux",
