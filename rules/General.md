@@ -422,7 +422,7 @@ The agent MUST NOT expand routine compliance work into unnecessary status narrat
 
 This rule applies only to skills marked "explicit activation required" in the CLAUDE.md skill ledger; all other skills follow their own auto-activation configuration.
 
-When a user request matches a skill marked "explicit activation required", the agent MUST interrupt and prompt for explicit invocation rather than proceeding ad hoc. The authoritative source of trigger patterns for each skill is the skill's own description (SKILL.md or equivalent); the CLAUDE.md ledger entry summarizes them.
+When a user request matches a skill marked "explicit activation required", the agent MUST interrupt and prompt for explicit invocation rather than proceeding ad hoc. A user mention of a skill by name or by topic ("the typo3 skill", "the batch workflow") counts as a match; if multiple candidates plausibly fit, the agent MUST disambiguate before invocation, not silently pick one. The authoritative source of trigger patterns for each skill is the skill's own description (SKILL.md or equivalent); the CLAUDE.md ledger entry summarizes them.
 
 ---
 
@@ -434,6 +434,14 @@ When a new skill is created:
 - the skill's own description (SKILL.md or equivalent) is the authoritative source of trigger patterns; the ledger entry SHOULD summarize them, not duplicate them in detail.
 
 This requirement applies to all future skills regardless of domain.
+
+---
+
+## 9.3 Resolve referenced normative content (MUST)
+
+When a workflow skill references normative content in another file (for example rules, models, gates, or definitions) — patterns like `Apply <file> §X`, `Per <file> §Y`, or a foundation-skill mention ("Foundation for …", "layer domain specifics on this skill") — the agent MUST resolve the reference by either activating the referenced base skill or reading the referenced sections into context. Inferred or remembered content does not satisfy this rule; referenced content carries the same binding force as inline rules. If the agent discovers mid-task that a reference was not resolved, it MUST halt the current edit and re-ground from the source before continuing.
+
+Example: `/typo3:static-tests` §4 says "Apply Batch.md §1 Phase 4 …"; Batch.md §5.3 mandates per-item Pass 3 approval, which the static-tests body does not repeat. Either activate `/core:batch` alongside or load the referenced sections before applying any Pass 3 finding.
 
 ---
 
