@@ -137,6 +137,72 @@ check_dependencies() {
 }
 
 # ---------------------------------------------------------------------------
+# Node version advisory (for chrome-devtools-mcp in claude.json.example)
+# ---------------------------------------------------------------------------
+# chrome-devtools-mcp@^1.0.1 engines: ^20.19.0 || ^22.12.0 || >=23.
+# Below NODE_MIN_MAJOR the MCP server fails at startup (JSON-RPC -32000).
+# Advisory only — setup continues regardless.
+NODE_MIN_MAJOR=20
+NODE_INSTALL_MAJOR=22
+
+detect_node_install_hint() {
+    case "$(uname -s)" in
+        Darwin)
+            echo "brew install node@${NODE_INSTALL_MAJOR} && brew link --overwrite node@${NODE_INSTALL_MAJOR}"
+            return 0
+            ;;
+        Linux)
+            [[ -r /etc/os-release ]] || return 1
+            local os_id os_id_like combined
+            os_id=$(grep -E '^ID=' /etc/os-release 2>/dev/null | head -1 | sed 's/^ID=//' | tr -d '"' || true)
+            os_id_like=$(grep -E '^ID_LIKE=' /etc/os-release 2>/dev/null | head -1 | sed 's/^ID_LIKE=//' | tr -d '"' || true)
+            combined=" ${os_id} ${os_id_like} "
+
+            if [[ "$combined" =~ \ (debian|ubuntu)\  ]]; then
+                echo "curl -fsSL https://deb.nodesource.com/setup_${NODE_INSTALL_MAJOR}.x | sudo -E bash - && sudo apt install -y nodejs"
+            elif [[ "$combined" =~ \ (rhel|fedora|centos|rocky|almalinux)\  ]]; then
+                echo "curl -fsSL https://rpm.nodesource.com/setup_${NODE_INSTALL_MAJOR}.x | sudo -E bash - && sudo dnf install -y nodejs"
+            elif [[ "$combined" =~ \ arch\  ]]; then
+                echo "sudo pacman -S nodejs npm"
+            else
+                return 1
+            fi
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+advise_node_version() {
+    local current_version="" current_major=""
+    if command -v node &>/dev/null; then
+        current_version=$(node --version 2>/dev/null | sed 's/^v//' || true)
+        current_major=$(printf '%s' "$current_version" | cut -d. -f1)
+    fi
+
+    if [[ -n "$current_major" && "$current_major" -ge "$NODE_MIN_MAJOR" ]]; then
+        log_verbose "node v${current_version} satisfies chrome-devtools-mcp (>=v${NODE_MIN_MAJOR})"
+        return 0
+    fi
+
+    if [[ -z "$current_major" ]]; then
+        log_warn "node is not installed. chrome-devtools-mcp (in claude.json.example) needs Node >=v${NODE_MIN_MAJOR}."
+    else
+        log_warn "node v${current_version} is too old for chrome-devtools-mcp (needs Node >=v${NODE_MIN_MAJOR}); the MCP server will fail at startup until Node is upgraded."
+    fi
+    log_warn "Informational only — setup will continue."
+
+    local hint=""
+    if hint=$(detect_node_install_hint); then
+        log_warn "Suggested upgrade to Node ${NODE_INSTALL_MAJOR} LTS (detected from your OS):"
+        log_warn "  ${hint}"
+    else
+        log_warn "Install Node ${NODE_INSTALL_MAJOR} LTS via your package manager."
+    fi
+}
+
+# ---------------------------------------------------------------------------
 # Mode detection
 # ---------------------------------------------------------------------------
 detect_mode() {
@@ -582,6 +648,7 @@ run_update() {
 main() {
     parse_args "$@"
     check_dependencies
+    advise_node_version
     detect_mode
 
     case "$MODE" in
