@@ -15,6 +15,25 @@ This is a paste-into-Claude companion to the rule-set [README](https://bitbucket
 
 > Note: there is no Bitbucket MCP. For Bitbucket PR/API work, create an API token and store it in your machine-local `~/.claude/CLAUDE.local.md` (gitignored). Then Claude can hit the REST API directly via Bash.
 
+### Suggested Plugins (Claude-official)
+
+Not required by the rule-set, but these are the Anthropic-curated plugins the guide creator runs day-to-day. Install via `/plugin install <name>@<marketplace>` or `/plugin > Discover`.
+
+From the `claude-code-plugins` marketplace (Anthropic upstream, `anthropics/claude-code`):
+
+- [ ] **pr-review-toolkit** — comprehensive multi-aspect PR review (specialist agents: comment-analyzer, pr-test-analyzer, silent-failure-hunter, type-design-analyzer, code-reviewer, code-simplifier). Host-agnostic — the PR-review tool to use on Bitbucket. See Team Tips below.
+- [ ] **plugin-dev** — building or auditing Claude Code plugins themselves (commands, agents, skills, hooks, MCP integration, plugin structure). Reach for it when authoring or refining the team's own `core/` and `typo3/` plugins under `~/.claude/plugins/marketplaces/local/`.
+- [ ] **frontend-design** — generates distinctive, production-grade frontend code (components, pages, apps); explicitly avoids the generic-AI look. Use when building a frontend, not just patching existing code.
+- [ ] **security-guidance** — hook-based reminder that flags potential security issues (command injection, XSS, unsafe patterns) while you're editing files. Passive guard, no invocation needed.
+- [ ] **ralph-wiggum** — start/cancel an iterative "Ralph Wiggum loop" (`/ralph-wiggum:ralph-loop`) — a self-pacing repeated prompt for long-running work the agent should drive in passes.
+
+From the `claude-plugins-official` marketplace (Anthropic curated directory, `anthropics/claude-plugins-official`):
+
+- [ ] **claude-md-management** — audit and improve `CLAUDE.md` files (`/claude-md-management:claude-md-improver` to scan and grade them; `/claude-md-management:revise-claude-md` to update with session learnings). Useful for keeping per-project `CLAUDE.md` aligned with the rule-set as projects evolve.
+- [ ] **claude-code-setup** — analyzes a codebase and recommends Claude Code automations (hooks, agents, skills, plugins, MCP servers) it would benefit from. Use when onboarding a new customer project.
+- [ ] **hookify** — create hooks that prevent unwanted agent behaviors (`/hookify:hookify` from conversation analysis or explicit instructions; `/hookify:list`, `/hookify:configure`). Useful when you keep correcting the agent on the same thing.
+- [ ] **php-lsp** — Intelephense PHP language server integration; provides code intelligence and diagnostics for `.php` files. Requires `npm install -g intelephense` on the host. Directly relevant to the TYPO3 work.
+
 ## Team Tips
 
 (Inferred from the rule-set — flag anything wrong or missing.)
