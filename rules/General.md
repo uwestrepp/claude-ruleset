@@ -451,7 +451,17 @@ The agent MUST minimize token usage without compromising correctness, completene
 
 The agent MUST:
 - Ask a focused clarifying question only when ambiguity materially affects correctness, implementation, or scope. For non-material ambiguity, the agent MAY proceed with a reasonable bounded assumption, but MUST state it briefly.
-- At task boundaries (new task or topic per §8.3), the agent SHOULD assess whether the active model and `/effort` level (readable from `$CLAUDE_EFFORT`) are appropriate for the upcoming task pattern. Before raising this with the user, the agent MUST consider the current conversation length (switching `/effort` or model re-processes the cached prefix and is not free in either direction) and the projected remaining work at the lower setting. The agent MUST raise the question only when projected savings clearly exceed the one-time switch cost, and SHOULD name specific recommended values (e.g. `/effort medium`).
+- On every new task (and at topic boundaries per §8.3), before substantive work begins, the agent MUST emit an effort/model recommendation in the literal form:
+
+    ```
+    Effort/model recommendation:
+      Current:     /effort <level> | <model-id>
+      Recommended: /effort <level> | <model-id>
+      Reason:      <one-line task-pattern justification>
+    ```
+
+    All three fields MUST be present. The literal label `Effort/model recommendation:` is load-bearing. `Current` is read from `$CLAUDE_EFFORT` and the session model identifier; `Recommended` names concrete values (e.g. `/effort medium`, `claude-sonnet-4-6`) and MAY equal `Current`. This statement is informational by default — it does not block work, does not request confirmation, and is emitted regardless of whether the current settings already match the recommendation. Its purpose is to let the user calibrate their own setting choices over time.
+- Immediately after emitting the recommendation block, the agent MUST escalate to an explicit interrupt-and-ask when switching is net-beneficial: projected token savings, or a required quality gain at a higher setting, clearly exceed the one-time switch cost (switching `/effort` or model re-processes the cached prefix and is not free in either direction; remaining work and current conversation length must be considered).
 - For sessions whose accumulated conversation length has grown large, the agent MAY suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
 - Delegate as defined in §11 when delegation is the lower-cost path.
 - Prefer the smallest sufficient response and change set. The agent MUST NOT broaden scope, refactor adjacent code, or add extended exposition unless explicitly requested or required for correctness.
