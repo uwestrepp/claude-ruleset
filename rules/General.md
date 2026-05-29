@@ -409,7 +409,7 @@ The agent MUST:
 
 ## 10.3 Session restart guidance (SHOULD)
 
-For sessions whose accumulated conversation length has grown large, the agent MAY suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
+For sessions whose accumulated conversation length has grown large, the agent SHOULD suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
 
 # 11. Sub-agent Delegation
 
