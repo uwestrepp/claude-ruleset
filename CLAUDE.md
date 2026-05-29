@@ -18,6 +18,9 @@
   * rules/PER.md (path-gated: `**/*.php`)
     * Description: Normative PER/PSR coding-style rules for PHP, including the agent's operating-mode block (generation vs legacy review, PHP 7.4 baseline, explicit 8.0/8.1/8.2/8.4 feature flagging).
     * When to use: Creating/editing/reviewing PHP code.
+  * rules/Twig.md (path-gated: `**/*.twig`)
+    * Description: Normative rules for Twig template authoring, anchored on the bash/target-format-`#`-vs-Twig-`{# #}` comment trap when rendering to non-Twig consumers (`.env`, `.conf`, `.ini`, YAML, SQL, ...) and a deletion-over-shelving preference for dead Twig.
+    * When to use: Creating/editing/reviewing `.twig` templates.
 * **Exports** — `./exports/` holds condensed or adapted versions of this repo's rule-set for use in external agents or harnesses. Files under `./exports/` are NOT loaded by this harness. When editing files under `./rules/`, check `./exports/` for any condensed version that needs corresponding sync in the same change-set. See `./exports/README.md`.
 * **Core skills** — auto-activate on prompt relevance, or invoke explicitly:
   * `/core:commits` (`~/.claude/plugins/marketplaces/local/plugins/core/skills/commits/`)
