@@ -14,8 +14,6 @@ This document defines always-on meta-rules for:
 
 Normative keywords are defined in `General.md`.
 
----
-
 # 1. Meta Checkpoints
 
 ## 1.1 Combined checkpoint mechanism (MUST)
@@ -43,8 +41,6 @@ At each major milestone, the agent MUST provide one explicit checkpoint result w
 At task end, the agent MUST always provide one explicit batched checkpoint result with both lines.
 
 When a checkpoint involves reviewing multiple files, inspecting rule-set coverage, or drafting substantive proposals, the agent SHOULD delegate to the `checkpoint` sub-agent per `General.md` §11.1 rather than performing the review inline. Inline checkpoint is acceptable only when the result is a brief no-op (no new knowledge persistence, no rule improvements).
-
----
 
 # 2. Knowledge Persistence
 
@@ -142,8 +138,6 @@ For the legacy `.aiassistant/state/workflow-triage/` location: keep only durable
 Projects SHOULD add `.aiassistant/scratch/**` to `.gitignore`.
 
 If retention value is unclear, ask the user before committing artifact files.
-
----
 
 # 3. Rule-Set Governance
 

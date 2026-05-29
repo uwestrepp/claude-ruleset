@@ -20,8 +20,6 @@ are NOT already covered by model defaults (which already enforce: intent-reveali
 names, small focused functions, SRP, DRY/KISS/YAGNI, limit parameters, law of
 demeter, tests must be readable, etc.).
 
----
-
 # Operating Modes (extends `General.md` §4.6)
 
 Per `General.md` §4.6 (generation / legacy-review / uncertainty). Clean-code specifics:
@@ -29,8 +27,6 @@ Per `General.md` §4.6 (generation / legacy-review / uncertainty). Clean-code sp
 - **Generation:** prefer clarity over cleverness and explicitness over implicit behavior. Non-compliance with a MUST rule below is an error.
 - **Legacy review:** identify deviations from this spec and suggest minimal, safe refactorings (do not auto-modify — `General.md` §4.6).
 - **Uncertainty:** avoid assumptions about business intent; do not introduce new architectural patterns without confirmation (`General.md` §3.3).
-
----
 
 # Project-Opinion Rules
 
@@ -111,8 +107,6 @@ Bad:
 // increment i
 $i++;
 ```
-
----
 
 # Meta Rule
 

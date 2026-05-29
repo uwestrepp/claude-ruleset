@@ -16,8 +16,6 @@ Applies when working on TYPO3 projects, extensions, or migrations.
 This policy describes general TYPO3 operating behavior. Structured execution workflows are
 provided as explicit skills — see §9 for the skill registry and invocation gate.
 
----
-
 ## 1. Operating modes
 
 Operating-mode baseline (generation / legacy-review / uncertainty) is `General.md` §4.6. TYPO3-specific extensions:
@@ -32,12 +30,8 @@ When generating new code for a TYPO3 project, the agent MUST:
 
 If the target TYPO3 version is unknown, the agent MUST ask before implementing anything non-trivial.
 
----
-
 ### 1.2 Legacy code review mode (MUST)
 Per `General.md` §4.6 (propose, don't auto-modify, confirm first). TYPO3 specifics: identify usage of APIs listed as *deprecated* or *breaking* for the project’s current/target TYPO3 version, propose a refactoring or migration path, and MUST NOT apply large migrations automatically.
-
----
 
 ### 1.3 Autonomous upgrade execution mode (MUST)
 
@@ -50,8 +44,6 @@ The agent MUST still pause and ask if:
 - credentials, infrastructure state, or external systems are missing/unclear.
 - an issue is outside approved extension scope.
 
----
-
 ## 2. Version & constraint verification (MUST)
 
 Per `General.md` §2.1 (verify versions/toolchain before changes). In TYPO3 terms, verify:
@@ -63,8 +55,6 @@ Per `General.md` §2.1 (verify versions/toolchain before changes). In TYPO3 term
 
 If any of these are unknown, the agent MUST ask.
 
----
-
 ## 2.1 Upgrade documentation synchronization (MUST)
 
 If the task is an update/upgrade and project-level or extension-level update documentation exists
@@ -74,16 +64,12 @@ and one-time upgrade actions introduced by the change.
 
 If no documentation update is needed, the agent SHOULD state that explicitly.
 
----
-
 ## 3. Double-checking & scope control (MUST)
 
 Per `General.md` §3.1/§3.2 (surrounding-code and cross-file dependency awareness), §4.1 (re-read before modify), and §4.3 (preserve public contracts). TYPO3-specific search surfaces:
 
 - other usages of the modified code path: references, DI wiring, TSConfig/TypoScript, Fluid templates,
 - public extension API exposure (BC risk).
-
----
 
 ## 4. Deprecations handling (MUST)
 
@@ -100,8 +86,6 @@ The agent SHOULD propose a staged migration plan if deprecations are numerous:
 2) upgrade to next major,
 3) repeat.
 
----
-
 ## 5. Breaking changes handling (MUST)
 
 If an item is a breaking change for the target version:
@@ -112,8 +96,6 @@ If an item is a breaking change for the target version:
     - where it is used in the project,
     - the minimal safe adaptation,
     - how to validate correctness.
-
----
 
 ## 6. Verification requirements (MUST)
 
@@ -135,8 +117,6 @@ For upgrade-related changes, the agent SHOULD recommend:
 - checking system status reports,
 - clearing caches appropriately.
 
----
-
 ## 6.1 Upgrade completion criteria (MUST)
 
 The agent MUST treat an extension upgrade as complete only when all of the following are addressed:
@@ -147,8 +127,6 @@ The agent MUST treat an extension upgrade as complete only when all of the follo
 - update/migration documentation synchronized (`UPDATE*.md`, extension README migration notes, or equivalent).
 - unresolved items captured explicitly as backlog with rationale and required follow-up.
 
----
-
 ## 7. Output format expectations (SHOULD)
 
 When reporting findings, the agent SHOULD output:
@@ -158,8 +136,6 @@ When reporting findings, the agent SHOULD output:
     - Deprecations to resolve
     - Breaking changes to handle
 - Suggested order of work (staged upgrades)
-
----
 
 ## 8. Practical migration patterns (SHOULD)
 
@@ -193,7 +169,5 @@ When updating, cleaning up, or migrating a TYPO3 installation, and a clean migra
   - avoid direct index access on keys not guaranteed to exist (emits PHP 8.0+ "Undefined array key" warnings from `symfony/expression-language/Node/GetAttrNode.php`); applies to `page`, `tree`, `site`, `siteLanguage`, `applicationContext`, `request`, custom arrays
   - use `traverse(<array>, "<key>")` — returns `null` for missing keys, accepts dotted paths for nested access (`traverse(page, "tx_foo.bar")`), registered in `\TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\DefaultFunctionsProvider`, documented safe accessor in TYPO3 12+
   - example: `[page["is_siteroot"] != 1]` → `[traverse(page, "is_siteroot") != 1]`; semantically equivalent for absence-as-not-equal comparisons (no separate behavior confirmation needed)
-
----
 
 End of policy.

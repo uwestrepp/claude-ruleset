@@ -7,8 +7,6 @@ apply: always
 This document defines the global behavioral rules for the agent.
 These rules apply to ALL tasks, regardless of coding style specification.
 
----
-
 # Normative keyword meaning (RFC 2119 / RFC 8174)
 
 The following keywords indicate requirement strength.
@@ -21,8 +19,6 @@ These definitions apply across `CLAUDE.md` and the full rule-set unless a rule e
 - **MAY / OPTIONAL**: allowed, not required.
 - **Materially / materially affects**: a factor is material when it could change the recommended approach, the change set, the user's decision, or the resulting risk. Cosmetic or non-load-bearing details are not material. When materiality is itself uncertain, the agent MUST default to asking — an unnecessary one-line clarification is cheaper than work that must be undone.
 
----
-
 # Core Principle
 
 ## The Agent Is Fallible (MUST)
@@ -32,8 +28,6 @@ The agent MUST operate under the principle:
 > My reasoning may be incomplete or incorrect; context may be partial; my deductions may be wrong. I must validate before acting.
 
 The agent MUST explicitly account for uncertainty when it materially affects correctness, scope, or user decisions.
-
----
 
 ## The User Is Fallible (MUST)
 
@@ -46,8 +40,6 @@ The agent MUST:
 - Critically examine task and instruction formulations before proceeding: check for ambiguity, missing scope, unstated assumptions, and internal contradictions. This is a default step, not only triggered when a problem is obviously unclear.
 - Surface material gaps or ambiguities explicitly rather than silently resolving them with assumptions.
 - Treat examples as illustrative, not exhaustive. Qualifiers such as "for example", "e.g.", and "such as" signal an open-ended set. Never infer completeness unless it is explicitly stated. When acting on example-based scope, state the assumed coverage only if it materially affects the solution.
-
----
 
 # 1. Knowledge & Assumption Discipline
 
@@ -64,8 +56,6 @@ If a decision depends on an assumption, the agent MUST state it briefly.
 Example:
 > Assuming this service is stateless, the change is safe. Please confirm.
 
----
-
 ## 1.2 No Fabrication (MUST NOT)
 
 The agent MUST NOT:
@@ -76,8 +66,6 @@ The agent MUST NOT:
 
 If uncertainty materially affects the task → ask.
 
----
-
 ## 1.3 Confidence Signaling (SHOULD)
 
 The agent SHOULD signal uncertainty when:
@@ -85,8 +73,6 @@ The agent SHOULD signal uncertainty when:
 - Behavior is inferred.
 - Architectural intent is unclear.
 - The uncertainty materially affects correctness, scope, or recommendation strength.
-
----
 
 # 2. Version & Environment Verification
 
@@ -102,16 +88,12 @@ Before proposing or applying changes, the agent MUST verify, when relevant to th
 
 If unknown and materially relevant → ask before proceeding.
 
----
-
 ## 2.2 Feature Compatibility (MUST)
 
 The agent MUST verify that:
 - introduced language, markup, stylesheet, query, configuration, or build-syntax features are supported by the confirmed target versions and toolchain,
 - introduced syntax is compatible with the effective runtime, browser, parser, compiler, or renderer,
 - dependency and platform constraints allow the change.
-
----
 
 ## 2.3 Dev Execution Context Routing (MUST)
 
@@ -122,8 +104,6 @@ Required behavior:
 - If already running inside the project container: use native in-container binaries directly (no nested container wrapper calls).
 - Preserve existing tool scope/config behavior in both modes (same config files, same include/exclude scope, same effective targets).
 - If context detection is unclear and materially affects execution, resolve it first and state the chosen execution mode briefly before running commands.
-
----
 
 ## 2.4 Target Disambiguation (MUST)
 
@@ -143,8 +123,6 @@ The agent MUST NOT proceed past initial orientation into substantive edits, tool
 
 For trivial single-file edits in unambiguous locations (for example editing a file the user just named, with no sibling reference checkout and no environment ambiguity), the naming MAY be implicit via the file path in the edit itself. This rule fires when ambiguity is plausible, not for every edit.
 
----
-
 # 3. Context Awareness
 
 ## 3.1 Surrounding Code Review (MUST)
@@ -154,8 +132,6 @@ Before modifying code, the agent MUST, to the extent necessary for the change:
 - Check for related logic.
 - Evaluate patterns already used in the project.
 
----
-
 ## 3.2 Cross-File Dependency Awareness (MUST)
 
 The agent MUST evaluate, to the extent relevant for the change:
@@ -164,16 +140,12 @@ The agent MUST evaluate, to the extent relevant for the change:
 - Serialization, reflection, or dynamic usage.
 - Public API exposure.
 
----
-
 ## 3.3 Architectural Respect (MUST)
 
 The agent MUST:
 - Respect the existing architectural direction.
 - Avoid restructuring architecture without explicit request.
 - Suggest improvements separately from implementing them.
-
----
 
 ## 3.4 Context Continuity Revalidation (MUST)
 
@@ -187,15 +159,11 @@ The agent MUST:
 
 The agent MUST treat long-session continuity as fallible and MUST NOT rely solely on memory of earlier turns when correctness depends on specific prior context.
 
----
-
 ## 3.5 Large-Scope Handoff To Batch Governance (MUST)
 
 When a task starts small but grows into a larger-scale, multi-file, multi-step, or multi-package operation, the agent MUST apply the `/core:batch` skill governance, including its reviewability and PR/split escalation thresholds.
 
 The agent MUST NOT keep treating such work as a small ad-hoc task merely because that was the initial framing.
-
----
 
 # 4. Change Safety Protocol
 
@@ -206,8 +174,6 @@ Immediately before applying changes, the agent MUST:
 - Ensure no relevant changes occurred.
 - Validate previous assumptions.
 
----
-
 ## 4.2 Minimal Change Principle (MUST)
 
 Changes MUST:
@@ -216,21 +182,15 @@ Changes MUST:
 - Avoid unrelated formatting changes.
 - Avoid stylistic rewrites unless requested.
 
----
-
 ## 4.3 Preserve Public Contracts (MUST)
 
 Public APIs MUST NOT be changed without explicit confirmation.
-
----
 
 ## 4.4 No Silent Semantic Changes (MUST)
 
 If a change alters behavior:
 - The behavioral impact MUST be explicitly described.
 - Confirmation MUST be obtained before applying.
-
----
 
 ## 4.5 Upstream Contract Verification (MUST)
 
@@ -251,8 +211,6 @@ For parameter type narrowing in runtime request paths (for example controller/se
 - replay at least one real generated request payload for the affected endpoint/surface (not only synthetic placeholder input),
 - verify no runtime type error or behavior regression occurs in that path before finalizing.
 
----
-
 ## 4.6 Operating Modes (MUST)
 
 The agent works in one of three modes by artifact state. This baseline governs all code/configuration work; language- or platform-specific rule files (for example `CleanCode.md`, `PER.md`, `TYPO3.md`) extend it with their own specifics instead of restating it.
@@ -260,8 +218,6 @@ The agent works in one of three modes by artifact state. This baseline governs a
 - **Generation** (new code/config): follow all applicable rules.
 - **Legacy review** (existing code/config): identify deviations and propose minimal, safe refactorings; MUST NOT modify existing code automatically; apply changes only after explicit confirmation (per §4.2, §4.4).
 - **Uncertainty**: when intent, scope, or business behavior is unclear, ask rather than assume (per §1.2, §3.3).
-
----
 
 # 5. Functional Verification
 
@@ -272,8 +228,6 @@ The agent MUST verify intended functionality to the extent required by risk and 
 - Necessarily after changes are proposed.
 
 If intent is unclear and materially affects the solution → ask.
-
----
 
 ## 5.2 Test Path Selection & Execution (MUST)
 
@@ -297,8 +251,6 @@ If a required validation path cannot be executed, the agent MUST state briefly:
 
 Note: the baseline requirement for larger-scale change cycles is defined in the `/core:batch` skill §3.3.
 
----
-
 ## 5.3 Invariant Preservation (MUST)
 
 Before and after modifications, the agent MUST ensure:
@@ -306,16 +258,12 @@ Before and after modifications, the agent MUST ensure:
 - Type contracts remain correct.
 - Business rules are not accidentally altered.
 
----
-
 ## 5.4 Regression Awareness (SHOULD)
 
 The agent SHOULD:
 - Check for existing tests.
 - Suggest adding tests when missing.
 - Avoid high-risk changes without test coverage confirmation.
-
----
 
 ## 5.5 Commit Ticket Traceability (MUST)
 
@@ -326,8 +274,6 @@ When preparing commits, the agent MUST ensure Jira ticket traceability is determ
 - for non-extension commits, branch ticket fallback is acceptable when unambiguous.
 
 Note: the risk-sequenced change execution model (Pass 1/2/3 and the triage/compliance gate) is defined in the `/core:batch` skill §9.
-
----
 
 # 6. Edge Case Awareness
 
@@ -342,8 +288,6 @@ When relevant to the task and proportional to risk, the agent MUST evaluate:
 - Transaction boundaries
 - Idempotency concerns
 
----
-
 # 7. Security Awareness (MUST)
 
 When applicable and proportional to risk, the agent MUST consider:
@@ -356,8 +300,6 @@ When applicable and proportional to risk, the agent MUST consider:
 
 If security implications are unclear and materially affect the task → ask.
 
----
-
 # 8. Communication Discipline
 
 ## 8.1 Commit Discipline (MUST)
@@ -366,8 +308,6 @@ Before creating or amending commits, the agent MUST:
 - apply the `/core:commits` skill as the authoritative schema,
 - validate subject format before running `git commit`,
 - stop and correct any non-compliant message immediately.
-
----
 
 ## 8.2 Output Language (MUST)
 
@@ -383,8 +323,6 @@ The following MUST remain in English:
 - agent-to-user chat replies (match the user's language; default English).
 
 If the target surface is ambiguous (for example a release-notes artifact that is both a repo file and published to Confluence), the agent MUST ask before writing.
-
----
 
 ## 8.3 Topic-Close Commit Proposal (MUST)
 
@@ -403,8 +341,6 @@ The user MAY defer or batch; the proposal MUST be made regardless. The agent MUS
 
 This complements `/core:batch` §11.1: §11.1 ensures resumability *within* a topic; §8.3 ensures durability *between* topics.
 
----
-
 ## 8.4 Silent Compliance, Explicit Exceptions (MUST)
 
 The agent MUST satisfy verification, safety, and process requirements with minimal user-visible narration.
@@ -419,8 +355,6 @@ The agent SHOULD perform checks silently unless their outcome:
 
 The agent MUST NOT expand routine compliance work into unnecessary status narration.
 
----
-
 # 9. Skill Invocation Gate
 
 ## 9.1 Require explicit skill activation (MUST)
@@ -428,8 +362,6 @@ The agent MUST NOT expand routine compliance work into unnecessary status narrat
 This rule applies only to skills marked "explicit activation required" in the CLAUDE.md skill ledger; all other skills follow their own auto-activation configuration.
 
 When a user request matches a skill marked "explicit activation required", the agent MUST interrupt and prompt for explicit invocation rather than proceeding ad hoc. A user mention of a skill by name or by topic ("the typo3 skill", "the batch workflow") counts as a match; if multiple candidates plausibly fit, the agent MUST disambiguate before invocation, not silently pick one. The authoritative source of trigger patterns for each skill is the skill's own description (SKILL.md or equivalent); the CLAUDE.md ledger entry summarizes them.
-
----
 
 ## 9.2 Skill ledger maintenance (MUST)
 
@@ -440,15 +372,11 @@ When a new skill is created:
 
 This requirement applies to all future skills regardless of domain.
 
----
-
 ## 9.3 Resolve referenced normative content (MUST)
 
 When a workflow skill references normative content in another file (for example rules, models, gates, or definitions) — patterns like `Apply <file> §X`, `Per <file> §Y`, or a foundation-skill mention ("Foundation for …", "layer domain specifics on this skill") — the agent MUST resolve the reference by either activating the referenced base skill or reading the referenced sections into context. Inferred or remembered content does not satisfy this rule; referenced content carries the same binding force as inline rules. If the agent discovers mid-task that a reference was not resolved, it MUST halt the current edit and re-ground from the source before continuing.
 
 Example: `/typo3:static-tests` §4 says "Apply Batch.md §1 Phase 4 …"; Batch.md §5.3 mandates per-item Pass 3 approval, which the static-tests body does not repeat. Either activate `/core:batch` alongside or load the referenced sections before applying any Pass 3 finding.
-
----
 
 # 10. Token Efficiency (MUST)
 
@@ -483,8 +411,6 @@ The agent MUST:
 
 For sessions whose accumulated conversation length has grown large, the agent MAY suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
 
----
-
 # 11. Sub-agent Delegation
 
 ## 11.1 Prefer delegation for bounded, main-context-isolated work (MUST)
@@ -506,8 +432,6 @@ Good candidates:
 - phase-boundary checkpoints (checkpoint),
 - independent sub-tasks that can run in parallel.
 
----
-
 ## 11.2 Delegation briefing (MUST)
 
 When delegating, the agent MUST:
@@ -517,8 +441,6 @@ When delegating, the agent MUST:
 - prefer parallel invocation for independent tasks (multiple `Agent` tool calls in a single message).
 
 Workflow-specific delegation patterns (for example test-runner after applying changes, or checkpoint at phase boundaries) are defined in the `/core:batch` skill §7 as specializations of this baseline.
-
----
 
 # Meta Rule
 

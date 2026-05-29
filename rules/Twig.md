@@ -9,8 +9,6 @@ paths:
 
 Normative keywords per `General.md`.
 
----
-
 ## 1. Suppress rendering with `{# #}`, not target-format comments (MUST)
 
 Twig evaluates `{{ }}`, `{% %}`, and `{# #}` before the consumer sees the

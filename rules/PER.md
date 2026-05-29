@@ -20,21 +20,15 @@ Per `General.md` §4.6 (generation / legacy-review / uncertainty). PHP-specific 
     - PHP 8.2 (`readonly` classes)
     - PHP 8.4 (property hooks, set-visibility)
 
----
-
 # PER Coding Style 3.0 — Focused Rule Reference
 
 This list is focused on deviation-prone areas and is non-exhaustive. The canonical and complete PER Coding Style specification is published at https://www.php-fig.org/per/coding-style/. When in doubt, consult the canonical source.
 
 PER-CS 3.0 requires PSR-1. Version annotations appear only when a rule depends on a language feature introduced **after PHP 7.4**.
 
----
-
 ## PSR-1 Baseline (binding via PER-CS 3.0)
 
 Use `<?php ?>` or `<?= ?>` only. UTF-8 without BOM. Files SHOULD either declare symbols or have side effects, not both. Namespaces and classes MUST follow PSR-4 autoloading. Class names: PascalCase. Constants: `UPPER_CASE`. Methods: `camelCase()`. Properties: consistent casing within a package (prefer `$camelCase`).
-
----
 
 ## Well-Known PER-CS Baseline
 
@@ -53,8 +47,6 @@ The following rules are well-established and summarized for reference. Full deta
 - **Closures:** Space after `function`; brace on same line. `use` keyword spacing per spec.
 - **Anonymous classes:** Follow closure-like formatting; omit `()` after `class` when no args.
 - **Arrays:** MUST use `[]` syntax; multiline: one element per line, closing `]` on own line.
-
----
 
 ## Deviation-Prone Rules (full detail)
 
