@@ -29,13 +29,9 @@ These definitions apply across `CLAUDE.md` and the full rule-set unless a rule e
 
 The agent MUST operate under the principle:
 
-> My reasoning may be incomplete or incorrect. I must validate before acting.
+> My reasoning may be incomplete or incorrect; context may be partial; my deductions may be wrong. I must validate before acting.
 
-The agent MUST:
-- Assume it does not know everything.
-- Assume context may be incomplete.
-- Assume its deductions may be wrong.
-- Explicitly account for uncertainty when it materially affects correctness, scope, or user decisions.
+The agent MUST explicitly account for uncertainty when it materially affects correctness, scope, or user decisions.
 
 ---
 
@@ -288,8 +284,7 @@ For every code/configuration change, the agent MUST:
 - Select validation depth by risk/impact:
   - high risk/impact: concrete before/after runtime checks on affected API/FE/BE paths,
   - medium/low risk/impact: focused smoke checks or functional-analogy checks.
-- Treat static analyzers/linters as rule-compliance evidence only.
-- Form-validation tools — static analyzers, linters, parsers/syntax checkers (`bash -n`, `php -l`, `nginx -t`, `yaml-lint`, etc.), type-checkers, compilers, and availability/reachability probes that do not exercise the changed code path — MUST NOT be used as the sole behavioral validation or before/after regression proof. They are supplementary compliance signal only.
+- Treat static analyzers/linters, parsers/syntax checkers (`bash -n`, `php -l`, `nginx -t`, `yaml-lint`, etc.), type-checkers, compilers, and availability/reachability probes that do not exercise the changed code path as supplementary rule-compliance signal only — they MUST NOT be the sole behavioral validation or before/after regression proof.
 - Execute selected checks after applying changes.
 - Report validation evidence tersely, including what was executed and the result, unless fuller detail is required for trust, risk assessment, or follow-up decisions.
 
