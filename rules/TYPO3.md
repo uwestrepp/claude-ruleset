@@ -14,7 +14,7 @@ paths:
 Applies when working on TYPO3 projects, extensions, or migrations.
 
 This policy describes general TYPO3 operating behavior. Structured execution workflows are
-provided as explicit skills — see §9 for the skill registry and invocation gate.
+provided as explicit skills — see the `CLAUDE.md` skill ledger (registry) and `General.md` §9 (invocation gate).
 
 ## 1. Operating modes
 
@@ -35,7 +35,7 @@ Per `General.md` §4.6 (propose, don't auto-modify, confirm first). TYPO3 specif
 
 ### 1.3 Autonomous upgrade execution mode (MUST)
 
-For batch workflow tasks, determine the appropriate workflow skill according to §9. If the correct skill is not clear from the task description, ask the user before proceeding. Present the selected skill to the user and wait for explicit confirmation before activating it. Do NOT proceed with any skill activation until the user has explicitly confirmed. The autonomous execution protocol is defined in the `/core:batch` skill §5 and the activated skill.
+For batch workflow tasks, determine the appropriate workflow skill from the `CLAUDE.md` skill ledger, observing the `General.md` §9 invocation gate. If the correct skill is not clear from the task description, ask the user before proceeding. Present the selected skill to the user and wait for explicit confirmation before activating it. Do NOT proceed with any skill activation until the user has explicitly confirmed. The autonomous execution protocol is defined in the `/core:batch` skill §5 and the activated skill.
 
 The agent MUST still pause and ask if:
 
