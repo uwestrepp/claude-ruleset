@@ -5,26 +5,20 @@ paths:
    - "**/*.php"
 ---
 
-# PER Coding Style 3.0 Context for PHP Coding Agent (PHP >= 7.4)
+# PER Coding Style 3.0 Context for PHP Coding Agent (PHP 7.4+ style baseline)
 
-## Operating mode for this agent (how to apply these rules)
-1) **When generating or editing new code:**
-    - Always follow the rules in this document.
-    - If a rule depends on a PHP language feature, only apply it when that feature exists in the target PHP version(s). (This org baseline is **PHP >= 7.4**.)
-    - Prefer `declare(strict_types=1)` unless the project explicitly disallows it.
+## Operating mode (extends `General.md` §4.6)
 
-2) **When reviewing existing/legacy code:**
-    - If you see deviations, **recommend a refactoring** aligned with these rules.
-    - **Do not change legacy code automatically**. Propose the change and wait for explicit confirmation before modifying.
-    - General.md §4.2 (minimal change) and §4.4 (no silent semantic changes) govern scope; in particular, naming-convention changes are PSR-4-relevant and MUST NOT be applied silently.
+Per `General.md` §4.6 (generation / legacy-review / uncertainty). PHP-specific additions:
 
-3) **Uncertainty handling:**
-    - If the project's PHP version range is unknown, assume **PHP 7.4+** as the minimum.
-    - Flag usage of features that require:
-        - PHP 8.0 (union types, attributes, `match`, named arguments)
-        - PHP 8.1 (enums, `readonly` properties, intersection types)
-        - PHP 8.2 (`readonly` classes)
-        - PHP 8.4 (property hooks, set-visibility)
+- **Generation:** prefer `declare(strict_types=1)` unless the project explicitly disallows it; apply a version-dependent rule only when the **verified** target PHP version supports it.
+- **Legacy review:** naming-convention changes are PSR-4-relevant and MUST NOT be applied silently (`General.md` §4.2, §4.4).
+- **Uncertainty:** the agent MUST verify the target PHP version — **never assume one** (`General.md` §2.1; ask if it is unknown and materially affects the change). Once known, avoid/flag features above the target:
+    - below 7.4 (still in use on older projects): also avoid 7.4-only features — typed properties, arrow functions, `??=`, covariant returns, array spread, numeric literal separators
+    - PHP 8.0 (union types, attributes, `match`, named arguments)
+    - PHP 8.1 (enums, `readonly` properties, intersection types)
+    - PHP 8.2 (`readonly` classes)
+    - PHP 8.4 (property hooks, set-visibility)
 
 ---
 

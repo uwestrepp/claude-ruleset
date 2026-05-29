@@ -257,6 +257,16 @@ For parameter type narrowing in runtime request paths (for example controller/se
 
 ---
 
+## 4.6 Operating Modes (MUST)
+
+The agent works in one of three modes by artifact state. This baseline governs all code/configuration work; language- or platform-specific rule files (for example `CleanCode.md`, `PER.md`, `TYPO3.md`) extend it with their own specifics instead of restating it.
+
+- **Generation** (new code/config): follow all applicable rules.
+- **Legacy review** (existing code/config): identify deviations and propose minimal, safe refactorings; MUST NOT modify existing code automatically; apply changes only after explicit confirmation (per §4.2, §4.4).
+- **Uncertainty**: when intent, scope, or business behavior is unclear, ask rather than assume (per §1.2, §3.3).
+
+---
+
 # 5. Functional Verification
 
 ## 5.1 Intent Verification (MUST)
@@ -449,8 +459,19 @@ Example: `/typo3:static-tests` §4 says "Apply Batch.md §1 Phase 4 …"; Batch.
 
 The agent MUST minimize token usage without compromising correctness, completeness, or user intent.
 
+## 10.1 General guidance (MUST)
+
 The agent MUST:
 - Ask a focused clarifying question only when ambiguity materially affects correctness, implementation, or scope. For non-material ambiguity, the agent MAY proceed with a reasonable bounded assumption, but MUST state it briefly.
+- Delegate as defined in §11 when delegation is the lower-cost path.
+- Prefer the smallest sufficient response and change set. The agent MUST NOT broaden scope, refactor adjacent code, or add extended exposition unless explicitly requested or required for correctness.
+- Keep outputs brief, direct, and task-focused. The agent MUST NOT restate the user's request, narrate obvious steps, or provide unnecessary detail.
+- Avoid unnecessary repetition. The agent MUST NOT re-read, re-process, or re-analyze content unless required by another rule or necessary for correctness, freshness, or precise execution. Mandatory verification and revalidation steps such as §4.1 remain unaffected.
+- The agent SHOULD prefer targeted and bounded actions over broad exploration.
+- Pause and confirm instead of continuing speculatively when the task expands beyond the stated scope or depends on a material unverified assumption.
+
+## 10.2 Model and effort suggestion surfacing (MUST)
+
 - On every new task (and at topic boundaries per §8.3), before substantive work begins, the agent MUST emit an effort/model recommendation in the literal form:
 
     ```
@@ -460,15 +481,12 @@ The agent MUST:
       Reason:      <one-line task-pattern justification>
     ```
 
-    All three fields MUST be present. The literal label `Effort/model recommendation:` is load-bearing. `Current` is read from `$CLAUDE_EFFORT` and the session model identifier; `Recommended` names concrete values (e.g. `/effort medium`, `claude-sonnet-4-6`) and MAY equal `Current`. This statement is informational by default — it does not block work, does not request confirmation, and is emitted regardless of whether the current settings already match the recommendation. Its purpose is to let the user calibrate their own setting choices over time.
+  All three fields MUST be present. The literal label `Effort/model recommendation:` is load-bearing. `Current` is read from `$CLAUDE_EFFORT` and the session model identifier; `Recommended` names concrete values (e.g. `/effort medium`, `claude-sonnet-4-6`) and MAY equal `Current`. This statement is informational by default — it does not block work, does not request confirmation, and is emitted regardless of whether the current settings already match the recommendation. Its purpose is to let the user calibrate their own setting choices over time. When `Recommended` equals `Current`, the agent MAY emit a condensed single-line form — `Effort/model recommendation: keep /effort <level> | <model-id> — <reason>` — instead of the full block; the literal label MUST be preserved.
 - Immediately after emitting the recommendation block, the agent MUST escalate to an explicit interrupt-and-ask when switching is net-beneficial: projected token savings, or a required quality gain at a higher setting, clearly exceed the one-time switch cost (switching `/effort` or model re-processes the cached prefix and is not free in either direction; remaining work and current conversation length must be considered).
-- For sessions whose accumulated conversation length has grown large, the agent MAY suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
-- Delegate as defined in §11 when delegation is the lower-cost path.
-- Prefer the smallest sufficient response and change set. The agent MUST NOT broaden scope, refactor adjacent code, or add extended exposition unless explicitly requested or required for correctness.
-- Keep outputs brief, direct, and task-focused. The agent MUST NOT restate the user's request, narrate obvious steps, or provide unnecessary detail.
-- Avoid unnecessary repetition. The agent MUST NOT re-read, re-process, or re-analyze content unless required by another rule or necessary for correctness, freshness, or precise execution. Mandatory verification and revalidation steps such as §4.1 remain unaffected.
-- The agent SHOULD prefer targeted and bounded actions over broad exploration.
-- Pause and confirm instead of continuing speculatively when the task expands beyond the stated scope or depends on a material unverified assumption.
+
+## 10.3 Session restart guidance (SHOULD)
+
+For sessions whose accumulated conversation length has grown large, the agent MAY suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
 
 ---
 

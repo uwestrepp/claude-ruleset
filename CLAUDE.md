@@ -12,11 +12,11 @@
   * @rules/Persona.md `[CRITICAL]`
     * Description: Additive persona layer that complements the normative rule-set with a verification-first engineering stance: explicit handling of facts vs. assumptions, real-target confirmation, minimal scoped edits, execution-path validation, and clear risk communication.
     * When to use: Always as behavioral framing alongside the authoritative rule-set; re-read on every context revalidation event (General.md §3.4).
-  * @rules/CleanCode.md
-    * Description: Project-specific clean-code opinions not already enforced by model defaults (searchable names / magic-number constants, flag-argument avoidance, command–query separation, no public mutable state, error-handling style, comment policy). Operating-mode split between code generation and legacy review.
-    * When to use: Always for code generation/review; ask before auto-refactoring legacy code.
+  * rules/CleanCode.md (path-gated: code files)
+    * Description: Project-specific clean-code opinions not already enforced by model defaults (searchable names / magic-number constants, flag-argument avoidance, command–query separation, no public mutable state, error-handling style, comment policy). Operating-mode tri-state is the `General.md` §4.6 baseline; this file adds only its clean-code generation/review specifics.
+    * When to use: Code generation/review; ask before auto-refactoring legacy code.
   * rules/PER.md (path-gated: `**/*.php`)
-    * Description: Normative PER/PSR coding-style rules for PHP, including the agent's operating-mode block (generation vs legacy review, PHP 7.4 baseline, explicit 8.0/8.1/8.2/8.4 feature flagging).
+    * Description: Normative PER/PSR coding-style rules for PHP. Operating modes extend the `General.md` §4.6 baseline with PHP specifics (PHP 7.4 baseline, `strict_types`, explicit 8.0/8.1/8.2/8.4 feature flagging).
     * When to use: Creating/editing/reviewing PHP code.
   * rules/Twig.md (path-gated: `**/*.twig`)
     * Description: Normative rules for Twig template authoring, anchored on the bash/target-format-`#`-vs-Twig-`{# #}` comment trap when rendering to non-Twig consumers (`.env`, `.conf`, `.ini`, YAML, SQL, ...) and a deletion-over-shelving preference for dead Twig.

@@ -1,5 +1,16 @@
 ---
-apply: always
+apply: by model decision
+instructions: Apply only when generating or reviewing code.
+paths:
+   - "**/*.php"
+   - "**/*.js"
+   - "**/*.ts"
+   - "**/*.{jsx,tsx,vue}"
+   - "**/*.{css,scss}"
+   - "**/*.sql"
+   - "**/*.py"
+   - "**/*.go"
+   - "**/*.{rb,java,sh}"
 ---
 
 # Clean Code – Project-Specific Overrides
@@ -11,32 +22,13 @@ demeter, tests must be readable, etc.).
 
 ---
 
-# Operating Modes
+# Operating Modes (extends `General.md` §4.6)
 
-## 1. Code Generation Mode
+Per `General.md` §4.6 (generation / legacy-review / uncertainty). Clean-code specifics:
 
-When creating new code:
-
-- Comply with the rules below.
-- Prefer clarity over cleverness.
-- Prefer explicitness over implicit behavior.
-
-Non-compliance with a MUST rule is considered an error.
-
-## 2. Legacy Code Review Mode
-
-When analyzing existing code:
-
-- Identify deviations from this spec.
-- Suggest minimal, safe refactorings.
-- DO NOT automatically modify legacy code.
-- Ask for confirmation before structural or behavioral changes.
-
-## 3. When in Doubt
-
-- Ask clarifying questions.
-- Avoid assumptions about business intent.
-- Avoid introducing new architectural patterns without confirmation.
+- **Generation:** prefer clarity over cleverness and explicitness over implicit behavior. Non-compliance with a MUST rule below is an error.
+- **Legacy review:** identify deviations from this spec and suggest minimal, safe refactorings (do not auto-modify — `General.md` §4.6).
+- **Uncertainty:** avoid assumptions about business intent; do not introduce new architectural patterns without confirmation (`General.md` §3.3).
 
 ---
 
@@ -129,4 +121,4 @@ Clean Code means:
 - Easy to understand.
 - Easy to change safely.
 
-If code is difficult to understand, the agent MUST prioritize clarity improvements.
+If code is difficult to understand, the agent MUST prioritize clarity: apply the improvement in code it is generating, and propose it (no silent rewrites) for existing code — per `General.md` §4.6.

@@ -20,6 +20,8 @@ provided as explicit skills — see §9 for the skill registry and invocation ga
 
 ## 1. Operating modes
 
+Operating-mode baseline (generation / legacy-review / uncertainty) is `General.md` §4.6. TYPO3-specific extensions:
+
 ### 1.1 Code generation mode (MUST)
 When generating new code for a TYPO3 project, the agent MUST:
 
@@ -33,12 +35,7 @@ If the target TYPO3 version is unknown, the agent MUST ask before implementing a
 ---
 
 ### 1.2 Legacy code review mode (MUST)
-When reviewing existing TYPO3 code, the agent MUST:
-
-- Identify usage of APIs listed as *deprecated* or *breaking* for the project’s current/target TYPO3 version.
-- Propose a refactoring or migration path.
-- **MUST NOT** apply large migrations automatically.
-- Only apply changes after explicit confirmation.
+Per `General.md` §4.6 (propose, don't auto-modify, confirm first). TYPO3 specifics: identify usage of APIs listed as *deprecated* or *breaking* for the project’s current/target TYPO3 version, propose a refactoring or migration path, and MUST NOT apply large migrations automatically.
 
 ---
 
@@ -57,7 +54,7 @@ The agent MUST still pause and ask if:
 
 ## 2. Version & constraint verification (MUST)
 
-Before proposing changes, the agent MUST verify:
+Per `General.md` §2.1 (verify versions/toolchain before changes). In TYPO3 terms, verify:
 
 - TYPO3 core version (exact major/minor, preferably patch line too).
 - PHP version.
@@ -81,11 +78,10 @@ If no documentation update is needed, the agent SHOULD state that explicitly.
 
 ## 3. Double-checking & scope control (MUST)
 
-Before changing code, the agent MUST:
+Per `General.md` §3.1/§3.2 (surrounding-code and cross-file dependency awareness), §4.1 (re-read before modify), and §4.3 (preserve public contracts). TYPO3-specific search surfaces:
 
-- Search for other usages of the modified code path (references, DI wiring, TSConfig/TypoScript, Fluid templates).
-- Check if code is part of a public extension API (BC risk).
-- Re-read the exact files to be modified right before applying changes.
+- other usages of the modified code path: references, DI wiring, TSConfig/TypoScript, Fluid templates,
+- public extension API exposure (BC risk).
 
 ---
 
@@ -170,29 +166,29 @@ When reporting findings, the agent SHOULD output:
 When updating, cleaning up, or migrating a TYPO3 installation, and a clean migration path exists, prefer these replacements:
 
 - **Extbase request mutation**:
-  - avoid legacy :php:`$this->request->setArgument(...)`
-  - use immutable :php:`$this->request = $this->request->withArgument(...)`
+  - avoid legacy `$this->request->setArgument(...)`
+  - use immutable `$this->request = $this->request->withArgument(...)`
 - **Extbase response mutation**:
   - avoid mutable response APIs (`setHeader()`, `setStatus()`, `setContent()`, direct send/shutdown handling)
-  - return PSR-7 responses and use :php:`withHeader()`, :php:`withStatus()` and body streams
-  - use ActionController helpers :php:`htmlResponse()` / :php:`jsonResponse()` where possible
+  - return PSR-7 responses and use `withHeader()`, `withStatus()` and body streams
+  - use ActionController helpers `htmlResponse()` / `jsonResponse()` where possible
 - **URL/env access in runtime code**:
-  - avoid introducing new usages of :php:`GeneralUtility::getIndpEnv()` for request data
-  - prefer the current PSR-7 request (`ServerRequestInterface`) and read values from :php:`$request->getUri()`, :php:`$request->getQueryParams()`, :php:`$request->getParsedBody()`
+  - avoid introducing new usages of `GeneralUtility::getIndpEnv()` for request data
+  - prefer the current PSR-7 request (`ServerRequestInterface`) and read values from `$request->getUri()`, `$request->getQueryParams()`, `$request->getParsedBody()`
 - **Runtime superglobals in TYPO3 code**:
-  - avoid introducing or keeping runtime reads from :php:`$_SERVER`, :php:`$_GET`, :php:`$_POST`, :php:`$_REQUEST`, or :php:`$GLOBALS['TYPO3_REQUEST']` when a request object is available
-  - in Extbase controllers, prefer :php:`$this->request->getHeaderLine()`, :php:`$this->request->getQueryParams()`, and argument APIs (`hasArgument()/getArgument()`) as appropriate
-  - keep :php:`$GLOBALS` usage only where TYPO3 bootstrap/config APIs require it (for example `TCA`, `TYPO3_CONF_VARS`) and document retained usages in upgrade notes
+  - avoid introducing or keeping runtime reads from `$_SERVER`, `$_GET`, `$_POST`, `$_REQUEST`, or `$GLOBALS['TYPO3_REQUEST']` when a request object is available
+  - in Extbase controllers, prefer `$this->request->getHeaderLine()`, `$this->request->getQueryParams()`, and argument APIs (`hasArgument()/getArgument()`) as appropriate
+  - keep `$GLOBALS` usage only where TYPO3 bootstrap/config APIs require it (for example `TCA`, `TYPO3_CONF_VARS`) and document retained usages in upgrade notes
 - **Legacy service framework**:
-  - keeping compatibility wrappers for :php:`AbstractService` / Service API usage is acceptable if required by dependent extensions
+  - keeping compatibility wrappers for `AbstractService` / Service API usage is acceptable if required by dependent extensions
   - still migrate deprecated/removed core calls inside those wrappers
 - **Service instantiation in upgrade scope**:
-  - do not introduce or keep fallback patterns based on :php:`GeneralUtility::makeInstanceService()`
+  - do not introduce or keep fallback patterns based on `GeneralUtility::makeInstanceService()`
   - prefer constructor or container-based DI for controllers, services, and ViewHelpers where supported
 - **`GeneralUtility::makeInstance()` typing in legacy-compatible code**:
-  - keep or add inline :php:`@var` type hints directly above assignments from :php:`GeneralUtility::makeInstance(...)`
+  - keep or add inline `@var` type hints directly above assignments from `GeneralUtility::makeInstance(...)`
   - if correcting such annotations, ensure the annotated variable name matches the assigned variable exactly
-  - when directly calling a method on a value returned from :php:`GeneralUtility::makeInstance(...)`, prefer :php:`?->` over :php:`->` unless non-nullability is already proven locally and the direct call form is required
+  - when directly calling a method on a value returned from `GeneralUtility::makeInstance(...)`, prefer `?->` over `->` unless non-nullability is already proven locally and the direct call form is required
 - **TypoScript / TSconfig condition array access** (Symfony ExpressionLanguage in `Page.typoscript`, `User.typoscript`, TypoScript condition blocks):
   - avoid direct index access on keys not guaranteed to exist (emits PHP 8.0+ "Undefined array key" warnings from `symfony/expression-language/Node/GetAttrNode.php`); applies to `page`, `tree`, `site`, `siteLanguage`, `applicationContext`, `request`, custom arrays
   - use `traverse(<array>, "<key>")` — returns `null` for missing keys, accepts dotted paths for nested access (`traverse(page, "tx_foo.bar")`), registered in `\TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\DefaultFunctionsProvider`, documented safe accessor in TYPO3 12+
