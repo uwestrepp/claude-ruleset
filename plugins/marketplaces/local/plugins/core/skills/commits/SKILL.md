@@ -196,7 +196,9 @@ Before running any `git commit`, the agent MUST execute this checklist:
    - if one or more criteria match: include concise body sections
 10. For TYPO3 upgrade/migration scoped commits: confirm `TYPO3.md` §6.1 completion criteria are all addressed. Criterion 4 (UPDATE*.md synchronized) MUST be explicitly marked as complete or confirmed not applicable with a short rationale before the final commit in the cycle.
 11. For nested repositories, run `git commit` in the affected nested repository context.
-12. Only then run `git commit`.
+12. **Verify staged scope before committing.** Run `git diff --cached --name-only` and confirm ONLY the intended files are listed. IDEs and other tooling commonly auto-stage newly-added/untracked files into the index, and a bare `git commit` records the *entire* index — so any stray here is swept into the commit. Unstage strays before continuing: `git restore --staged <paths>`.
+13. **Commit the verified index:** run `git commit` (`git -C <repo> commit` for nested repos). Do NOT use `git commit -a`. Use `git commit -- <paths>` ONLY when you deliberately want those paths' *working-tree* content regardless of the index — it commits the working-tree version of the named paths, not their staged snapshot, so anything a formatter or post-edit hook changed after staging gets included.
+14. **Post-commit scope check:** run `git show HEAD --name-only` and confirm only the intended files are present. If a stray slipped in, `git reset --soft HEAD~1`, unstage it (`git restore --staged <paths>`), and recommit.
 
 If validation fails at any step:
 
