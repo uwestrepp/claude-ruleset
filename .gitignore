@@ -3,6 +3,7 @@
 history.jsonl
 settings.json
 settings.local.json
+remote-settings.json
 .claude.zip
 
 # User-specific and runtime data
@@ -13,6 +14,7 @@ downloads/
 file-history/
 ide/
 .last-cleanup
+.last-update-result.json
 mcp-needs-auth-cache.json
 memory/
 paste-cache/
@@ -23,6 +25,7 @@ plugins/marketplaces/*
 !plugins/marketplaces/local/
 policy-limits.json
 projects/
+security/
 sessions/
 shell-snapshots/
 stats-cache.json
