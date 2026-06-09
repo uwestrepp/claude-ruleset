@@ -405,11 +405,15 @@ The agent MUST:
     ```
 
   In the full block, all three fields MUST be present. The literal label `Effort/model recommendation:` is load-bearing. `Current` is read from `$CLAUDE_EFFORT` and the session model identifier; `Recommended` names concrete values (e.g. `/effort medium`, `claude-sonnet-4-6`) and MAY equal `Current`. This statement is informational by default — it does not block work, does not request confirmation, and is emitted regardless of whether the current settings already match the recommendation. Its purpose is to let the user calibrate their own setting choices over time. When `Recommended` equals `Current`, the agent MAY emit a condensed single-line form — `Effort/model recommendation: keep /effort <level> | <model-id> — <reason>` — instead of the full block; the literal label MUST be preserved.
-- Immediately after emitting the recommendation block, the agent MUST escalate to an explicit interrupt-and-ask when switching is net-beneficial: projected token savings, or a required quality gain at a higher setting, clearly exceed the one-time switch cost (switching `/effort` or model re-processes the cached prefix and is not free in either direction; remaining work and current conversation length must be considered).
+- Immediately after emitting the block, the agent MUST apply the escalation test explicitly and interrupt-and-ask when it passes; it MUST NOT silently conclude "not net-beneficial" to avoid interrupting (switching `/effort` or model re-processes the cached prefix and is not free in either direction). The test:
+  - **At task start / new session** (negligible cached prefix to re-process): switch cost is near-zero, so any material mismatch between `Current` and `Recommended` passes — the agent MUST interrupt and ask before substantive work. Non-discretionary.
+  - **Mid-task or at a topic boundary**: interrupt when EITHER
+    - (a) an in-place switch's projected token savings or required quality gain clearly exceed the cost of re-processing the accumulated cached prefix (longer conversation → higher switch cost → higher bar), OR
+    - (b) the upcoming work is a distinguishable new task/step AND a handover (durable memory, brain-dump, or doc-file) is feasible — then recommend a fresh session started at the right setting per §10.3, since the restart resets the cached prefix and the in-place switch cost no longer applies.
 
 ## 10.3 Session restart guidance (SHOULD)
 
-For sessions whose accumulated conversation length has grown large, the agent SHOULD suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings exceed the relevant restart cost. This is a suggestion, never a unilateral action.
+For sessions whose accumulated conversation length has grown large, the agent SHOULD suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings, or a better-fitting effort/model setting for the next step per §10.2, exceed the relevant restart cost. This is a suggestion, never a unilateral action.
 
 # 11. Sub-agent Delegation
 
