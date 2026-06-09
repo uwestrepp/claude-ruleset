@@ -40,3 +40,5 @@ When connected to atlassian mcp:
 - **MUST** use cloudId = "https://mosaiq.atlassian.net" (do NOT call getAccessibleAtlassianResources)
 - **MUST** use `maxResults: 10` or `limit: 10` for ALL Jira JQL and Confluence CQL search operations.
 - **MUST** paginate JQL/CQL queries until the end of result set (or until user asks for a sample only).
+- **MUST** restrict every Jira comment to internal visibility: pass `commentVisibility: {type: "role", value: "Users"}` on all comment-creating or -updating calls (the same tool updates when given a `commentId`; an edit that omits the param can re-expose a previously restricted comment). If the "Users" role is unavailable in a project, stop and ask instead of posting unrestricted.
+  - Failure signal: a posted comment showing `jsdPublic: true` is customer-visible (appears on JSM projects; absent elsewhere) — flag it for manual restriction immediately.
