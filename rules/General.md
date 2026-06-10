@@ -275,6 +275,16 @@ When preparing commits, the agent MUST ensure Jira ticket traceability is determ
 
 Note: the risk-sequenced change execution model (Pass 1/2/3 and the triage/compliance gate) is defined in the `/core:batch` skill §9.
 
+## 5.6 Verification Command Integrity (MUST)
+
+When a command's output is used as evidence for a binary fact (exists / is tracked / is applied / matches / is empty), the agent MUST construct the check so that a *false* fact yields a visibly negative or non-zero result. The agent MUST NOT use command shapes whose success branch emits the positive signal regardless of the actual result.
+
+- Anti-pattern: `git ls-files <path> | head -1 && echo "TRACKED"` — `head` exits `0` even on empty input, so `&& echo` fires unconditionally and falsely reports a positive. (`... | tail -1 && echo`, `... | wc -l && echo`, and similar pipelines terminating in a filter that exits `0` on empty input — `head`/`tail`/`cat`/`sort` — share the trap; so does any command like `git ls-files` that does not signal absence via exit code. By contrast `grep -q ... && echo` is safe: grep exits non-zero on no match, so it correctly distinguishes the negative case.)
+- Instead assert on an explicit count or value that distinguishes the negative case: e.g. `test "$(git ls-files <path> | wc -l)" -gt 0`, or print the count/value and read it directly rather than inferring it from a downstream command's exit status.
+- This applies to any evidence-bearing check (existence, tracking, patch/lock application, version match, emptiness), not only to checks tied to a code change.
+
+If a verification result later proves wrong, the agent MUST re-run a corrected check before continuing to rely on the fact (per §4.1).
+
 # 6. Edge Case Awareness
 
 When relevant to the task and proportional to risk, the agent MUST evaluate:
