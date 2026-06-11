@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# pre-commit — mq.agent-ruleset integrity checks.
+# Verifies cross-file §-references and skill-ledger completeness before each
+# commit. Bypass for a single commit: SKIP_REF_LINT=1 git commit ...
+exec "$(git rev-parse --show-toplevel)/bin/lint-section-refs.sh"
