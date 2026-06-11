@@ -113,6 +113,16 @@ Then:
   security fixes. If the headline update pulls a transitive security bump, the rollout MUST use `-W`
   (`/core:composer`).
 - **Flag security-relevant transitions** (advisory references, `composer audit` if available).
+- **Flag floating dev/branch-constrained packages (ecosystem-independent trap).** A package
+  constrained `@dev`/`dev-*`/branch-alias whose lock currently pins a *non-default* branch is
+  recomputed by **any** `composer update` — even a single-package, no-`-W` one — to the repo's
+  default branch, so the dry-run shows it "upgrading" (e.g. `dev-feature/x → dev-main`). This is a
+  lock-recomputation side-effect, **not** an upstream-content change, and it most often hits a
+  project's own first-party packages. Surface every such transition explicitly and confirm intent
+  before rollout: a feature-branch pin may be deliberate local-dev state that must be preserved (and
+  must NOT be committed as `dev-main`). Re-scoping the update does not avoid it; only an explicit
+  branch pin or a deliberate decision does. (Verified on the rbk run: three `@dev` first-party
+  packages floated to `dev-main` even on a flagless single-package update.)
 - This per-package transition list defines the scope of Phases 4–5. A package whose version does
   not move is out of scope.
 

@@ -34,6 +34,17 @@ TYPO3 core is a **GitHub monorepo** → file- and method-precise diffs are avail
 3. **Security advisories** — TYPO3 publishes `TYPO3-CORE-SA-*` advisories; cross-reference the
    `[SECURITY]` commit subjects.
 
+**Satellite packages are NOT in the `TYPO3/typo3` monorepo.** Several `typo3/*` packages live in
+their own repos and ship their own security releases — notably `typo3/html-sanitizer`
+(`github.com/TYPO3/html-sanitizer`, namespace `TYPO3\HtmlSanitizer\`), `typo3/phar-stream-wrapper`
+(`TYPO3\PharStreamWrapper\`), and `typo3/cms-composer-installers`. For these, the compare URL is the
+satellite repo (`…/repos/TYPO3/<repo>/compare/<BASE>...<TARGET>`), and their changed classes are
+under their own namespace root, **not** `TYPO3\CMS\`. A patch-line `composer update` frequently moves
+a satellite (e.g. `html-sanitizer` 2.3.1→2.3.2 is a `[SECURITY]` bump) *without* moving
+`typo3/cms-core` at all — build a separate change-map per satellite and intersect against its own
+namespace. (Verified: the rbk run found `html-sanitizer` 2.3.2 as the only security mover while core
+was already current.)
+
 **FQCN derivation** (path → namespace), the key to intersecting with project `use` statements:
 `typo3/sysext/<ext>/Classes/<Path>.php` → `TYPO3\CMS\<StudlyExt>\<Path-with-\\>`. Map the sysext key
 to its namespace segment (`core`→`Core`, `backend`→`Backend`, `extbase`→`Extbase`,
