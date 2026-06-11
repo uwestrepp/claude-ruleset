@@ -60,6 +60,7 @@ For grouped Pass 1/Pass 2 batches, validation may be concatenated when items sha
   - step 1 (project type): verify `composer.json` references `typo3/cms-core` or equivalent.
   - step 3 (required commands): verify `ddev typo3 list` is callable.
 - check git branch and local status.
+- record the confirmed comparison base branch in `.aiassistant/state/base-branch` if not yet present (activates the global base-branch guard hook for this project).
 - verify extension is active (if runtime checks are required).
 - verify composer constraints relevant to extension and TYPO3 core.
 
