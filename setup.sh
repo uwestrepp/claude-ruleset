@@ -332,12 +332,33 @@ git_pull() {
     fi
 
     log_info "Pulling latest changes..."
+    local old_head
+    old_head=$(git -C "$TARGET_DIR" rev-parse HEAD 2>/dev/null || echo "")
     if git -C "$TARGET_DIR" pull --ff-only; then
         step_done "Pulled latest changes"
+        show_ruleset_changes "$old_head"
     else
         log_error "git pull --ff-only failed. Resolve conflicts manually, then re-run."
         step_failed "git pull"
         return 1
+    fi
+}
+
+# After an update pull, surface what changed in the rule-relevant paths so
+# colleagues see which rules/skills/hooks they just received (the commit
+# subjects follow the [TYPE] AGENT (scope) schema and read as a changelog).
+show_ruleset_changes() {
+    local old_head="$1" new_head changes
+    [[ -z "$old_head" ]] && return 0
+    new_head=$(git -C "$TARGET_DIR" rev-parse HEAD 2>/dev/null || echo "")
+    [[ -z "$new_head" || "$old_head" == "$new_head" ]] && return 0
+    changes=$(git -C "$TARGET_DIR" log --oneline --no-decorate "$old_head..$new_head" -- \
+        CLAUDE.md rules/ plugins/marketplaces/local/ agents/ hooks/ exports/ bin/ 2>/dev/null)
+    if [[ -n "$changes" ]]; then
+        log_info "Rule-set changes since your last update:"
+        printf '%s\n' "$changes" | sed 's/^/    /'
+    else
+        log_info "No rule-relevant changes in this update."
     fi
 }
 
