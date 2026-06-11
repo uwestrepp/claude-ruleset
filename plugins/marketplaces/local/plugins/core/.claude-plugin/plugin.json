@@ -1,5 +1,6 @@
 {
   "name": "core",
-  "description": "Generic workflow skills: batch governance (/core:batch), commit discipline (/core:commits), composer wiring (/core:composer), informed gated composer updates (/core:composer-update), git-hooks install (/core:githooks-install), verbalized-sampling brainstorming (/core:brainstorm), adversarial plan elicitation (/core:grill-me)",
+  "version": "1.0.0",
+  "description": "Generic workflow skills: batch governance (/core:batch), commit discipline (/core:commits), composer wiring (/core:composer), informed gated composer updates (/core:composer-update), git-hooks install (/core:githooks-install), verbalized-sampling brainstorming (/core:brainstorm), adversarial plan elicitation (/core:grill-me), rule-set feedback loop (/core:rule-friction)",
   "author": { "name": "MOSAIQ GmbH" }
 }
