@@ -26,7 +26,7 @@ Meta checkpoint:
   Rule-set:  <improvement proposals | "no meaningful improvement identified">
 ```
 
-Both lines MUST be present. Collapsing both aspects into a single combined statement (for example "Meta checkpoint: no findings") is NOT sufficient — each aspect must be explicitly addressed in its own line.
+Both aspects MUST be addressed. When BOTH aspects are no-op, a condensed single-line form MAY replace the block — `Meta checkpoint: Knowledge: none | Rule-set: none` — each aspect still named explicitly. A combined statement that does not name both aspects (for example "Meta checkpoint: no findings") is NOT sufficient. Whenever either aspect has substantive content, the full two-line block MUST be used.
 
 Workflow-specific rules MAY concretize these checkpoint triggers into named phase boundaries; when such concretization exists, the phase-level triggers supplement — but do not replace — the baseline triggers defined here.
 
