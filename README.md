@@ -14,23 +14,34 @@ rules/
   Persona.md                  Verification-first behavioral framing [CRITICAL]
   CleanCode.md                Clean code principles
   PER.md                      PHP PER-CS 3.0 coding style + application policy (path-gated: **/*.php)
-  TYPO3.md                    TYPO3 upgrade impact policy (path-gated)
+  TYPO3.md                    TYPO3 operating policy + extension version layering (path-gated)
+  Twig.md                     Twig authoring rules (path-gated: **/*.twig)
 agents/
   checkpoint.md               Knowledge persistence agent
   contract-researcher.md      Upstream contract verification agent
   test-runner.md              Test execution agent
-hooks/
-  validate-commit-message.sh  PreToolUse hook: enforces /core:commits subject format
+hooks/                        Claude-side PreToolUse guards
+  validate-commit-message.sh  Enforces /core:commits subject format (~/work repos)
+  block-forbidden-stages.sh   Soft-blocks commits touching denylisted paths
+  guard-destructive-commands.sh  Tiered guard for destructive shell/git commands
+  guard-base-branch.sh        Catches comparisons against the wrong base branch
+bin/
+  lint-section-refs.sh        Cross-reference + skill-ledger linter (this repo)
+  rule-friction-report.sh     Usage-data facet aggregation for /core:rule-friction
+.githooks/
+  pre-commit                  Runs the section-ref linter (activate: git config core.hooksPath .githooks)
 plugins/
   known_marketplaces.json     Marketplace registry (managed by CLI)
   marketplaces/
     local/                    Local MOSAIQ marketplace
       plugins/
-        core/                 Generic workflow and config skills (batch, commits, composer, githooks-install)
+        core/                 Generic workflow skills (batch, commits, composer, composer-update,
+                              githooks-install, brainstorm, grill-me, rule-friction)
         typo3/                TYPO3 workflow skills (upgrade, scanner, static-tests, upgrade-full)
+exports/                      Condensed rule-set variants for external agents/harnesses
 settings.json.example         Template for ~/.claude/settings.json
 claude.json.example           Template for MCP server entries in ~/.claude.json
-setup.sh                      Automated install/update script
+setup.sh                      Automated install/update script (shows rule-set changelog on update)
 ```
 
 ---
