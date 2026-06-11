@@ -10,7 +10,7 @@ allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 Project-agnostic rules that apply when editing Composer configuration, running
 `composer …`, or wiring a local path package. Normative keywords per `General.md`.
 Domain-specific adaptations (for example TYPO3's `extra.version` layering) live in
-the corresponding domain rule file (e.g. `TYPO3.md`; its `extra.version` section is not yet written — see audit backlog).
+the corresponding domain rule file (e.g. `TYPO3.md` §9 for extension version layering: composer.json vs `ext_emconf.php` vs git tag).
 
 ---
 
