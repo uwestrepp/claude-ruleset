@@ -1,18 +1,33 @@
 #!/usr/bin/env bash
-# Claude Code PreToolUse hook: validates commit message format against Commits.md schema.
-# Called with tool_input JSON on stdin. Exits 0 (allow) or 2 (block with reason).
+# Claude Code PreToolUse hook: validates commit message format against the
+# /core:commits schema. Exits 0 (allow) or 2 (block with reason).
 #
-# Expected input: JSON with "command" field containing the git commit command.
+# SCOPE: enforces only for repositories under ~/work, where real project work
+# lives. Other repos — notably ~/.claude itself, which uses a bare "AGENT"
+# pseudo-ticket convention that does not match the JIRA-123 schema — are
+# intentionally exempt and pass through untouched.
+#
+# Input: PreToolUse JSON on stdin; command at .tool_input.command (.command
+# fallback), working dir at .cwd.
 
 set -euo pipefail
 
 INPUT=$(cat)
-COMMAND=$(echo "$INPUT" | jq -r '.command // empty' 2>/dev/null)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // .command // empty' 2>/dev/null)
 
-# Only check git commit commands
+# Only check git commit commands.
 if [[ -z "$COMMAND" ]] || ! echo "$COMMAND" | grep -qE 'git\s+commit'; then
     exit 0
 fi
+
+# Enforce only within ~/work — resolve the repo root from the tool's cwd.
+CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
+[[ -z "$CWD" ]] && CWD="$PWD"
+REPO_ROOT=$(git -C "$CWD" rev-parse --show-toplevel 2>/dev/null || echo "$CWD")
+case "$REPO_ROOT/" in
+    "$HOME"/work/*) ;;   # under ~/work → enforce
+    *) exit 0 ;;         # elsewhere → exempt
+esac
 
 # Extract the commit message from -m flag or heredoc pattern
 # Pattern 1: git commit -m "message" or git commit -m 'message'
