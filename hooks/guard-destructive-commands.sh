@@ -86,22 +86,41 @@ is_rm_recursive_force() {
     return 1
 }
 
-# True iff every dangerous-looking target is a concrete subpath under /tmp/ —
-# scoped cleanup of test scratch that cannot leak outside /tmp. Deliberately
-# EXCLUDES: bare /tmp, /tmp/* (would wipe other processes' tmp files), any
-# ".." traversal, and any $HOME/~ reference. Used only to suppress the ask tier.
+# True iff the command is a SIMPLE, single rm whose every dangerous-looking
+# target is a concrete literal subpath under a SYSTEM temp root (/tmp or
+# /var/tmp) — scoped scratch cleanup that cannot leak outside those roots. Used
+# only to suppress the ask tier.
+#
+# Hardened against confirmation-prompt bypass — a token that looks like a temp
+# path to us but chains/expands to a non-temp action at shell runtime, e.g.
+# `rm -rf /tmp/x;reboot`, `rm -rf /tmp/x && curl e|sh`, or brace expansion
+# `rm -rf /tmp/{x,/etc}`. It refuses to suppress the prompt whenever the command
+# contains ANY shell control operator, expansion, brace, backslash, newline,
+# $HOME/~ reference, or `..`; and each target must match a strict,
+# metacharacter-free charset (no globs).
+#
+# The temp roots are ANCHORED at the start of the token (^/tmp/ , ^/var/tmp/),
+# so a project-relative path like a Symfony app's `var/tmp` (absolute form
+# /srv/app/var/tmp, or relative `var/tmp`) does NOT match and still prompts.
+# Bare roots and dot-only leaves (/tmp/. , /var/tmp/..) are rejected.
 safe_tmp_only() {
+    # Shell metacharacters / chaining / expansion / braces → can't reason → ask.
+    local META='[{}$;&|()<>`]'
+    [[ "$COMMAND" =~ $META ]] && return 1
+    [[ "$COMMAND" == *'\'* ]] && return 1     # backslash
+    [[ "$COMMAND" == *$'\n'* ]] && return 1   # newline / multiple lines
     echo "$SCAN" | grep -qE '(~|\$HOME|\$\{HOME\}|\.\.)' && return 1
+
     local tokens tok
     # Danger tokens: absolute paths (start with /) or anything containing a glob.
     tokens=$(echo "$SCAN" | tr ' \t' '\n' | grep -E '(^/|\*)' || true)
     [[ -z "$tokens" ]] && return 1
     while IFS= read -r tok; do
         [[ -z "$tok" ]] && continue
-        case "$tok" in
-            /tmp/[!*]*) ;;     # /tmp/<name>... (first char after /tmp/ not a glob)
-            *) return 1 ;;
-        esac
+        # Strict: a system temp root + one or more safe path chars, no glob.
+        [[ "$tok" =~ ^(/tmp|/var/tmp)/[A-Za-z0-9._/-]+$ ]] || return 1
+        # Reject dot-only leaf (…/. , …/.. , …/./) — resolves to the root itself.
+        [[ "$tok" =~ ^(/tmp|/var/tmp)/[.]+/?$ ]] && return 1
     done <<< "$tokens"
     return 0
 }
@@ -122,7 +141,7 @@ if is_rm_recursive_force; then
             ask "Destructive: recursive-force rm of an absolute path, home subdirectory, or glob. Confirm the exact target before proceeding:
   $COMMAND"
         fi
-        # else: scoped /tmp/... cleanup → allow silently.
+        # else: scoped /tmp or /var/tmp cleanup → allow silently.
     fi
     # Otherwise a scoped relative path (node_modules, build, scratch) → allow.
 fi
