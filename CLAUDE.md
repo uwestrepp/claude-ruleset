@@ -20,6 +20,7 @@
 * **Core workflow skills** — activation policy per entry:
   * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Phase template, Pass 1/2/3 + triage gates, autonomous protocol, chaining. Foundation for the typo3 workflow skills.
   * `/core:composer-update` — explicit activation required. Informed, gated Composer updates for *customized* projects; NOT trivial adds in vanilla projects (`/core:composer`), NOT major-version migrations (`/typo3:upgrade`).
+  * `/core:rule-friction` — explicit activation required. Rule-set feedback loop: aggregate usage-data friction facets (`bin/rule-friction-report.sh`) → classify adherence failure / coverage gap / rule friction → `Meta.md` §3.1 proposals.
 * **TYPO3 projects** — the following rules apply when working on TYPO3-based projects:
   * rules/TYPO3.md (path-gated: `**/packages/**`, `**/ext_{localconf,tables,emconf}.php`, `**/typo3conf/**`, `**/config/sites/**`, `**/*.typoscript`, `**/*.tsconfig`) — TYPO3 operating policy + upgrade-impact behavior; Composer/commits via `/core:*`, workflow-activation via `General.md` §9.
 * **TYPO3 workflow skills** — explicit activation required:
