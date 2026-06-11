@@ -143,16 +143,10 @@ Preferred replacement patterns for update/cleanup/migration work (Extbase reques
 
 ## 9. Composer version layering for extensions (MUST understand before version edits)
 
-A TYPO3 extension can carry version information in several layers; edits that touch only one layer are a classic source of stale or inconsistent releases. The Composer-generic resolution rules are in `/core:composer` §1; TYPO3 specifics:
+An extension's version can live in several layers; bumping only one is the classic source of stale or inconsistent releases. Composer-generic resolution and dev-override hygiene: `/core:composer` §1–§2. TYPO3 specifics:
 
-- **composer.json** — version resolves per `/core:composer` §1.1 (top-level `version` field, git tag, or dev-branch identifier). For local path-repo dev overrides of an extension, a top-level `version` aligned with the planned next release is the usual resolvable source — and MUST NOT leak into release commits (`/core:composer` §1.2/§2).
-- **`extra."typo3/cms".extension-key`** — mandatory mapping of package name → TYPO3 extension key. It carries no version; do not confuse the `extra` block with a version source.
-- **`ext_emconf.php` `version`** — authoritative only for legacy (non-Composer) installations and TER packaging. In Composer mode, TYPO3 (since v11.4, "composer.json is authoritative") resolves the installed extension version from Composer, not from `ext_emconf.php`; v12+ extensions installed via Composer may omit the file entirely.
-- **Git tag** — the canonical release action for registry- and TER-published extensions (TER publishing via `tailor` releases from tags). When `ext_emconf.php` is still present (legacy compatibility, TER), its `version` MUST be aligned with the tag in the same release commit.
-
-Traps:
-- bumping only `ext_emconf.php` in a Composer-mode project changes nothing Composer sees;
-- bumping only a top-level composer.json `version` on a published repo pins downstream resolution to a stale version across later tags (`/core:composer` §1.2);
-- an extension kept legacy-/TER-compatible needs tag + `ext_emconf.php` kept in lockstep — check both before declaring a release done.
+- `extra."typo3/cms".extension-key` maps package name → extension key; it is NOT a version source.
+- `ext_emconf.php` `version` counts only for legacy (non-Composer) installs and TER packaging. Composer-mode TYPO3 (v11.4+) treats composer.json as authoritative — bumping only `ext_emconf.php` there changes nothing Composer sees; v12+ extensions installed via Composer may omit the file.
+- Releases are tagged (`/core:composer` §1.2; TER publishes via `tailor` from tags). When `ext_emconf.php` is present, align its `version` with the tag in the same release commit.
 
 End of policy.
