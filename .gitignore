@@ -1,4 +1,5 @@
 # Sensitive / private Claude Code runtime files
+.bitbucket-api-token
 .credentials.json
 history.jsonl
 settings.json
@@ -35,6 +36,9 @@ todos/
 usage-data/
 
 CLAUDE.local.md
+
+# Agent scratch artifacts (Meta.md §2.4)
+.aiassistant/scratch/
 
 # IDE
 .idea/
