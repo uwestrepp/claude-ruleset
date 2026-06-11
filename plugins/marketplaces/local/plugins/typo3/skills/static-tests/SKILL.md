@@ -12,7 +12,7 @@ It specializes `General.md` section `5.2` and `Batch.md` §1 and must not confli
 
 This workflow is a `Batch.md` workflow whenever the run spans multiple files, multiple tool phases, repeated remediation loops, or an ordered sequence of package/extension scopes. That includes per-package PR verification runs executed one-by-one inside a larger migration or regression cycle.
 
-Non-skippable triage/compliance gates are defined centrally in `General.md` section `5.8.0` and are mandatory for this workflow.
+Non-skippable triage/compliance gates are defined centrally in `Batch.md` §9.1 and are mandatory for this workflow.
 
 ---
 
@@ -103,7 +103,7 @@ For larger-scale static-change cycles, before applying code changes:
   - key FE/BE/API/CLI paths to verify,
   - expected pre-change behavior/result.
 
-This section specializes `General.md` section `5.2.1`.
+This section specializes `Batch.md` §3.3.
 
 At the end of each package/extension pass within a larger cycle, provide the `Batch.md` / `Meta.md` checkpoint line explicitly, even if the result is "no meaningful improvement identified".
 
@@ -111,7 +111,7 @@ At the end of each package/extension pass within a larger cycle, provide the `Ba
 
 ## 4. Triage Model (MUST)
 
-Apply `Batch.md` §1 Phase 4 and `General.md` §5.8 as the canonical pass/gate model.
+Apply `Batch.md` §1 Phase 4 and `Batch.md` §9 as the canonical pass/gate model.
 
 Static-test pass specialization:
 - Pass 1 typically includes safe formatting/mechanical changes and confirmed false-positive handling.
@@ -120,7 +120,7 @@ Static-test pass specialization:
 
 For signature/call-site affecting transformations (for example parameter removal or argument reordering), the agent MUST apply `General.md` section `4.5 Upstream Contract Verification` before making changes.
 
-Pre-apply behavior-risk classification and non-skippable pre-edit triage gates MUST follow the shared rule in `General.md` section `5.8.0`.
+Pre-apply behavior-risk classification and non-skippable pre-edit triage gates MUST follow the shared rule in `Batch.md` §9.1.
 
 ---
 
@@ -151,7 +151,7 @@ Keep logs for iterative process evaluation; prune policy can be decided later.
 After applying changes from static-test findings:
 - re-run impacted static checks in the same ordered sequence for the affected scope (compliance evidence only),
 - execute runtime/functional verification paths selected via `General.md` section `5.2` (risk-based depth is authoritative there),
-- apply validation depth by pass from `General.md` section `5.8.3`.
+- apply validation depth by pass from `Batch.md` §9.4.
 
 Static analyzer/lint output is compliance evidence and MUST NOT replace runtime/behavioral validation (`General.md` section `5.2`).
 

@@ -80,8 +80,8 @@ phases across workflows.
 Produce once for the full chain:
 
 - summary spanning all three workflows,
-- combined compliance checklist per the `/core:batch` skill §9,
-- final `Meta checkpoint:` line per `Meta.md` §2.1.
+- combined compliance checklist per the `/core:batch` skill §9.1,
+- final `Meta checkpoint:` line per `Meta.md` §1.1.
 
 ---
 

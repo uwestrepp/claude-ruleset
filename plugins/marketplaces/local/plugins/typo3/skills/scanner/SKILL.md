@@ -15,7 +15,7 @@ It complements:
 - `TYPO3.md` (TYPO3 migration policy)
 - `/typo3:upgrade` skill (upgrade execution order; activate separately when chaining)
 
-Non-skippable triage/compliance gates are defined centrally in `General.md` section `5.8.0` and are mandatory for this workflow.
+Non-skippable triage/compliance gates are defined centrally in `Batch.md` §9.1 and are mandatory for this workflow.
 
 ---
 
@@ -51,10 +51,10 @@ ddev command stub).
 
 ## 2. Pass Model (MUST)
 
-Use `General.md` section `5.8 Risk-Sequenced Change Execution` as the canonical pass/gate model.
-Pre-apply behavior-risk classification and non-skippable pre-edit triage/compliance gates MUST follow `General.md` section `5.8.0`.
+Use `Batch.md` §9 Risk-Sequenced Change Execution as the canonical pass/gate model.
+Pre-apply behavior-risk classification and non-skippable pre-edit triage/compliance gates MUST follow `Batch.md` §9.1.
 
-Validation selection/depth MUST use `General.md` sections `5.2` and `5.8.3` (identical to upgrade/static workflows).
+Validation selection/depth MUST use `General.md` section `5.2` and `Batch.md` §9.4 (identical to upgrade/static workflows).
 For grouped Pass 1/Pass 2 batches, validation may be concatenated when items share risk profile and impacted surfaces, but coverage mapping per topic MUST be explicit.
 
 If work is large, group by identical issue topic across extensions rather than finishing one extension at a time.
@@ -95,7 +95,7 @@ For signature/call-site affecting updates (for example removed parameters or reo
 
 If a finding requires schema/content migration or can alter FE/BE behavior, defer to Pass 3.
 
-Pass 2 grouped application MUST follow deterministic proof requirements from `General.md` section `5.8.1`.
+Pass 2 grouped application MUST follow deterministic proof requirements from `Batch.md` §9.2.
 
 ---
 
@@ -113,7 +113,7 @@ If risk is unclear, ask before finalizing.
 
 ## 5.1 Medium/High Approval Gate (MUST)
 
-Pass 3 one-by-one approval loop MUST follow `General.md` section `5.8.2`.
+Pass 3 one-by-one approval loop MUST follow `Batch.md` §9.3.
 Scanner-specific minimum packet field:
 - scanner/rule topic identifier MUST be included as the rule/finding id.
 
@@ -144,7 +144,7 @@ Use only with explicit user approval.
 After each pass:
 - rerun scanner summary for scoped extensions (finding status only; not behavior proof)
 - run suitable runtime/test paths per `General.md` section `5.2` (risk-based depth is authoritative there)
-- apply validation depth by pass from `General.md` section `5.8.3`
+- apply validation depth by pass from `Batch.md` §9.4
 - report:
   - what was executed
   - findings reduced/resolved

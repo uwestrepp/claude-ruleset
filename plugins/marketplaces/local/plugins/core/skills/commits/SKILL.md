@@ -133,7 +133,7 @@ Add a body **iff** the change:
 
 Commit-schema enforcement runs at two independent layers:
 
-1. **Claude-side PreToolUse hook** (`~/.claude/hooks/validate-commit-message.sh`, `block-forbidden-stages.sh`) — intercepts `git commit` tool calls from any Claude session before the shell runs them. Global, applies in every project, no per-project setup. Covers: subject-format validation, denylisted path soft-blocking (`settings.local.json`, `.aiassistant/scratch/`, override/secret patterns — see `rules/Meta.md` §1.4).
+1. **Claude-side PreToolUse hook** (`~/.claude/hooks/validate-commit-message.sh`, `block-forbidden-stages.sh`) — intercepts `git commit` tool calls from any Claude session before the shell runs them. Global, applies in every project, no per-project setup. Covers: subject-format validation, denylisted path soft-blocking (`settings.local.json`, `.aiassistant/scratch/`, override/secret patterns — see `rules/Meta.md` §2.4).
 2. **Project-native git hooks** (`<repo>/.githooks/` activated via `core.hooksPath`) — run at the git level regardless of commit source (Claude, IDE, CLI, colleague). Project-specific (ticket map, branch conventions, protected-branch guard). Installed via `/core:githooks-install`.
 
 Neither layer alone is sufficient:

@@ -244,7 +244,7 @@ implementation pass narrowly scoped to one workflow's findings at a time.
 Before starting a chained execution, the agent MUST:
 - declare the chain: list of workflows and their order,
 - confirm the combined scope with the user,
-- apply §4 autonomous mode protocol if applicable.
+- apply §5 autonomous mode protocol if applicable.
 
 ---
 
@@ -252,7 +252,7 @@ Before starting a chained execution, the agent MUST:
 
 When custom agents are available (defined in `~/.claude/agents/` or `.claude/agents/`),
 the main agent MUST/SHOULD delegate as follows. This section specializes the baseline
-delegation policy in `General.md` §10.
+delegation policy in `General.md` §11.
 
 - **`checkpoint` (MUST at phases 2, 5, 9)**: spawn in background at each phase boundary
   to handle `Meta.md §1.1` combined meta checkpoint (knowledge persistence + rule-set
@@ -453,9 +453,9 @@ For cycles expected to span multiple sessions or where phases exceed a single na
 - create the handoff note at Phase 2 (Preflight/Inventory) and update it at each subsequent phase boundary,
 - on continuation (new session or resumed after interruption), read the handoff note as the first orientation step, before `General.md` §3.4 revalidation.
 
-The handoff note MUST NOT be committed (it lives in `.aiassistant/scratch/` per `Meta.md` §1.4) unless the user explicitly requests retention and promotes it to `.aiassistant/state/`.
+The handoff note MUST NOT be committed (it lives in `.aiassistant/scratch/` per `Meta.md` §2.4) unless the user explicitly requests retention and promotes it to `.aiassistant/state/`.
 
 Rationale:
 - Converts session interruption from a recovery event into a bookmark.
-- Leverages the `.aiassistant/scratch/` convention from `Meta.md` §1.4.
+- Leverages the `.aiassistant/scratch/` convention from `Meta.md` §2.4.
 - Compatible with `General.md` §3.4 revalidation on resume and `General.md` §8.3 topic-close commit proposal at topic boundaries.
