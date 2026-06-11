@@ -53,6 +53,9 @@ SCAN=$(printf '%s' "$SCAN" | tr -d "\"'")
 # grep wrapper: matches against the normalized command; -- guards patterns
 # beginning with '-'.
 matches() { echo "$SCAN" | grep -qE -- "$1"; }
+# Case-insensitive variant — only for SQL keywords (shell subcommands are
+# case-sensitive, so the rest use the case-sensitive matcher).
+imatches() { echo "$SCAN" | grep -qiE -- "$1"; }
 
 ask() {
     jq -n --arg reason "$1" '{
@@ -167,6 +170,66 @@ if matches 'git[[:space:]]+clean[[:space:]]' \
    && matches '(-[a-zA-Z]*f|--force)' \
    && matches '(-[a-zA-Z]*[dx]|--directory)'; then
     ask "git clean -f deletes untracked files (and -d/-x untracked dirs/ignored files) irreversibly. Confirm:
+  $COMMAND"
+fi
+
+# Command-position prefix: start, or after a pipe/and/or/semicolon/paren, with an
+# optional sudo/doas. Prevents matching a verb that is merely a plain argument
+# (e.g. `echo reboot`) while still catching `sudo reboot`, `x && reboot`, etc.
+CP='(^|[|&;`(])[[:space:]]*((sudo|doas)[[:space:]]+)?'
+
+# --- bulk deletion via find / xargs -----------------------------------------
+# These indirect the delete verb, so the rm-path guard above never sees them.
+if matches "${CP}find[[:space:]].*-delete([[:space:]]|$)" \
+   || matches "${CP}find[[:space:]].*-exec[[:space:]]+rm([[:space:]]|$)" \
+   || matches "${CP}xargs([[:space:]]+-[A-Za-z0-9]+)*[[:space:]]+rm([[:space:]]|$)"; then
+    ask "Bulk deletion via find/xargs. A too-broad predicate deletes far more than intended. Confirm scope:
+  $COMMAND"
+fi
+
+# --- recursive permission / ownership changes -------------------------------
+if matches "${CP}(chmod|chown|chgrp)[[:space:]].*(-[A-Za-z]*R|--recursive)"; then
+    ask "Recursive chmod/chown/chgrp. Original per-file modes/owners are not stored anywhere — this is effectively irreversible. Confirm the starting path:
+  $COMMAND"
+fi
+
+# --- block-device / in-place destructive writes + system halt ---------------
+if matches "${CP}dd[[:space:]].*of=" \
+   || matches "${CP}mkfs(\.[a-z0-9]+)?([[:space:]]|$)" \
+   || matches "${CP}shred([[:space:]]|$)" \
+   || matches "${CP}truncate[[:space:]].*-s[[:space:]]*0([[:space:]]|$)" \
+   || matches "${CP}(reboot|shutdown|poweroff|halt)([[:space:]]|$)"; then
+    ask "Destructive low-level / system operation (dd of=, mkfs, shred, truncate -s 0, or reboot/shutdown). Confirm the target:
+  $COMMAND"
+fi
+
+# --- container / orchestration teardown that destroys persistent state ------
+# Only the data-destroying variants — safe `down`/`stop`/`ps` are untouched.
+if matches "${CP}docker([[:space:]]+|-)compose[[:space:]].*down[[:space:]].*(-v([[:space:]]|$)|--volumes([[:space:]]|$))" \
+   || matches "${CP}docker[[:space:]]+volume[[:space:]]+(rm|prune)" \
+   || matches "${CP}docker[[:space:]]+system[[:space:]]+prune" \
+   || matches "${CP}kubectl[[:space:]]+delete([[:space:]]|$)" \
+   || matches "${CP}ddev[[:space:]]+delete([[:space:]]|$)"; then
+    ask "Container/orchestration teardown that destroys persistent state (volumes/resources). Confirm — this can wipe DB data:
+  $COMMAND"
+fi
+
+# --- git ref / stash / history destruction (beyond force/reset/clean) -------
+if matches 'git[[:space:]]+branch[[:space:]].*-D([[:space:]]|$)' \
+   || matches 'git[[:space:]]+push[[:space:]].*(--delete|[[:space:]]:[A-Za-z0-9_./-]+)' \
+   || matches 'git[[:space:]]+stash[[:space:]]+(clear|drop)' \
+   || matches 'git[[:space:]]+reflog[[:space:]]+expire' \
+   || matches 'git[[:space:]]+gc[[:space:]].*--prune=(now|all)' \
+   || matches 'git[[:space:]]+update-ref[[:space:]].*-d([[:space:]]|$)'; then
+    ask "Irrecoverable git ref/stash/history operation (force branch delete, remote branch delete, stash clear/drop, reflog expire, or gc --prune=now). Confirm:
+  $COMMAND"
+fi
+
+# --- destructive SQL via a DB client (scoped to clean keywords) -------------
+# Matched on the normalized command, so DROP/TRUNCATE inside a commit message
+# (heredoc/-m, already stripped) won't false-positive. Misses heredoc-fed SQL.
+if imatches '(drop[[:space:]]+(database|table|schema)\b|truncate[[:space:]]+table\b)'; then
+    ask "Destructive SQL (DROP DATABASE/TABLE/SCHEMA or TRUNCATE TABLE). This is immediate and usually irreversible against live data. Confirm:
   $COMMAND"
 fi
 
