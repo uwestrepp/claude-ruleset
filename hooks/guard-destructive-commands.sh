@@ -86,6 +86,26 @@ is_rm_recursive_force() {
     return 1
 }
 
+# True iff every dangerous-looking target is a concrete subpath under /tmp/ —
+# scoped cleanup of test scratch that cannot leak outside /tmp. Deliberately
+# EXCLUDES: bare /tmp, /tmp/* (would wipe other processes' tmp files), any
+# ".." traversal, and any $HOME/~ reference. Used only to suppress the ask tier.
+safe_tmp_only() {
+    echo "$SCAN" | grep -qE '(~|\$HOME|\$\{HOME\}|\.\.)' && return 1
+    local tokens tok
+    # Danger tokens: absolute paths (start with /) or anything containing a glob.
+    tokens=$(echo "$SCAN" | tr ' \t' '\n' | grep -E '(^/|\*)' || true)
+    [[ -z "$tokens" ]] && return 1
+    while IFS= read -r tok; do
+        [[ -z "$tok" ]] && continue
+        case "$tok" in
+            /tmp/[!*]*) ;;     # /tmp/<name>... (first char after /tmp/ not a glob)
+            *) return 1 ;;
+        esac
+    done <<< "$tokens"
+    return 0
+}
+
 if is_rm_recursive_force; then
     if matches '(--no-preserve-root)'; then
         hard_block "Refused: 'rm --no-preserve-root' (recursive force) is almost never intentional. Remove the flag and target a specific path."
@@ -94,11 +114,15 @@ if is_rm_recursive_force; then
     if matches '[[:space:]](/|/\*|~|~/|~/\*|\$HOME/?|\$\{HOME\}/?)([[:space:]]|$)'; then
         hard_block "Refused: recursive-force rm whose target is / or the home tree (~ / \$HOME). This would wipe the system or your entire home directory. Target a specific scoped path instead."
     fi
-    # Absolute path, home SUBdir, or glob → dangerous but sometimes valid → ask.
+    # Absolute path, home SUBdir, or glob → dangerous but sometimes valid → ask,
+    # UNLESS every such target is a scoped /tmp subpath (test-scratch cleanup).
     if matches '[[:space:]](/[A-Za-z0-9._]|~/[A-Za-z0-9._]|\$HOME/[A-Za-z0-9._]|\$\{HOME\}/)' \
        || matches '[[:space:]]\*([[:space:]]|$)'; then
-        ask "Destructive: recursive-force rm of an absolute path, home subdirectory, or glob. Confirm the exact target before proceeding:
+        if ! safe_tmp_only; then
+            ask "Destructive: recursive-force rm of an absolute path, home subdirectory, or glob. Confirm the exact target before proceeding:
   $COMMAND"
+        fi
+        # else: scoped /tmp/... cleanup → allow silently.
     fi
     # Otherwise a scoped relative path (node_modules, build, scratch) → allow.
 fi
