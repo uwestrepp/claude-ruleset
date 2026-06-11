@@ -82,7 +82,7 @@ Identify and document:
 
 ## 5. Deprecation/breaking scan checklist (MUST)
 
-Consult `references/changelog.md` for the full v10–v14 deprecation/breaking-change index.
+Consult `references/changelog.md` for the full v10–v14 deprecation/breaking-change index, and `references/migration-patterns.md` for the preferred replacement patterns to apply in Phase 5.
 
 At minimum, scan for TYPO3 upgrade hotspots:
 
