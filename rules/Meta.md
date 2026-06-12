@@ -172,6 +172,8 @@ When adding or altering rule-sets, the agent MUST check for overlap and merge ru
 
 Shared baseline rules SHOULD live in the narrowest always-on file that matches their true scope. Specialized rule files SHOULD reference those shared baselines instead of duplicating them.
 
+Rule prose MUST be terse: state the constraint and its trigger; omit rationale, examples, and restated model-defaults unless the rule is non-obvious or has caused a real failure. This binds the committed rule text, distinct from the short rationale a *proposal* carries (§3.1, and the SHOULD above). Brevity of agent output is governed by General.md §10.4.
+
 Testing requirements MUST be maintained as one general mandatory rule (test-path selection plus execution after changes). Scoped rules should specialize that baseline instead of duplicating or conflicting with it.
 
 When adding, removing, renaming, or materially changing files in the applicable rules directory (`~/.claude/rules/` for global rules, `.aiassistant/rules/` for project-level rules), the agent MUST update the explicit rule index in `CLAUDE.md` in the same change-set.

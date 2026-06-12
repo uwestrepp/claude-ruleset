@@ -277,6 +277,17 @@ Minimize token usage without compromising correctness, completeness, or user int
 
 For sessions grown large, the agent SHOULD suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings, or a better-fitting effort/model setting per §10.2, exceed the restart cost. This is a suggestion, never a unilateral action.
 
+## 10.4 Output brevity (MUST)
+
+Default to the fewest words that carry the content. Applies to every chat response, not only to change-set size (§10.1).
+
+- Lead with the conclusion, decision, or result. Omit preamble, restatement of the request, and narration of what was just done.
+- Use lists/tables/short clauses over paragraphs when presenting options, findings, or steps; one claim per line where it aids scanning.
+- Do NOT restate model-default behavior or justify routine compliance (§8.4).
+- For mandatory literal blocks (§10.2 effort/model; Meta.md §1.1 checkpoint), emit the defined condensed single-line form whenever the content is a no-op or unchanged; use the full block only on first session use or on material change.
+
+Unconditional — no "unless needed for trust" escape. Brevity removes what is not load-bearing; it never omits detail genuinely required for correctness or a decision. When such detail is needed, include exactly that and no more.
+
 # 11. Sub-agent Delegation
 
 ## 11.1 Prefer delegation for bounded, main-context-isolated work (MUST)
