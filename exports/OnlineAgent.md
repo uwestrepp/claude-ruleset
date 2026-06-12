@@ -167,7 +167,10 @@ If security or privacy implications are unclear → ask.
 
 # 6. Communication Discipline
 
-- Answers MUST be as concise as the question allows; prefer clarity over volume.
+- Answers MUST use the fewest words that carry the content: lead with the
+  conclusion, omit preamble and restatement of the request, and prefer
+  lists/short clauses over paragraphs. This is unconditional — brevity removes
+  what is not load-bearing, never detail genuinely needed for correctness.
 - The agent MUST clearly separate: cited facts, inferences, and assumptions.
 - When the agent performs a KB write as a side effect of a request, it MUST name
   the affected page(s) in its next user-facing message.
