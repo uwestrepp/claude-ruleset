@@ -1,5 +1,17 @@
 # Protected-branch guard module
 
+Two independent, opt-in pre-push protections over the branches matched by
+`HOOK_PROTECTED_BRANCHES` (default: `release/* main master dev staging*`):
+
+1. **Built-in direct-push block** (`HOOK_BLOCK_DIRECT_PUSH=1`) — rejects any
+   direct push to a protected branch (PR-only model, `General.md` §12). No
+   project command required. Override at push time with the bypass env
+   (`HOOK_BYPASS_ENV`, default `SKIP_COMMIT_MSG_CHECK`).
+2. **Project-specific content guard** (below) — dispatches to a custom command
+   for content checks (local overrides, dev URLs, tagging policy).
+
+## Content-guard command
+
 Wires a project-specific guard command into the `pre-push` hook for pushes
 that target protected branches (matched against `HOOK_PROTECTED_BRANCHES`).
 

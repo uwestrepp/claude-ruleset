@@ -55,10 +55,9 @@ default regex, don't re-ask).
      - `HOOK_EXTENSION_PATH_REGEX` (default `^packages/([a-z0-9_]+)/.+`)
      - Map file location (default `.aiassistant/state/extension-ticket-map.yaml`)
      - Whether to seed an empty map file if missing.
-4. **Protected-branch guard module?** (`HOOK_PROTECTED_BRANCH_GUARD`)
-   - Default: `0` (off).
-   - If enabled, additionally ask:
-     - `HOOK_PROTECTED_BRANCHES` (default `release/* main master staging*`)
+4. **Protected branches** (`HOOK_PROTECTED_BRANCHES`, default `release/* main master dev staging*`; branch model per `General.md` §12). Shared by both guards below.
+   - **Built-in direct-push block?** (`HOOK_BLOCK_DIRECT_PUSH`, default `0`) — when `1`, rejects any direct push to a protected branch (PR-only model); bypass via the env var below. No project command required.
+   - **Project content guard?** (`HOOK_PROTECTED_BRANCH_GUARD`, default `0`) — when `1`, also ask:
      - `HOOK_PROTECTED_BRANCH_GUARD_COMMAND` (path to project-supplied guard script; no default — if empty, fall back to disabled with a warning)
 5. **Bypass env var name** (`HOOK_BYPASS_ENV`)
    - Default: `SKIP_COMMIT_MSG_CHECK`.

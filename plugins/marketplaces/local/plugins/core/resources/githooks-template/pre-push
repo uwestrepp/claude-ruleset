@@ -10,7 +10,9 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # -------- defaults (overridable via config.sh) --------
 HOOK_PROTECTED_BRANCH_GUARD=0
 HOOK_PROTECTED_BRANCH_GUARD_COMMAND=""
-HOOK_PROTECTED_BRANCHES="release/* main master staging*"
+HOOK_PROTECTED_BRANCHES="release/* main master dev staging*"
+HOOK_BLOCK_DIRECT_PUSH=0
+HOOK_BYPASS_ENV="SKIP_COMMIT_MSG_CHECK"
 
 if [[ -f "$script_dir/config.sh" ]]; then
     # shellcheck disable=SC1091
@@ -37,6 +39,15 @@ while read -r local_ref local_sha remote_ref remote_sha; do
     # Skip deleted refs.
     if [[ "$local_sha" == "$zero_oid" ]]; then
         continue
+    fi
+
+    # Built-in guard: reject direct pushes to a protected branch (PR-only; General.md §12).
+    if [[ "$HOOK_BLOCK_DIRECT_PUSH" == "1" ]] && is_protected_branch "$remote_ref"; then
+        if [[ "${!HOOK_BYPASS_ENV:-0}" != "1" ]]; then
+            echo "pre-push: direct push to protected branch '${remote_ref#refs/heads/}' is blocked (PR-only model)." >&2
+            echo "Open a PR for promotion, or set $HOOK_BYPASS_ENV=1 to override." >&2
+            exit 1
+        fi
     fi
 
     if [[ "$remote_sha" == "$zero_oid" ]]; then

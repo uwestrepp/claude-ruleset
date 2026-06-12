@@ -22,13 +22,21 @@ HOOK_EXTENSION_TICKET_MAP=0
 # Example for FEIN: '^packages/(mq_[a-z0-9_]+)/.+'
 HOOK_EXTENSION_PATH_REGEX='^packages/([a-z0-9_]+)/.+'
 
-# --- protected-branch pre-push guard (opt-in) ---
+# --- protected branches (shared by both guards below) ---
+# Space-separated glob patterns matching branch short-names. Default branch
+# model per /core:commits and General.md §12 (production, dev, staging, release/*).
+HOOK_PROTECTED_BRANCHES="release/* main master dev staging*"
+
+# --- built-in direct-push block (opt-in) ---
+# 1 = reject any direct push to a protected branch (PR-only model). No project
+# command needed. Override at push time with the bypass env below.
+HOOK_BLOCK_DIRECT_PUSH=0
+
+# --- protected-branch content guard (opt-in, project-specific) ---
 HOOK_PROTECTED_BRANCH_GUARD=0
 # Command invoked as: <cmd> --branch <local_ref> --rev <local_sha>
 # Non-zero exit rejects the push. Project-specific; see modules/protected-branch-guard/README.md.
 HOOK_PROTECTED_BRANCH_GUARD_COMMAND=""
-# Space-separated glob patterns matching branch short-names.
-HOOK_PROTECTED_BRANCHES="release/* main master staging*"
 
 # --- emergency bypass ---
 # Env var name; set to 1 at commit time to skip all checks.

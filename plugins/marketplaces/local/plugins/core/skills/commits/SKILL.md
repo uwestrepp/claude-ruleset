@@ -37,7 +37,7 @@ Must be one of (choose the best fit):
 -   Apply branch overrides first from `.aiassistant/state/commit-ticket-overrides.yaml` (if current branch is listed)
 -   For extension-scoped commits (per project package layout, e.g., `packages/*/...`), resolve from `.aiassistant/state/extension-ticket-map.yaml` if present
 -   If multiple mapped extensions with different tickets are touched, split into separate commits per ticket
--   For non-extension commits, fallback to branch ticket from `$GIT_BRANCH_NAME` (`feature/PROJ-123-...`)
+-   For non-extension commits, fallback to branch ticket from `$GIT_BRANCH_NAME` (`feature/`, `bugfix/`, or `hotfix/` branch named `<prefix>/PROJ-123-...`; the ticket token is matched regardless of prefix). Branch model per `General.md` §12.
 -   If no deterministic ticket can be resolved: ask and do not commit until clarified
 -   If user explicitly provides a Jira ticket and it conflicts with resolver output, stop and ask before committing
 

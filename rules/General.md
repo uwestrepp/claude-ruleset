@@ -304,6 +304,19 @@ Give the sub-agent a self-contained prompt (sub-agents do not see conversation c
 
 Workflow-specific delegation patterns (test-runner after changes, checkpoint at phase boundaries) are defined in the `/core:batch` skill §7 as specializations of this baseline.
 
+# 12. Git Workflow (MUST)
+
+Default branch model; a project or the user MAY override it.
+
+- Production branch is `master` or `main` (per project). Optional integration tiers `dev` and `staging` MAY exist between feature branches and production.
+- Ticketed work uses `feature/`, `bugfix/`, or `hotfix/` branches named `<prefix>/PROJ-123-slug`, cut from the branch they will merge into.
+- Major upgrades use a temporary `release/<target>` integration branch (e.g. `release/typo3_13`): upgrade branches are cut from and merged back to `release/<target>` via PR; `release/<target>` merges to production at completion, then is retired.
+- PR target: production (or `dev` if the project uses one) for normal work; the active `release/<target>` during a major upgrade.
+
+Protected set — `master`/`main`, `dev`, `staging`, `release/*`: reach these via PR only, never a direct commit or push, even when git/server does not technically protect them. Override only on explicit user request. The agent commits only on `feature/`|`bugfix/`|`hotfix/` working branches.
+
+Before the first commit of a task, resolve and name the target branch (§2.4). If the current branch is in the protected set and no override was given, stop and ask.
+
 # Meta Rule
 
 Correctness > Elegance · Safety > Speed · Clarity > Cleverness
