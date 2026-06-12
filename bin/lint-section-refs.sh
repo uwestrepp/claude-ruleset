@@ -11,11 +11,22 @@
 #      skill's SKILL.md under the local marketplace.
 #   3. Ledger completeness — every tracked local-plugin SKILL.md is listed in
 #      the CLAUDE.md skill ledger as /plugin:skill.
+#   4. Same-file refs (rules/*.md only) — a bare "§N" with no cross-file
+#      qualifier on its line must resolve to a heading in the same file. Scoped
+#      to rules/ because there cross-file refs are filename-qualified, so a bare
+#      §N reliably means "this file"; skills use wrapped/under-qualified bare
+#      refs and are intentionally excluded.
+#   5. Heading immutability — numbered headings are stable anchors: fail if a
+#      number present at HEAD was removed/renumbered or had its title changed
+#      (pure additions are allowed). This is what catches insert-and-shift
+#      drift that checks 1–2 cannot (a still-existing number with new meaning).
 #
-# Limitations (by design): bare same-file "§N" refs are not checked (too many
-# implicit-context refs); a ref that resolves to an EXISTING heading with the
-# WRONG meaning cannot be detected; in "sections X and Y" enumerations only X
-# is checked — prefer one fully-qualified ref per section number.
+# Limitations (by design): same-file check is rules/-only and line-based, so a
+# bare §N sharing a line with a cross-file qualifier is skipped; a cross-file
+# ref that resolves to an EXISTING heading with the WRONG meaning is still
+# undetectable at the reference site (check 5 guards the heading side instead);
+# in "sections X and Y" enumerations only X is checked — prefer one
+# fully-qualified ref per section number.
 #
 # Exit 1 on any failure. Bypass: SKIP_REF_LINT=1.
 
@@ -36,6 +47,10 @@ resolve_target() {
 heading_exists() { # $1=file $2=section number
     local esc="${2//./\\.}"
     grep -qE "^#{1,6}[[:space:]]+§?${esc}([.[:space:]]|$)" "$1"
+}
+
+extract_headings() { # stdin = markdown; emits "<number>\t<title>" for numbered headings
+    sed -nE 's/^#{1,6}[[:space:]]+§?([0-9]+(\.[0-9]+)*)[.]?[[:space:]]+(.*)$/\1\t\3/p'
 }
 
 FAIL=0
@@ -71,6 +86,33 @@ while IFS= read -r f; do
         fi
         heading_exists "$tgt" "$num" || report "$f:$line: /$plugin:$skill §$num does not exist ('$m')"
     done < <(grep -noE "$RE_SKILL" "$f" 2>/dev/null)
+
+    # Check 4: same-file bare §N refs (rules/*.md only; skip lines bearing a
+    # cross-file qualifier — those are handled by checks 1–2).
+    if [[ "$f" == rules/*.md ]]; then
+        while IFS= read -r ln; do
+            line="${ln%%:*}"; text="${ln#*:}"
+            case "$text" in *.md*|*/core:*|*/typo3:*) continue ;; esac
+            for num in $(printf '%s' "$text" | grep -oE '§[[:space:]]*[0-9]+(\.[0-9]+)*' | sed -E 's/§[[:space:]]*//'); do
+                heading_exists "$f" "$num" || report "$f:$line: same-file §$num has no heading in $f"
+            done
+        done < <(grep -nE '§[[:space:]]*[0-9]' "$f")
+    fi
+
+    # Check 5: numbered headings are immutable anchors vs HEAD.
+    if git cat-file -e "HEAD:$f" 2>/dev/null; then
+        declare -A _hm=() _wm=()
+        while IFS=$'\t' read -r n t; do [[ -n "$n" ]] && _hm["$n"]="$t"; done < <(git show "HEAD:$f" | extract_headings)
+        while IFS=$'\t' read -r n t; do [[ -n "$n" ]] && _wm["$n"]="$t"; done < <(extract_headings < "$f")
+        for n in "${!_hm[@]}"; do
+            if [[ -z "${_wm[$n]+x}" ]]; then
+                report "$f: §$n removed/renumbered vs HEAD ('${_hm[$n]}') — numbers are stable anchors; if intentional, bypass with SKIP_REF_LINT=1"
+            elif [[ "${_wm[$n]}" != "${_hm[$n]}" ]]; then
+                report "$f: §$n title changed vs HEAD ('${_hm[$n]}' -> '${_wm[$n]}') — if a deliberate rename, bypass with SKIP_REF_LINT=1"
+            fi
+        done
+        unset _hm _wm
+    fi
 done < <(git ls-files '*.md')
 
 # Check 3: every tracked local-plugin skill is in the CLAUDE.md ledger.
