@@ -76,17 +76,31 @@ hard_block() {
 # --- rm -rf detection -------------------------------------------------------
 # Recursive AND force rm: a combined flag cluster containing both r/R and f
 # (e.g. -rf, -fr, -Rfv, and the spaceless typo -rfnode_modules), OR separate
-# recursive + force flags. Only when `rm` sits at a command boundary.
-RM_AT_BOUNDARY='(^|[|&;(`[:space:]])rm([[:space:]]|$)'
+# recursive + force flags. The flags MUST belong to the rm invocation itself,
+# so detection is scoped to each rm command SEGMENT — the run of tokens from an
+# `rm` at a segment boundary up to the next shell operator. This prevents a
+# `-r`/`-f` flag on an unrelated chained command (e.g. `cp -r … && rm -f …`)
+# from being misread as a recursive-force rm.
 RF_COMBINED='-[a-zA-Z]*[rR][a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*[rR]'
 HAS_RECURSIVE='(-[a-zA-Z]*[rR]|--recursive)'
 HAS_FORCE='(-[a-zA-Z]*f|--force)'
 
-is_rm_recursive_force() {
-    matches "$RM_AT_BOUNDARY" || return 1
-    matches "$RF_COMBINED" && return 0
-    { matches "$HAS_RECURSIVE" && matches "$HAS_FORCE"; } && return 0
-    return 1
+# Emit each recursive-force rm segment (one per line). A segment is an `rm`
+# command body delimited by shell operators ; | & ( ) ` or newlines; a leading
+# sudo/doas is stripped. The caller inspects targets against these segments
+# only — never the whole (possibly chained) command line.
+rm_rf_segments() {
+    local ops=';|&()`'
+    printf '%s' "$SCAN" | tr "$ops" '\n\n\n\n\n\n' | while IFS= read -r seg || [[ -n "$seg" ]]; do
+        seg="${seg#"${seg%%[![:space:]]*}"}"                 # ltrim
+        seg=$(printf '%s' "$seg" | sed -E 's/^(sudo|doas)[[:space:]]+//')
+        [[ "$seg" =~ ^rm([[:space:]]|$) ]] || continue
+        if printf '%s' "$seg" | grep -qE -- "$RF_COMBINED" \
+           || { printf '%s' "$seg" | grep -qE -- "$HAS_RECURSIVE" \
+                && printf '%s' "$seg" | grep -qE -- "$HAS_FORCE"; }; then
+            printf '%s\n' "$seg"
+        fi
+    done
 }
 
 # True iff the command is a SIMPLE, single rm whose every dangerous-looking
@@ -128,18 +142,23 @@ safe_tmp_only() {
     return 0
 }
 
-if is_rm_recursive_force; then
-    if matches '(--no-preserve-root)'; then
+RF_SEGMENTS=$(rm_rf_segments)
+if [[ -n "$RF_SEGMENTS" ]]; then
+    # Match only within the recursive-force rm segment(s), so an unrelated
+    # chained command's flags or targets can never trip these checks.
+    seg_matches() { printf '%s' "$RF_SEGMENTS" | grep -qE -- "$1"; }
+
+    if seg_matches '(--no-preserve-root)'; then
         hard_block "Refused: 'rm --no-preserve-root' (recursive force) is almost never intentional. Remove the flag and target a specific path."
     fi
     # Target IS root or home itself (optionally one trailing slash, or /* ) → catastrophic.
-    if matches '[[:space:]](/|/\*|~|~/|~/\*|\$HOME/?|\$\{HOME\}/?)([[:space:]]|$)'; then
+    if seg_matches '[[:space:]](/|/\*|~|~/|~/\*|\$HOME/?|\$\{HOME\}/?)([[:space:]]|$)'; then
         hard_block "Refused: recursive-force rm whose target is / or the home tree (~ / \$HOME). This would wipe the system or your entire home directory. Target a specific scoped path instead."
     fi
     # Absolute path, home SUBdir, or glob → dangerous but sometimes valid → ask,
     # UNLESS every such target is a scoped /tmp subpath (test-scratch cleanup).
-    if matches '[[:space:]](/[A-Za-z0-9._]|~/[A-Za-z0-9._]|\$HOME/[A-Za-z0-9._]|\$\{HOME\}/)' \
-       || matches '[[:space:]]\*([[:space:]]|$)'; then
+    if seg_matches '[[:space:]](/[A-Za-z0-9._]|~/[A-Za-z0-9._]|\$HOME/[A-Za-z0-9._]|\$\{HOME\}/)' \
+       || seg_matches '[[:space:]]\*([[:space:]]|$)'; then
         if ! safe_tmp_only; then
             ask "Destructive: recursive-force rm of an absolute path, home subdirectory, or glob. Confirm the exact target before proceeding:
   $COMMAND"
