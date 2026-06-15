@@ -28,6 +28,10 @@
   * `/typo3:scanner` — ExtensionScanner workflow: command standard, pass model, false-positive handling.
   * `/typo3:static-tests` — ordered static run (php-cs-fixer → rector1 → rector2 → fractor → typoscriptlint → phpstan), triage, ledgers.
   * `/typo3:upgrade-full` — orchestrates the three component skills in sequence; do NOT pre-activate the components.
+* **Pocock skills** — vendored/adapted subset of `mattpocock/skills` (provenance + upstream-refresh path in `plugins/marketplaces/local/plugins/pocock/UPDATING.md`):
+  * `/pocock:prototype`, `/pocock:design-an-interface`, `/pocock:improve-codebase-architecture`, `/pocock:zoom-out`, `/pocock:handoff` — auto-activate on prompt relevance; stack-agnostic engineering/prototyping aids.
+  * `/pocock:diagnose`, `/pocock:grill-with-docs` — explicit activation required (`disable-model-invocation`); diagnose overlaps the built-in diagnose, grill-with-docs depends on CONTEXT.md/ADR conventions.
+  * `/pocock:caveman` — brevity mode; subordinate to General.md §10.4 / §8.2 (which already govern output brevity and language).
 * Global MCP servers are configured in `~/.claude.json` under the `mcpServers` key (canonical location).
   * If MCP resources/templates are empty, treat this as a non-blocking beta behavior.
   * Verify MCP availability with one lightweight tool call (instead of relying only on list_mcp_resources/list_mcp_resource_templates).

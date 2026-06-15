@@ -1,0 +1,6 @@
+{
+  "name": "pocock",
+  "version": "1.0.0",
+  "description": "Vendored, adapted subset of mattpocock/skills: stack-agnostic engineering and prototyping aids. design/prototype/improve-architecture/zoom-out/handoff auto-activate; diagnose and grill-with-docs are manual-activation; caveman is a brevity mode. See UPDATING.md for the upstream-refresh path.",
+  "author": { "name": "MOSAIQ GmbH (vendored from mattpocock/skills)" }
+}

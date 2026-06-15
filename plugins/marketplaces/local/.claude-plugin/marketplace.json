@@ -17,6 +17,13 @@
       "description": "Generic workflow skills: batch governance, commit discipline, composer wiring",
       "version": "1.0.0",
       "author": { "name": "MOSAIQ GmbH" }
+    },
+    {
+      "name": "pocock",
+      "source": "./plugins/pocock",
+      "description": "Vendored, adapted subset of mattpocock/skills: stack-agnostic engineering and prototyping aids",
+      "version": "1.0.0",
+      "author": { "name": "MOSAIQ GmbH (vendored from mattpocock/skills)" }
     }
   ]
 }
