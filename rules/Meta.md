@@ -174,6 +174,8 @@ Shared baseline rules SHOULD live in the narrowest always-on file that matches t
 
 Rule prose MUST be terse: state the constraint and its trigger; omit rationale, examples, and restated model-defaults unless the rule is non-obvious or has caused a real failure. This binds the committed rule text, distinct from the short rationale a *proposal* carries (§3.1, and the SHOULD above). Brevity of agent output is governed by General.md §10.4.
 
+Salience exception (MUST): where a rule guards a failure mode the model exhibits under pressure rather than from ignorance (for example reflexive agreement, premature closure, capitulation against evidence), deliberate repetition and emphatic phrasing are themselves the enforcement mechanism. Terseness and dedup passes MUST NOT strip the salience such a rule needs to bind behavior; mere presence of the constraint is not sufficient when behavioral weight is the point. Lean-passes against "model-default" baselines MUST treat these rules as out of scope.
+
 Testing requirements MUST be maintained as one general mandatory rule (test-path selection plus execution after changes). Scoped rules should specialize that baseline instead of duplicating or conflicting with it.
 
 When adding, removing, renaming, or materially changing files in the applicable rules directory (`~/.claude/rules/` for global rules, `.aiassistant/rules/` for project-level rules), the agent MUST update the explicit rule index in `CLAUDE.md` in the same change-set.
