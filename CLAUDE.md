@@ -17,6 +17,7 @@
   * `/core:githooks-install` — native git-hook scaffold install/`--update`; auto-suggested by `/core:commits`.
   * `/core:brainstorm` — N distinct candidates → ranked shortlist; genuine exploration only, NOT converged work.
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
+  * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material, no nitpick bucket); no interview, no alternatives, NOT code-diff review. Disambiguate from grill-me (which interviews) on overlap.
 * **Core workflow skills** — activation policy per entry:
   * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Phase template, Pass 1/2/3 + triage gates, autonomous protocol, chaining. Foundation for the typo3 workflow skills.
   * `/core:composer-update` — explicit activation required. Informed, gated Composer updates for *customized* projects; NOT trivial adds in vanilla projects (`/core:composer`), NOT major-version migrations (`/typo3:upgrade`).
