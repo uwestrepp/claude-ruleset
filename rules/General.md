@@ -312,12 +312,13 @@ Workflow-specific delegation patterns (test-runner after changes, checkpoint at 
 
 Default branch model; a project or the user MAY override it.
 
-- Production branch is `master` or `main` (per project). Optional integration tiers `dev` and `staging` MAY exist between feature branches and production.
+- Mainline branch is `master` or `main` (per project) — the canonical line merged work lands on. Optional integration tiers `dev`/`development` and `staging` MAY exist between feature branches and mainline.
 - Ticketed work uses `feature/`, `bugfix/`, or `hotfix/` branches named `<prefix>/PROJ-123-slug`, cut from the branch they will merge into.
-- Major upgrades use a temporary `release/<target>` integration branch (e.g. `release/typo3_13`): upgrade branches are cut from and merged back to `release/<target>` via PR; `release/<target>` merges to production at completion, then is retired.
-- PR target: production (or `dev` if the project uses one) for normal work; the active `release/<target>` during a major upgrade.
+- Major upgrades use a temporary `release/<target>` integration branch (e.g. `release/typo3_13`): upgrade branches are cut from and merged back to `release/<target>` via PR; `release/<target>` merges to mainline at completion, then is retired.
+- Deployment MAY be decoupled from mainline via a **deployment-trigger branch** (e.g. `production`, an environment branch) that derives from mainline and holds no unique work — merging mainline → it triggers the deploy, batching several merged features into one release. Detect the project's real deploy mapping (e.g. CI `branches:` config) before assuming a push deploys: merging to mainline ≠ deploying.
+- PR target: mainline (or the `dev`/`staging` tier the project uses) for normal work; the active `release/<target>` during a major upgrade.
 
-Protected set — `master`/`main`, `dev`, `staging`, `release/*`: reach these via PR only, never a direct commit or push, even when git/server does not technically protect them. Override only on explicit user request. The agent commits only on `feature/`|`bugfix/`|`hotfix/` working branches.
+Protected set — `master`/`main`, `dev`/`development`, `staging`, `release/*`, and any deployment-trigger branch (e.g. `production`): reach these via PR only, never a direct commit or push, even when git/server does not technically protect them. Override only on explicit user request. The agent commits only on `feature/`|`bugfix/`|`hotfix/` working branches.
 
 Before the first commit of a task, resolve and name the target branch (§2.4). If the current branch is in the protected set and no override was given, stop and ask.
 
