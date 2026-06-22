@@ -219,6 +219,14 @@ Autonomous mode does not reduce this requirement. Pass 3 items are, by definitio
 changes whose functional equivalence is not obvious and cannot be automatically
 verified — manual review is the only valid gate.
 
+### 5.4 Autonomous mode and `provable` (MUST)
+
+In autonomous mode, `provable` batches MAY be pre-approved at scope-confirmation time, but
+applying them still requires BOTH: the §9.1.2 independent audit returned PASS, and every
+atom in the batch has its §9.2 proof-ledger line. The audit + ledger replace the per-batch
+human approval; they do not become optional. `manual` (Pass 3) is never pre-approvable
+(§5.3, §9.3).
+
 ---
 
 ## 6. Workflow Chaining (MUST)
@@ -259,6 +267,9 @@ delegation policy in `General.md` §11.
   governance evaluation, dual-aspect labeled output).
   Collect results before producing the phase report. Inline checkpoint is acceptable
   ONLY when the phase's work was minimal and no multi-file review is warranted.
+  At Phase 5 entry the same agent ALSO performs the §9.1.2 independent triage audit
+  (distinct duty from the meta checkpoint); this audit MUST NOT be done inline by the
+  executing agent (see §9.1.2 fallback).
 - **`test-runner` (SHOULD after applying changes)**: spawn in background after each
   pass or batch to run validation commands while the main agent continues with triage
   or the next topic. Collect results before committing.
@@ -323,7 +334,11 @@ Before the first code edit in such a cycle, the agent MUST:
 - publish a triage packet in chat that includes:
   - resolved scope and extension list,
   - pre-change baseline run id/log path,
-  - finding/change groups classified as `safe` / `provable` / `manual` with concise rationale,
+  - a per-atom classification table: each atom with its L1–L4 rung answers, derived class
+    (`safe` / `provable` / `manual`), counter-check sentence, and — for pattern-inherited
+    atoms — the representative atom and identity-check ledger line (§9.1.1),
+  - a `provable` proof ledger section (§9.2): one line per `provable` atom, populated at
+    apply time,
   - planned validation depth per group and impacted runtime surfaces,
   - explicit list of `manual` topics requiring approval.
 - persist the same packet to:
@@ -333,24 +348,74 @@ Before the first code edit in such a cycle, the agent MUST:
   - any `provable` batch,
   - any `manual` item.
 
+#### 9.1.1 Classification Procedure — Escalation Ladder (MUST)
+
+Classification unit: one **atom** = the smallest coherent change (one call-site, one
+signature, one finding hit). Classify per atom, never per file or per loose group. Group
+atoms for batch application only within the *same* class. Mixed-class groups are prohibited.
+
+Walk ALL four rungs in order — NO early exit. The class is the **highest rung that
+triggers**; if nothing above L1 triggers cleanly and any doubt remains, the class is `manual`.
+
+- **L1** — touches only whitespace/formatting/comments/annotations/DocBlocks, no token with
+  runtime semantics.
+- **L2** — alters an API element: signature, visibility, name, or type.
+- **L3** — alters control flow, side effects, ordering, state, or business logic, OR
+  dispatches via dynamic/reflection/non-resolvable call paths.
+- **L4** — if L2 or L3 triggered: is equivalence provable by a deterministic
+  contract/signature check with FULL call-site coverage (`General.md §4.5`)?
+
+Class derivation (highest triggered wins):
+- only L1 → `safe`
+- L2 triggers, L4 provable, L3 does NOT trigger → `provable`
+- L3 triggers, OR L4 not conclusively provable, OR any residual uncertainty → `manual`
+
+Counter-check (MUST — salience, guards the model's optimism bias): before assigning `safe`
+or `provable`, the agent MUST answer in writing "Why is this atom NOT one level riskier?".
+If the answer is not a concrete, evidence-backed sentence → escalate one level. The burden
+is to prove harmlessness, not to detect risk.
+
+Pattern inheritance (scaling): for large sets of structurally identical atoms, classify one
+representative atom fully (ladder + counter-check); identical atoms (same transformation
+pattern, same callee/signature situation, verified identical and recorded as a ledger line)
+inherit its class. The §9.1.2 audit samples the inherited group.
+
+#### 9.1.2 Independent Triage Audit — Phase 5 Entry Gate (MUST)
+
+The classification step is the least reliable step and MUST NOT self-attest. Before Phase 5
+begins, an independent verifier (the `checkpoint` sub-agent in a fresh context, §7) MUST
+audit the triage packet and return PASS or specific objections:
+- each atom's class is plausible against the §9.1.1 ladder (correctness, not mere label
+  presence),
+- labels appear verbatim AND match the derivation,
+- required fields and counter-check sentences are present and non-empty,
+- pattern-inheritance groups are sampled.
+
+Phase 5 MUST NOT begin without a PASS. Fallback when the verifier is unavailable
+(headless/cron): hard-block — do NOT enter Phase 5 on self-audit. Resolve by a
+fresh-session / second-pass audit, or proceed only on explicit user override recorded in
+the report. Self-attestation does not satisfy this gate.
+
 Vocabulary compliance:
 - The `safe` / `provable` / `manual` classification labels MUST appear verbatim in the triage packet's finding classification section. Equivalent informal labels (for example `FIX NEEDED / BUSINESS DECISION / MANUAL FOLLOW-UP`) do not satisfy this requirement unless an explicit cross-reference to the three-tier model is included.
 
-Execution clarification:
-- `safe` (maps to Pass 1):
-  - formatting-only, type-annotation/doc normalization, or deterministic no-op mechanical rewrites with proven equivalence.
-- `provable` (maps to Pass 2):
-  - grouped changes where equivalence can be demonstrated by contract/signature checks and targeted validation evidence.
-- `manual` (maps to Pass 3):
-  - behavior-sensitive, business-logic-affecting, environment/credential flow changes, side-effect ordering changes, or ambiguous transformations.
+Pass mapping: `safe` → Pass 1, `provable` → Pass 2, `manual` → Pass 3. The authoritative
+criteria for which class an atom receives are the §9.1.1 escalation ladder rungs, not prose
+examples; this mapping only ties the resulting class to its pass.
 
 Execution policy:
-- `safe` changes may be applied only after triage packet publication.
+- `safe` changes may be applied only after triage packet publication AND the §9.1.2 audit PASS.
 - only `safe` may be batch-applied directly,
 - `provable` may be applied in grouped batches only after proof succeeds (§9.2),
 - `manual` MUST be handled one-by-one with explicit approval (§9.3).
 - if classification is uncertain, classify as `manual`.
 - if any item cannot be confidently proven equivalent, it MUST be classified as `manual`.
+- re-classification on contradiction (MUST): if, while applying any atom, behavioral or
+  dispatch evidence contradicts its assigned class, the agent MUST halt, reclassify, and
+  re-enter the appropriate pass/gate before continuing.
+- post-Pass-1 revalidation (MUST): after the Pass 1 sweep mutates code, revalidate the
+  `provable`/`manual` classifications against the changed code before Pass 2 begins; stale
+  classifications MUST be re-derived.
 - if triage is skipped and later detected, the agent MUST halt immediately, report non-compliance, and backfill triage before continuing.
 
 Final reporting gate:
@@ -363,6 +428,9 @@ Final reporting gate:
   - `runtime_validation_executed`: `yes|no` (evidence link OR blocker + exact follow-up command)
   - `meta_checkpoint_phase2_executed`: `yes|no` (evidence: labeled output or committed artifact reference)
   - `meta_checkpoint_phase9_executed`: `yes|no` (evidence: labeled committed artifact line or path)
+  - `independent_triage_audit_passed`: `yes|no` (evidence: auditor output ref OR user-override note)
+  - `provable_proof_ledger_complete`: `yes|no` (path/section)
+  - `reclassification_checkpoint_clean`: `yes|no` (note any halts/re-derivations)
 
 Non-circumvention:
 - workflow-specialization rules MUST reference this section.
@@ -381,6 +449,11 @@ Before applying grouped Pass 2 changes, the agent MUST verify:
 Static analyzer/lint passes alone are insufficient for Pass 2 proof.
 
 If any proof step is inconclusive, item MUST be escalated to Pass 3 and not batch-applied.
+
+Per-`provable`-atom proof ledger (MUST): each `provable` atom MUST have a recorded ledger
+line in the triage packet before it is applied — at minimum: atom id, resolved callee@path,
+signature old→new, and the check result. No ledger line → no apply. The ledger is the
+auditable evidence that §9.2 proof actually ran; an unrecorded proof does not count.
 
 ### 9.3 Pass 3 Approval Loop (MUST)
 
