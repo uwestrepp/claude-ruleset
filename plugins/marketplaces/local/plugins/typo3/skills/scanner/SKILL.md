@@ -23,9 +23,9 @@ Non-skippable triage/compliance gates are defined centrally in `Batch.md` §9.1 
 
 Apply `Batch.md` §2 general toolset gate. TYPO3 ExtensionScanner-specific checks:
 - step 1 (project type): confirm `composer.json` references `typo3/cms-core` or equivalent.
-- step 3 (required commands): confirm `ddev typo3-extensionscanner` exists and is callable.
+- step 3 (required commands): confirm `ddev typo3-extensionscanner` exists and is callable. If it does not, this is NOT a blocking tooling gap — the skill ships the runner; install it per §1.1 before proceeding.
 
-If any check fails: report which tooling is missing, do not continue the workflow, and ask the user how to proceed.
+If any other check fails: report which tooling is missing, do not continue the workflow, and ask the user how to proceed.
 
 ---
 
@@ -42,10 +42,17 @@ Use the project command wrapper:
 
 If extension scope is not explicitly given, ask once before scanning all extensions.
 
-If the project does not yet have a `ddev typo3-extensionscanner` wrapper,
-`resources/typo3-extension-scanner` is the canonical headless runner. See
-`resources/README.md` for the recommended project wiring (script copy +
-ddev command stub).
+### 1.1 Runner Bootstrap — install if missing (MUST)
+
+The skill SHIPS the canonical runner as `resources/typo3-extension-scanner`. The agent MUST NOT port it from another project or recreate it by hand — the bundled copy is the single canonical source.
+
+If `ddev typo3-extensionscanner` is not callable and no project copy exists at `.aiassistant/scripts/typo3-extension-scanner`, install it from this skill's bundled resources before scanning:
+
+1. copy this skill's `resources/typo3-extension-scanner` to the project's `.aiassistant/scripts/typo3-extension-scanner`,
+2. create the DDEV wrapper `.ddev/commands/web/typo3-extensionscanner` (stub in `resources/README.md`),
+3. verify it is callable (e.g. `ddev typo3-extensionscanner --summary <one extKey>`), then proceed.
+
+This writes committable files into the project repo (the copy is meant to be shared with team/CI per `resources/README.md`) — confirm with the user before installing, and surface the new files at the next commit. If a project copy already exists, prefer it (it MAY carry project-specific tweaks per the README drift policy); do not overwrite it from resources without confirmation.
 
 ---
 
