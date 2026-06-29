@@ -24,6 +24,16 @@ fi
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
 [[ -z "$CWD" ]] && CWD="$PWD"
 REPO_ROOT=$(git -C "$CWD" rev-parse --show-toplevel 2>/dev/null || echo "$CWD")
+
+# Honor an explicit `cd <dir>` in the command — the commit targets that repo, not .cwd.
+# Without this, a commit into e.g. ~/.claude issued from a ~/work session cwd would be
+# wrongly enforced (and the documented ~/.claude exemption silently bypassed).
+CD_TARGET=$(echo "$COMMAND" | grep -oP 'cd\s+\K(~|\$HOME|/)[^\s;&|]*' | head -1)
+if [[ -n "$CD_TARGET" ]]; then
+    CD_TARGET="${CD_TARGET/#\~/$HOME}"; CD_TARGET="${CD_TARGET/#\$HOME/$HOME}"
+    RESOLVED=$(git -C "$CD_TARGET" rev-parse --show-toplevel 2>/dev/null) && REPO_ROOT="$RESOLVED"
+fi
+
 case "$REPO_ROOT/" in
     "$HOME"/work/*) ;;   # under ~/work → enforce
     *) exit 0 ;;         # elsewhere → exempt
