@@ -16,13 +16,30 @@
 #
 # Input:  JSON on stdin; effort at .effort.level, model at .model, trigger at .source.
 # Output: stdout additionalContext JSON, exit 0. Never blocks.
+#
+# Effort resolution: the SessionStart stdin JSON does NOT reliably carry
+# .effort.level at startup (model comes through, effort is empty → "unknown").
+# Resolve via a fallback chain instead, matching General.md §10.2 which names
+# $CLAUDE_EFFORT as the source of truth: stdin .effort.level → $CLAUDE_EFFORT env
+# (set for hooks per the Claude Code changelog) → settings.json effortLevel
+# (persisted default) → "unknown".
 
 set -uo pipefail
+
+SETTINGS="${HOME}/.claude/settings.json"
 
 INPUT=$(cat)
 EFFORT=$(echo "$INPUT" | jq -r '.effort.level // empty' 2>/dev/null || true)
 MODEL=$(echo "$INPUT" | jq -r '.model // empty' 2>/dev/null || true)
 SOURCE=$(echo "$INPUT" | jq -r '.source // empty' 2>/dev/null || true)
+
+# Fallback chain for effort when stdin omits it.
+if [ -z "$EFFORT" ]; then
+    EFFORT="${CLAUDE_EFFORT:-}"
+fi
+if [ -z "$EFFORT" ] && [ -f "$SETTINGS" ]; then
+    EFFORT=$(jq -r '.effortLevel // empty' "$SETTINGS" 2>/dev/null || true)
+fi
 
 EFFORT=${EFFORT:-unknown}
 MODEL=${MODEL:-unknown}
