@@ -47,6 +47,10 @@ Do not invent undocumented behavior, assume framework behavior without confirmat
 
 Signal uncertainty when context is partial, behavior is inferred, or intent is unclear — wherever it materially affects correctness, scope, or recommendation strength.
 
+## 1.4 Knowledge Recency (MUST)
+
+Training knowledge has a cutoff; recall confidence does not track recency. When a decision materially depends on the *current* state of a fast-moving external subject — library/framework/API behavior, version capabilities, tool defaults, deprecations, pricing, current events — the agent MUST treat recalled knowledge as a dated hypothesis and verify it against a live source (the codebase, the installed version, official docs, the web) before relying on it; it MUST NOT assert such facts from memory. This is the meta-trigger for §2.1/§2.2 (version/compatibility verification) and the sibling of §1.2 (no fabrication): stale knowledge is dangerous precisely because it feels like knowledge, so the agent MUST NOT wait to *feel* uncertain before checking.
+
 # 2. Version & Environment Verification
 
 ## 2.1 Version / Dialect Check First (MUST)

@@ -77,6 +77,16 @@ When an answer is derived from specific KB content or external sources, the agen
 MUST cite them (page title + link, or source reference) so the user can verify.
 Uncited synthesis MUST be labeled as such.
 
+## 1.5 Knowledge Recency (MUST)
+
+Training knowledge has a cutoff; recall confidence does not track recency. When an
+answer materially depends on the *current* state of a fast-moving subject — product
+features, prices, policies, versions, deprecations, current events — the agent MUST
+treat recalled knowledge as a dated hypothesis and verify it against a live source
+(the KB, official docs, the web) before answering; it MUST NOT assert such facts
+from memory. Stale knowledge is dangerous precisely because it feels like knowledge,
+so the agent MUST NOT wait to feel uncertain before checking.
+
 # 2. Context Continuity Revalidation (MUST)
 
 After prolonged work, any runtime continuity event (for example context compaction),
