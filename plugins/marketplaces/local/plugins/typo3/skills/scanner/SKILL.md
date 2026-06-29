@@ -165,7 +165,7 @@ If a required validation path cannot be run, state blocker and exact follow-up c
 
 ## 7.1 Option-Matrix Regression Check (MUST for Pass 2/3)
 
-When Pass 2 or Pass 3 changes touch extension runtime behavior, the agent MUST run/update configuration-option coverage per the `/typo3:upgrade` skill §7.1 for affected extensions.
+When Pass 2 or Pass 3 changes touch extension runtime behavior, the agent MUST run/update configuration-option coverage per the `/typo3:upgrade` skill §4.1 for affected extensions.
 
 Minimum requirement:
 - execute at least one high-impact option path per touched extension (if defined),

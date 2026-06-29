@@ -10,6 +10,10 @@ This is an orchestration skill. It contains no workflow content of its own — i
 invokes the three component workflow skills in sequence. The user (or auto-
 activation) needs only this one invocation; the orchestrator activates the rest.
 
+When a TYPO3 major upgrade runs under `/composer:major-upgrade`, this chain is the
+TYPO3 `remediation-toolchain` invoked at that spine's Phase 5c (framework
+remediation). Run standalone, it is the full TYPO3 upgrade chain in its own right.
+
 **Component skills invoked by this orchestrator** (do NOT pre-activate them
 manually — this skill invokes each via the `Skill` tool at the right time):
 

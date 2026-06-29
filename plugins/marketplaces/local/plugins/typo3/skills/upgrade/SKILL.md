@@ -1,78 +1,70 @@
 ---
 name: upgrade
-description: "Activate with /typo3:upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. Provides the full TYPO3 Upgrade Workflow (Execution + DoD): phase template, preflight, inventory, deprecation/breaking scan, implementation constraints, validation checklist, documentation sync, and commit strategy. Required before any structured TYPO3 version upgrade work begins."
+description: "Activate with /typo3:upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. The TYPO3 specialization of /composer:major-upgrade: it fills that generic spine's framework slots with TYPO3 values and supplies the TYPO3-specific preflight, inventory, deprecation/breaking scan, configuration-option coverage, and documentation steps. Required before any structured TYPO3 version upgrade work begins. NOT a patch/minor/security bump (use /composer:update)."
 argument-hint: [scope]
-allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
+allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
 
-# TYPO3 Upgrade Workflow (Execution + DoD)
-Applies to extension upgrade tasks (for example TYPO3 major/minor compatibility migrations).
+# TYPO3 Upgrade Workflow (specialization of /composer:major-upgrade)
 
-This workflow is mandatory when the task is an upgrade and complements `TYPO3.md`
-and `Batch.md` (execution phases, toolset gate, autonomous mode, chaining, reporting).
+The TYPO3 specialization of the generic Composer major-upgrade spine. The **phase model, Pass 1/2/3
+model, escalation gate, branch/baseline + before/after discipline, runtime-decoupling decision, and
+rollout-doc separation live in `/composer:major-upgrade`** — activate it or read it; they are binding
+here and MUST NOT be restated or weakened (`General.md` §9.3). This skill supplies what is genuinely
+TYPO3-specific: the slot fills below and the detail sections they point to.
 
-Non-skippable triage/compliance gates are defined centrally in `Batch.md` §9.1 and are mandatory for this workflow.
+The spine is a **faithful `Batch.md` §1 specialization**, so phases here are Batch phases 0–9 — the
+same model `/typo3:upgrade-full`'s chain expects when it runs this skill's "phases 2–9". No separate
+phase numbering is introduced.
 
-**Changelog reference:** The TYPO3 deprecation/breaking-change index (v10–v14) is available in `references/changelog.md` within this skill. Consult it during Phase 3 scan and Phase 4 triage.
+Also complements `TYPO3.md` and `Batch.md` (execution phases, toolset gate, autonomous mode,
+chaining, reporting). Non-skippable triage/compliance gates are defined centrally in `Batch.md` §9.1
+and are mandatory for this workflow.
 
----
-
-## 1. Required inputs before coding (MUST)
-
-Confirm or infer with evidence:
-
-- target TYPO3 version.
-- active branch/worktree context.
-- extension scope (single extension or explicit set).
-- acceptance criteria source (ticket and/or project docs).
-
-If one of these is missing and blocks correctness, ask once and continue with all non-blocked work.
+**Changelog reference:** the TYPO3 deprecation/breaking-change index (v10–v14) is in
+`references/changelog.md`; preferred replacement patterns in `references/migration-patterns.md`.
+Consult them during the spine's Phase 3 scan and Phase 4 triage.
 
 ---
 
-## 2. Execution order (MUST)
+## 1. Slot fills for /composer:major-upgrade (MUST)
 
-Follows `Batch.md` §1 phase template. TYPO3 upgrade phase mapping:
+Authoritative TYPO3 values for the spine's `references/framework-slot-contract.md`:
 
-| Batch.md phase                  | TYPO3 upgrade step                      |
-|---------------------------------|-----------------------------------------|
-| 0 — Toolset Gate                | §3 preflight (toolset checks)           |
-| 1 — Preflight                   | §3 preflight (remaining checks)         |
-| 2 — Scope, Inventory & Baseline | §4 inventory + functional baseline      |
-| 3 — Scan / Analysis             | §5 deprecation/breaking scan            |
-| 4 — Triage & Plan               | triage packet + implementation plan     |
-| 5 — Implementation              | §6 implementation constraints           |
-| 6 — Validation                  | §7 validation checklist                 |
-| 7 — Documentation Sync          | §8 documentation sync                   |
-| 8 — Commits                     | §9 commit strategy                      |
-| 9 — Handover & Reporting        | §10 handover                            |
+| Slot | TYPO3 fill |
+|------|------------|
+| `framework-detect` | `typo3/cms-core` in `composer.lock`; installed major via `ddev typo3 --version` |
+| `runtime-matrix` | the target's supported PHP / DB range (verify against docs.typo3.org for the exact target, e.g. 13.4: PHP 8.2–8.4, MariaDB 10.4.3–11.4 / MySQL 8.0+) — drives the spine's coupled/decoupled runtime decision |
+| `changelog-source` | `references/changelog.md` (v10–v14 index) + docs.typo3.org Changelog for the BASE→TARGET range |
+| `deprecation-hotspots` | §3 below (scan checklist) + ExtensionScanner via `/typo3:scanner` |
+| `remediation-toolchain` | `/typo3:upgrade-full` chain — `/typo3:scanner` + `/typo3:static-tests` (rector/fractor TYPO3 rulesets) — run in the spine's Phase 5c |
+| `schema-wizard-commands` | `ddev typo3 database:updateschema`, `ddev typo3 upgrade:run`; destructive cleanup staged two-step (prefix/rename, then drop) in the spine's gated Phase 5d |
+| `config-sources` | §5 below (TypoScript, Extension Configuration, FlexForm/TCA, site/plugin switches) |
+| `doc-location` | `UPDATE*.md` (version-specific, e.g. `UPDATE13.md`) + extension README migration section (§6 below) |
 
-Within Phase 5, apply the shared pass model from `Batch.md` §9 and the pre-apply classifier/gates from `Batch.md` §9.1.
-Validation selection/depth for Phase 6 MUST follow `General.md` section `5.2` and `Batch.md` §9.4.
-When static-test or scanner workflows are used, chain them per `Batch.md` §6 — activate the `/typo3:scanner` or `/typo3:static-tests` skill at that point.
-For grouped Pass 1/Pass 2 batches, validation may be concatenated when items share risk profile and impacted surfaces, but coverage mapping per item/topic MUST be explicit in reporting.
+When chaining scanner/static-tests, activate `/typo3:scanner` or `/typo3:static-tests` per `Batch.md`
+§6 at the spine's Phase 5c. Within the spine's Phase 5, apply `Batch.md` §9 + §9.1 (pass model +
+pre-apply gates); validation depth follows `General.md` §5.2 and `Batch.md` §9.4. Grouped Pass 1/2
+validation may be concatenated when items share risk profile and surfaces, but per-item coverage MUST
+be explicit in reporting.
 
 ---
 
-## 3. Preflight checklist (MUST)
+## 2. TYPO3 preflight additions (MUST)
 
-- apply `Batch.md` §2 toolset gate; TYPO3-specific checks:
-  - step 1 (project type): verify `composer.json` references `typo3/cms-core` or equivalent.
-  - step 3 (required commands): verify `ddev typo3 list` is callable.
+Augments the spine's Phase 0 toolset/env gate (`Batch.md` §2):
+
+- step 1 (project type): verify `composer.json` references `typo3/cms-core` or equivalent.
+- step 3 (required commands): verify `ddev typo3 list` is callable.
 - check git branch and local status.
-- record the confirmed comparison base branch in `.aiassistant/state/base-branch` if not yet present (activates the global base-branch guard hook for this project).
-- verify extension is active (if runtime checks are required).
-- verify composer constraints relevant to extension and TYPO3 core.
+- record the confirmed comparison base branch in `.aiassistant/state/base-branch` if not yet present
+  (activates the global base-branch guard hook for this project).
+- verify the extension is active (if runtime checks are required).
+- verify composer constraints relevant to the extension and to TYPO3 core.
 
----
+## 2.1 TYPO3 inventory touchpoints (MUST)
 
-## 4. Inventory checklist (MUST)
-
-Provides the TYPO3-specific content of `Batch.md` Phase 2. After inventory, apply
-`Batch.md` §3.2 to verify and document the functional baseline for all identified
-entry points before proceeding to Phase 3.
-
-Identify and document:
+The TYPO3-specific content of the spine's Phase 2 (Scope, Inventory & Baseline). Identify and document:
 
 - entry points (frontend routes, controllers, middleware, CLI commands, scheduler tasks).
 - storage/schema touchpoints (`ext_tables.sql`, TCA, repositories, query code).
@@ -81,119 +73,64 @@ Identify and document:
 
 ---
 
-## 5. Deprecation/breaking scan checklist (MUST)
+## 3. Deprecation/breaking scan checklist (MUST)
 
-Consult `references/changelog.md` for the full v10–v14 deprecation/breaking-change index, and `references/migration-patterns.md` for the preferred replacement patterns to apply in Phase 5.
-
-At minimum, scan for TYPO3 upgrade hotspots:
+Fills `deprecation-hotspots` for the spine's Phase 3. Consult `references/changelog.md` (v10–v14) and
+`references/migration-patterns.md`. At minimum, scan for:
 
 - Extbase request/response legacy mutation APIs.
-- runtime superglobal usage in executable code (`$_SERVER`, `$_GET`, `$_POST`, `$_REQUEST`, `$GLOBALS['TYPO3_REQUEST']`) and safe PSR-7/Extbase replacements.
+- runtime superglobal usage in executable code (`$_SERVER`, `$_GET`, `$_POST`, `$_REQUEST`,
+  `$GLOBALS['TYPO3_REQUEST']`) and safe PSR-7/Extbase replacements.
 - deprecated plugin registration and list_type patterns.
 - deprecated global/request/environment utility calls.
 - deprecated DBAL methods and typed API changes.
-- deprecated service resolution via legacy Service API (for example `makeInstanceService()` fallback chains).
+- deprecated service resolution via legacy Service API (e.g. `makeInstanceService()` fallback chains).
 - legacy service framework usage (keep wrappers only when required by dependents).
 
-Map each finding to one of:
-
-- blocking (must fix now),
-- safe migration path available (should fix now),
-- unknown/needs decision (backlog with rationale).
-
-For superglobal findings, the upgrade result MUST explicitly state:
-
-- replaced (safe replacement path applied), or
-- retained (no safe replacement in context, with short rationale).
+Map each finding to the spine's classification (blocking / safe path available / needs decision). For
+superglobal findings, the result MUST explicitly state **replaced** (safe path applied) or
+**retained** (no safe replacement in context, with short rationale).
 
 ---
 
-## 6. Implementation constraints (MUST)
+## 4. Implementation & validation — TYPO3 notes (MUST)
 
-- preserve behavior unless acceptance criteria explicitly request behavior change.
-- prefer least-invasive change.
-- keep public extension contracts stable unless explicitly approved.
-- when replacing removed APIs, follow official migration path, not ad-hoc rewrites.
+Constraints, the staged Pass model, and the validation/before-after protocol are the spine's
+(Phase 5 §8, Phase 6 §9). TYPO3-specific additions only:
 
----
+- when replacing removed APIs, follow the **official TYPO3 migration path** (`migration-patterns.md`),
+  not ad-hoc rewrites; keep public extension contracts stable unless approved.
+- validation surfaces to include where touched: syntax/lint for changed PHP, CLI paths touched, FE/BE
+  endpoint checks, and **upgrade wizard + schema actions** (`ddev typo3 upgrade:run` /
+  `database:updateschema`) — the latter run in the spine's gated Phase 5d.
 
-## 7. Validation checklist (MUST)
+## 4.1 Configuration option coverage (MUST)
 
-Always provide evidence for executed validation paths, following `General.md` section `5.2 Test Path Selection & Execution`.
+Fills `config-sources` for the spine's Phase 6 option coverage. Applicable TYPO3 option sources:
 
-Behavioral validation policy is inherited from `General.md` section `5.2` and `Batch.md` §9.4 (including: static outputs are compliance-only and cannot be sole regression proof).
+- TypoScript setup/constants and plugin settings,
+- extension configuration (`ext_conf_template.txt` / Extension Configuration),
+- plugin/content-element configuration (FlexForm / TCA / content-element fields),
+- route/site/plugin switches that alter rendering or behavior.
 
-Always include, where touched:
-
-- syntax/lint for changed PHP files.
-- CLI command execution paths touched by the change.
-- endpoint-level checks for changed frontend/backend surfaces.
-- upgrade wizard and schema actions where applicable.
-
-If any validation cannot run, state exactly why and what to run later.
-
-## 7.1 Configuration Option Coverage (MUST)
-
-For extension upgrades or migration tasks that can be affected by runtime configuration, the agent MUST add option-level verification on top of the baseline in `General.md` section `5.2`.
-
-Applicable option sources include:
-
-- TypoScript setup/constants and plugin settings
-- extension configuration (`ext_conf_template.txt` / Extension Configuration)
-- plugin/content-element configuration (FlexForm/TCA/content element fields)
-- route/site/plugin switches that alter rendering or behavior
-
-Required procedure:
-
-1. identify options that can change behavior (output, layout, data handling, caching, request flow, feature toggles).
-2. classify each option by impact:
-   - high: can alter runtime behavior or user-visible output substantially
-   - medium: localized output/behavior impact
-   - low: cosmetic or operational-only impact with minimal functional risk
-3. define a minimal but meaningful option matrix per extension:
-   - include all high-impact options
-   - include representative values for medium-impact options
-   - defer low-impact options with rationale if not covered in current cycle
-4. execute checks for selected matrix entries on suitable surfaces (FE/BE/API/CLI as applicable).
-5. document executed coverage and residual backlog in a persistent artifact (for example `docs/testing/extension-option-test-matrix.md`).
-
-If option semantics are unclear, ask once before finalizing.
+Procedure: (1) identify options that can change behavior (output, layout, data handling, caching,
+request flow, feature toggles); (2) classify each high / medium / low impact; (3) define a minimal but
+meaningful matrix per extension (all high-impact, representative medium, deferred low with rationale);
+(4) execute checks on suitable surfaces (FE/BE/API/CLI); (5) document executed coverage and residual
+backlog in a persistent artifact (e.g. `docs/testing/extension-option-test-matrix.md`). If option
+semantics are unclear, ask once before finalizing.
 
 ---
 
-## 7.2 Baseline + Final Comparison (MUST)
+## 5. Documentation sync — TYPO3 conventions (MUST)
 
-The functional baseline is established in Phase 2 per `Batch.md` §3.2. For larger
-upgrade batches (multi-extension or multi-topic), per-extension baseline documentation
-MUST exist before Phase 5; create or update it during Phase 2 if missing.
+Fills `doc-location` for the spine's Phase 7 (Documentation Sync). When upgrade-related changes are applied:
 
-At Phase 6, run the full suite again and compare results against the Phase 2 baseline.
-
----
-
-## 8. Documentation sync (MUST)
-
-When upgrade-related changes are applied:
-
-- update the relevant `UPDATE*.md` (version-specific, for example `UPDATE13.md`) with one-time migration steps.
-- update extension README migration section if public/operator relevant.
+- update the relevant `UPDATE*.md` (version-specific, e.g. `UPDATE13.md`) with one-time migration
+  steps (the spine's separate rollout runbook).
+- update the extension README migration section if public/operator relevant.
 - include verification commands and expected outcomes when possible.
 
----
-
-## 9. Commit strategy (MUST)
-
-Use scoped commits, grouped by concern:
-
-- API/runtime fix,
-- migration/wizard/schema step,
-- docs/update instructions,
-- optional cleanup.
-
-Complex refactors must include explanatory commit body (`Why`, `What`, `How to test`, `Notes`).
-
----
-
-## 10. Handover template (MUST)
-
-Follow `Batch.md` §8.2 final cycle report template.
+Commit strategy and handover follow `/core:commits` and the spine's Phase 8/9 — group commits by
+concern (API/runtime fix, migration/wizard/schema, docs, cleanup); complex refactors carry an
+explanatory body (`Why`, `What`, `How to test`, `Notes`).
