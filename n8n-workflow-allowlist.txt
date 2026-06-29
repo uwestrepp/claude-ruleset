@@ -1,0 +1,9 @@
+# n8n workflow IDs that the agent may WRITE to (PUT/POST update, activate/deactivate)
+# without a confirmation prompt. One workflow ID per line. '#' comments and blank
+# lines are ignored. Writes to any workflow NOT listed here trigger an "ask" prompt;
+# DELETE and credential/user/project writes are hard-blocked regardless of this list.
+#
+# Consumed by ~/.claude/hooks/guard-n8n-api.sh
+
+# CCM Monitoring PoC (FEINSITE-1916) — https://n8n.mosaiq.com
+1qK5oetmSDJiUnVP
