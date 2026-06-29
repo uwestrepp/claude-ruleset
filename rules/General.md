@@ -283,7 +283,15 @@ Minimize token usage without compromising correctness, completeness, or user int
 
 ## 10.3 Session restart guidance (SHOULD)
 
-For sessions grown large, the agent SHOULD suggest starting a fresh session at a task boundary (with or without a handover note, depending on whether prior context needs to carry) when projected token savings, or a better-fitting effort/model setting per §10.2, exceed the restart cost. This is a suggestion, never a unilateral action.
+For sessions grown large, the agent SHOULD suggest starting a fresh session at a task boundary when projected token savings, or a better-fitting effort/model setting per §10.2, exceed the restart cost. This is a suggestion, never a unilateral action.
+
+When the agent suggests a restart and prior context must carry to the next session, it MUST offer a complete **handover bundle** in one collected proposal — never a bare "you could restart" hint. The bundle comprises:
+
+- **continuation doc** — the handover/brain-dump note capturing current state and the next concrete step (in a batch cycle this is the §11.1 handoff note; otherwise a doc-file or an inline brain-dump);
+- **memory** — durable persistence per `Meta.md` §2 of anything that must survive the session (confirmed facts, decisions, env quirks) at its correct scope;
+- **trigger prompt** — a ready-to-paste prompt that bootstraps the next session: what to read first (the continuation doc / state paths), the immediate next action, and the recommended `/effort` level + model per §10.2.
+
+The three MUST be presented together so the user can restart in one paste. The agent MUST NOT propose a restart while omitting the trigger prompt when context needs to carry.
 
 ## 10.4 Output brevity (MUST)
 
