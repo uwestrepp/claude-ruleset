@@ -1,6 +1,6 @@
 # Collision-vector catalog: TYPO3
 
-Ecosystem catalog for `/core:composer-update`. Satisfies `../catalog-contract.md`. Generalized from
+Ecosystem catalog for `/composer:update`. Satisfies `../catalog-contract.md`. Generalized from
 the TYPO3 **13.4.31** security rollout (the worked example, see §6 below) to **any TYPO3 patch/minor
 `composer update`** within a major line.
 

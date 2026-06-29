@@ -1,6 +1,6 @@
 # Collision-vector catalog contract
 
-A **catalog** is the ecosystem-specific knowledge the `/core:composer-update` workflow needs to turn
+A **catalog** is the ecosystem-specific knowledge the `/composer:update` workflow needs to turn
 a generic "what changed upstream" map into a concrete "does *this* project collide" verdict. The
 workflow engine is ecosystem-agnostic; all framework knowledge lives in catalogs
 (`references/catalogs/<ecosystem>.md`).
@@ -72,4 +72,4 @@ re-application order, or cache/compile steps required post-update.
   output), not catalog content. The catalog tells you *how* to build and read such a map.
 - **Not** a workflow. No phases, no Pass model — those live in the skill and `Batch.md`.
 - **Not** version mechanics. Resolution order, lock discipline, `-W` semantics belong to
-  `/core:composer`; reference it, don't restate it.
+  `/composer:knowledge`; reference it, don't restate it.

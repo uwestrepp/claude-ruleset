@@ -1,6 +1,6 @@
 ---
-name: composer-update
-description: "Activate via /core:composer-update (optional ecosystem hint, e.g. typo3) before any non-trivial Composer update in a customized project — security patches and patch/minor bumps where project customizations (local packages, patches, XCLASS/decoration/overrides) could collide with the update delta. Workflow: baseline → dry-run delta → reusable upstream change-map → intersect with project customizations via a pluggable collision-vector catalog (references/catalogs/<eco>.md; ships TYPO3 + generic; offers to author missing catalogs) → document → gated rollout. Layers on /core:batch; references /core:composer and /core:commits. explicit activation required — auto-suggest (do not auto-run) on requests like 'safely update <package>', 'roll out a security update / CVE fix across projects', 'will this update break our customizations'. NOT trivial adds in vanilla projects (/core:composer); NOT major-version migrations (/typo3:upgrade)."
+name: update
+description: "Activate via /composer:update (optional ecosystem hint, e.g. typo3) before any non-trivial Composer update in a customized project — security patches and patch/minor bumps where project customizations (local packages, patches, XCLASS/decoration/overrides) could collide with the update delta. Workflow: baseline → dry-run delta → reusable upstream change-map → intersect with project customizations via a pluggable collision-vector catalog (references/catalogs/<eco>.md; ships TYPO3 + generic; offers to author missing catalogs) → document → gated rollout. Layers on /core:batch; references /composer:knowledge and /core:commits. explicit activation required — auto-suggest (do not auto-run) on requests like 'safely update <package>', 'roll out a security update / CVE fix across projects', 'will this update break our customizations'. NOT trivial adds in vanilla projects (/composer:knowledge); NOT major-version migrations (/composer:major-upgrade, or /typo3:upgrade for TYPO3)."
 argument-hint: [ecosystem|scope]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
@@ -21,8 +21,8 @@ context before relying on it (`General.md` §9.3):
   (toolset gate), §3 (inventory/baseline), §7 (agent delegation), §8 (reporting).** Activate
   `/core:batch` or read those sections; they are binding here and MUST NOT be weakened (`Batch.md`
   §9.1 non-circumvention).
-- **`/core:composer`** — version resolution order, lock-file discipline, `--with-dependencies` vs
-  `-W`, dev-overrides. Mechanics live there; do not restate them.
+- **`/composer:knowledge`** — version resolution order, lock-file discipline, `--with-dependencies`
+  vs `-W`, dev-overrides. Mechanics live there; do not restate them.
 - **`/core:commits`** — commit schema + ticket traceability for the lock commit.
 - **`General.md` §2.3** (exec-context routing), **§4.5** (upstream-contract verification),
   **§5.2** (test-path selection), **§8.3** (topic-close commit), **`Meta.md` §1.1** (checkpoints).
@@ -31,11 +31,12 @@ context before relying on it (`General.md` §9.3):
 
 - **This skill** = patch/minor updates and security rollouts. The question is *"will pulling this
   delta silently break, or silently re-open, one of my customizations?"*
-- **`/typo3:upgrade`** = major-version upgrades. The question there is *"what must I migrate"*
-  (deprecations, breaking changes). If the task is a major TYPO3 jump, stop and use that skill.
-- **`/core:composer`** = a knowledge reference for resolution/lock questions and trivial
+- **`/composer:major-upgrade`** = major-version upgrades. The question there is *"what must I
+  migrate"* (deprecations, breaking changes, runtime bump, staged rollout). If the task is a major
+  jump, stop and use that skill — `/typo3:upgrade` for a TYPO3 jump specifically.
+- **`/composer:knowledge`** = a knowledge reference for resolution/lock questions and trivial
   add/require in vanilla projects. If there are no project customizations at risk, this workflow is
-  overkill — say so and defer to `/core:composer`.
+  overkill — say so and defer to `/composer:knowledge`.
 
 When the target sits at a boundary (e.g. a minor bump that also crosses a framework's own
 deprecation line), name the ambiguity and ask before proceeding (`General.md` §1.1).
@@ -111,7 +112,7 @@ Then:
 
 - **Split direct vs transitive.** Transitive bumps are easy to miss and can carry their own
   security fixes. If the headline update pulls a transitive security bump, the rollout MUST use `-W`
-  (`/core:composer`).
+  (`/composer:knowledge`).
 - **Flag security-relevant transitions** (advisory references, `composer audit` if available).
 - **Flag floating dev/branch-constrained packages (ecosystem-independent trap).** A package
   constrained `@dev`/`dev-*`/branch-alias whose lock currently pins a *non-default* branch is

@@ -1,6 +1,6 @@
 {
   "name": "core",
   "version": "1.0.0",
-  "description": "Generic workflow skills: batch governance (/core:batch), commit discipline (/core:commits), composer wiring (/core:composer), informed gated composer updates (/core:composer-update), git-hooks install (/core:githooks-install), verbalized-sampling brainstorming (/core:brainstorm), adversarial plan elicitation (/core:grill-me), adversarial artifact critique (/core:poke-holes), rule-set feedback loop (/core:rule-friction)",
+  "description": "Generic workflow skills: batch governance (/core:batch), commit discipline (/core:commits), git-hooks install (/core:githooks-install), verbalized-sampling brainstorming (/core:brainstorm), adversarial plan elicitation (/core:grill-me), adversarial artifact critique (/core:poke-holes), rule-set feedback loop (/core:rule-friction). Composer skills moved to the composer plugin (/composer:knowledge, /composer:update, /composer:major-upgrade).",
   "author": { "name": "MOSAIQ GmbH" }
 }

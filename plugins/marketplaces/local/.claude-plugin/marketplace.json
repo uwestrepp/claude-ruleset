@@ -14,7 +14,14 @@
     {
       "name": "core",
       "source": "./plugins/core",
-      "description": "Generic workflow skills: batch governance, commit discipline, composer wiring",
+      "description": "Generic workflow skills: batch governance, commit discipline, brainstorming and adversarial critique, rule-set feedback",
+      "version": "1.0.0",
+      "author": { "name": "MOSAIQ GmbH" }
+    },
+    {
+      "name": "composer",
+      "source": "./plugins/composer",
+      "description": "System-agnostic Composer workflow skills: resolution/lock knowledge, informed gated updates, generic major-version upgrade spine",
       "version": "1.0.0",
       "author": { "name": "MOSAIQ GmbH" }
     },

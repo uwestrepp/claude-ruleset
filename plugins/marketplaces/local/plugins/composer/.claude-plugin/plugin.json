@@ -1,0 +1,6 @@
+{
+  "name": "composer",
+  "version": "1.0.0",
+  "description": "System-agnostic Composer workflow skills: resolution/lock-file knowledge (/composer:knowledge), informed gated minor/security updates (/composer:update), generic major-version upgrade spine (/composer:major-upgrade)",
+  "author": { "name": "MOSAIQ GmbH" }
+}

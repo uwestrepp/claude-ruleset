@@ -1,6 +1,6 @@
 # Collision-vector catalog: generic (ecosystem-agnostic fallback)
 
-Fallback catalog for `/core:composer-update` when no ecosystem-specific catalog exists for the
+Fallback catalog for `/composer:update` when no ecosystem-specific catalog exists for the
 detected stack. Satisfies `../catalog-contract.md`, but with **deliberately weaker scan power** —
 without ecosystem knowledge the workflow cannot find framework-specific override mechanisms
 (runtime class replacement, service decoration, event subscribers, template overrides). Be explicit
