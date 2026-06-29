@@ -19,6 +19,10 @@ and during `/typo3:scanner` Pass 2/3 replacements.
   - avoid introducing or keeping runtime reads from `$_SERVER`, `$_GET`, `$_POST`, `$_REQUEST`, or `$GLOBALS['TYPO3_REQUEST']` when a request object is available
   - in Extbase controllers, prefer `$this->request->getHeaderLine()`, `$this->request->getQueryParams()`, and argument APIs (`hasArgument()/getArgument()`) as appropriate
   - keep `$GLOBALS` usage only where TYPO3 bootstrap/config APIs require it (for example `TCA`, `TYPO3_CONF_VARS`) and document retained usages in upgrade notes
+- **`$GLOBALS['TSFE']` / TypoScriptFrontendController access**:
+  - avoid direct `$GLOBALS['TSFE']` reads (discouraged in 12.4; the TSFE is being dismantled toward v13)
+  - in cObject/DataProcessor scope use `$cObj->getTypoScriptFrontendController()` (public; may return null → call null-safe with `?->`)
+  - page cache tags: 12.4 uses `$tsfe->addCacheTags([...])`; in v13 register them via the `frontend.cache.collector` request attribute (`CacheDataCollector`) instead
 - **Legacy service framework**:
   - keeping compatibility wrappers for `AbstractService` / Service API usage is acceptable if required by dependent extensions
   - still migrate deprecated/removed core calls inside those wrappers

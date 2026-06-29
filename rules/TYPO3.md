@@ -139,7 +139,7 @@ When reporting findings, the agent SHOULD output:
 
 ## 8. Practical migration patterns (SHOULD)
 
-Preferred replacement patterns for update/cleanup/migration work (Extbase request/response immutability, PSR-7 over superglobals/`getIndpEnv()`, DI over `makeInstanceService()`, `makeInstance()` typing, TypoScript `traverse()` conditions) live in the `/typo3:upgrade` skill at `references/migration-patterns.md`. Consult them during upgrade/migration phases; they are workflow content and intentionally not loaded with this policy file.
+Preferred replacement patterns for update/cleanup/migration work (Extbase request/response immutability, PSR-7 over superglobals/`getIndpEnv()`, `$GLOBALS['TSFE']`/frontend-controller access via `$cObj->getTypoScriptFrontendController()`, DI over `makeInstanceService()`, `makeInstance()` typing, TypoScript `traverse()` conditions) live in the `/typo3:upgrade` skill at `references/migration-patterns.md`. Consult them during upgrade/migration phases; they are workflow content and intentionally not loaded with this policy file.
 
 ## 9. Composer version layering for extensions (MUST understand before version edits)
 
