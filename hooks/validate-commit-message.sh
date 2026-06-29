@@ -25,10 +25,15 @@ CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
 [[ -z "$CWD" ]] && CWD="$PWD"
 REPO_ROOT=$(git -C "$CWD" rev-parse --show-toplevel 2>/dev/null || echo "$CWD")
 
-# Honor an explicit `cd <dir>` in the command — the commit targets that repo, not .cwd.
-# Without this, a commit into e.g. ~/.claude issued from a ~/work session cwd would be
-# wrongly enforced (and the documented ~/.claude exemption silently bypassed).
-CD_TARGET=$(echo "$COMMAND" | grep -oP 'cd\s+\K(~|\$HOME|/)[^\s;&|]*' | head -1)
+# Honor an explicit `cd <dir>` that precedes the commit — the commit targets that repo, not .cwd.
+# Without this, a commit into e.g. ~/.claude issued from a ~/work session cwd would be wrongly
+# enforced (and the documented ~/.claude exemption silently bypassed). Heuristic on the command
+# string: take the LAST cd before `git commit` (the directory in effect at commit time). The
+# trailing `|| true` is REQUIRED — under `set -euo pipefail` a no-match grep would otherwise exit
+# the hook early (exit 1 = non-blocking → commit slips through unvalidated). Not resolved: `git -C`
+# and adversarial multi-cd command shapes — those are uncommon for agent-issued commits.
+PRE_COMMIT=${COMMAND%%git commit*}
+CD_TARGET=$(printf '%s' "$PRE_COMMIT" | grep -oP 'cd\s+\K(~|\$HOME|/)[^\s;&|]*' | tail -1 || true)
 if [[ -n "$CD_TARGET" ]]; then
     CD_TARGET="${CD_TARGET/#\~/$HOME}"; CD_TARGET="${CD_TARGET/#\$HOME/$HOME}"
     RESOLVED=$(git -C "$CD_TARGET" rev-parse --show-toplevel 2>/dev/null) && REPO_ROOT="$RESOLVED"
