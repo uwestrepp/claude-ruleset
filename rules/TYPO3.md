@@ -143,10 +143,10 @@ Preferred replacement patterns for update/cleanup/migration work (Extbase reques
 
 ## 9. Composer version layering for extensions (MUST understand before version edits)
 
-An extension's version can live in several layers; bumping only one is the classic source of stale or inconsistent releases. Composer-generic resolution and dev-override hygiene: `/core:composer` §1–§2. TYPO3 specifics:
+An extension's version can live in several layers; bumping only one is the classic source of stale or inconsistent releases. Composer-generic resolution and dev-override hygiene: `/composer:knowledge` §1–§2. TYPO3 specifics:
 
 - `extra."typo3/cms".extension-key` maps package name → extension key; it is NOT a version source.
 - `ext_emconf.php` `version` counts only for legacy (non-Composer) installs and TER packaging. Composer-mode TYPO3 (v11.4+) treats composer.json as authoritative — bumping only `ext_emconf.php` there changes nothing Composer sees; v12+ extensions installed via Composer may omit the file.
-- Releases are tagged (`/core:composer` §1.2; TER publishes via `tailor` from tags). When `ext_emconf.php` is present, align its `version` with the tag in the same release commit.
+- Releases are tagged (`/composer:knowledge` §1.2; TER publishes via `tailor` from tags). When `ext_emconf.php` is present, align its `version` with the tag in the same release commit.
 
 End of policy.
