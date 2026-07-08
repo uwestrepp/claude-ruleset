@@ -304,6 +304,24 @@ Default to the fewest words that carry the content. Applies to every chat respon
 
 Unconditional — no "unless needed for trust" escape. Brevity removes what is not load-bearing; it never omits detail genuinely required for correctness or a decision. When such detail is needed, include exactly that and no more.
 
+## 10.5 Proactive Offload Of Predictably Token-Heavy Actions (MUST)
+
+Before initiating a predictably token-heavy action for which an effective lower-cost path exists, the agent MUST route by the type of that path:
+
+- **Self-executable cheaper path** — a deterministic/local tool or sub-agent the agent runs itself at negligible cost with no loss the user would care about: take it directly, MUST NOT ask (this is §10.1, §11). Covers, non-exhaustively: grep/rg/sed/jq/SQL to extract a slice instead of loading a large file/dataset/diff into context; a codegen CLI or a small template+expansion script instead of emitting bulk boilerplate; a codemod/rector/sed pass instead of per-file model edits; a scheduler/Monitor/background loop instead of a model-driven poll; a sub-agent for read-heavy work whose intermediate reads need not enter context.
+- **Off-agent path requiring the user or an external actor** — the saving exists only by shifting work to the user or an external agent via manual relay, trading away agent context/autonomy the user might want. For actions in the mandatory offer list below the agent MUST, before executing, proactively offer the offload — naming the action, the concrete avoidance path, and (if assessable) a rough size cue — and MUST wait. Default is NOT to execute the expensive action; an explicit "do it" (or equivalent) releases it.
+
+Mandatory offer list — offer-and-wait is REQUIRED for each. Closed set: extend only by editing this rule, and only with actions that have a genuine off-agent path (never self-executable ones — those belong above):
+
+- Confluence page create/update via MCP → hand the user the Markdown/content to paste, instead of round-tripping the page body through context.
+- Large Jira payloads via MCP (long descriptions/comments) → provide the text to paste.
+- Web search/fetch fan-out and deep-research sweeps → relay a research prompt to an external online agent; the user pastes the result back.
+- Browser-instrumentation full dumps via chrome-devtools (DOM/accessibility snapshots, full network logs) → ask the user to paste the failing fragment (or self-serve a targeted evaluate_script/filtered query — that is the self-executable branch and needs no offer).
+
+For any OTHER action that clearly meets both conditions — predictably token-heavy AND whose only effective saving is an off-agent relay — the agent SHOULD offer likewise before executing. This catch-all is the judgment zone; when genuinely unsure whether it applies, a one-line offer is cheaper than a spent budget, so prefer offering over silently spending.
+
+Offer once per action; do not re-prompt. Skip the offer when an off-agent action's payload is itself predictably small.
+
 # 11. Sub-agent Delegation
 
 ## 11.1 Prefer delegation for bounded, main-context-isolated work (MUST)
