@@ -95,5 +95,63 @@ V1 and V2 approved and applied 2026-07-10: General.md §1.5 "Diagnosis
 Grounding" added, §2.4 extended with the comparison/merge-baseline trigger and
 statement item; adapted sync in exports/OnlineAgent.md §1.6 "Conclusion
 Grounding" (V2 has no export counterpart). Remaining follow-up: classifier
-output-token truncation (5 excluded sessions); data refresh is user-driven via
-/insights before each /core:rule-friction cycle.
+output-token truncation; data refresh is user-driven via /insights before each
+/core:rule-friction cycle.
+
+# Second pass — fresh /insights run, same day (window 2026-06-10..07-10)
+
+`/insights` works headless via `claude -p "/insights"` (verified 2026-07-10);
+regenerated 94 facets, report now covers 87 sessions (+7 classifier noise, up
+from 5 - the output-token truncation quirk recurs).
+
+## Pattern 1 recurrence (supports V1, all sessions predate §1.5)
+
+e2fbe2f0 (06-23, "0 Ads"/empty asserted as fact, was a shell brace-expansion
+fluke), e436c3b2 (07-06, Solr modules assumed globally active, were
+configset-local; checklist step mismatched actual method), ed739ef6 (07-10,
+this cycle's own "pipeline stalled" misdiagnosis). All before §1.5 landed;
+next cycle checks whether the rule binds.
+
+## New pattern 3 — pipeline exit-code masking in authored shell (V3 proposal)
+
+Sessions: a8ba8a93 (airbyte, 06-25): `abctl install` silently failed because a
+tail-pipe masked the exit code, follow-up work built on a failed install.
+dc42ba7c (rbk, 06-29): authored bash hook used `head -1` without `|| true`
+handling, introducing a fail-open critical bug caught only by PR review.
+Corroborating: this repo's own 335fbef (06-29) fixed the same fail-open class
+in commit-msg hooks.
+
+Classification: a8ba8a93 is an adherence failure of §5.6 (evidence check with
+success-masking pipe; §5.6 existed since <=06-10). dc42ba7c is a coverage
+gap: §5.6 scopes to *reading* evidence, not to *authoring* scripts/hooks/CI
+steps whose exit codes gate behavior.
+
+Proposal (V3): extend §5.6 with an authoring clause: when the agent writes
+shell/hook/CI code whose exit status gates behavior, a pipeline MUST NOT let a
+downstream filter mask the producer's exit status (use `pipefail`, explicit
+status capture, or restructure), and any gate MUST make its fail-open vs
+fail-closed behavior an explicit, stated decision. Expected impact: prevents
+silent-failure gates (two sessions plus one own-repo regression in one month).
+Risk: minimal; one paragraph, same section.
+
+V3 approved and applied 2026-07-10: authoring clause appended to General.md
+§5.6. No export sync needed (OnlineAgent.md has no shell/CI authoring
+context).
+
+## Remediation confirmations (rules visibly working)
+
+- 481ebc7a (07-01): stray pre-staged files caught and corrected by the agent
+  itself (commits skill steps 12-14, added 06-09). Slip still occurs at stage
+  time, but the gate now catches it.
+- 2df6791e (07-06): handover written to /tmp, lost on reboot; fixed the next
+  day by 1fd474e (07-07, pocock handoff now persists to .aiassistant/state).
+- 605b5978 (06-23): sub-agent false claim caught by main-agent verification.
+
+## Singles - no rule change proposed
+
+f6e4ce7a (06-25, stakeholder answers too long; §10.4 adherence), 67d44a39
+(07-08, skipped local cs-fixer/PHPStan before push, CI failed; §5.2/static-
+tests adherence), 9a5e5286 (07-08, new branch tracked origin/master; possible
+future §12 note if it recurs), 78f066d8 (estimates calibrated to human instead
+of agent workflows; novel, watch), 67eff609, 7c35a388, 1b88427a (user error),
+43e6e26e, 53be2907, eeda574b (session/limit artifacts).

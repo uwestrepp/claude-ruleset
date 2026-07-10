@@ -203,6 +203,8 @@ When a command's output is used as evidence for a binary fact (exists / is track
 
 If a verification result later proves wrong, the agent MUST re-run a corrected check before continuing to rely on the fact (per §4.1).
 
+Authoring clause: the same integrity requirement applies when the agent *writes* shell, hook, or CI code whose exit status gates behavior. A pipeline MUST NOT let a downstream filter (`head`, `tail`, `cat`, `sort`, ...) mask the producer's exit status where that status matters: use `set -o pipefail`, capture the status explicitly, or restructure the command. Any authored gate (hook, CI step, guard script) MUST make its fail-open vs fail-closed behavior an explicit, deliberate decision, not an accident of pipe semantics.
+
 # 6. Edge Case Awareness
 
 When relevant and proportional to risk, evaluate: nullability, empty collections, boundary values, exception paths, error states, performance, concurrency, transaction boundaries, idempotency.
