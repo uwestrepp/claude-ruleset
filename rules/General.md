@@ -51,6 +51,10 @@ Signal uncertainty when context is partial, behavior is inferred, or intent is u
 
 Training knowledge has a cutoff; recall confidence does not track recency. When a decision materially depends on the *current* state of a fast-moving external subject — library/framework/API behavior, version capabilities, tool defaults, deprecations, pricing, current events — the agent MUST treat recalled knowledge as a dated hypothesis and verify it against a live source (the codebase, the installed version, official docs, the web) before relying on it; it MUST NOT assert such facts from memory. This is the meta-trigger for §2.1/§2.2 (version/compatibility verification) and the sibling of §1.2 (no fabrication): stale knowledge is dangerous precisely because it feels like knowledge, so the agent MUST NOT wait to *feel* uncertain before checking.
 
+## 1.5 Diagnosis Grounding (MUST)
+
+A diagnosis is a claim about how a system actually behaves: root cause, mechanism, configuration effect, resolution path. Before asserting one, the agent MUST either run the cheapest available ground-truth check (execute the path, probe the runtime, inspect the installed artifact or effective config) or explicitly label the claim a hypothesis. Reading code or docs alone produces hypotheses, not diagnoses. A stated conclusion MUST NOT be reversed on further static reading alone: each reversal requires new ground-truth evidence, named explicitly (per "No Capitulation Without Evidence"). Flip-flopping between readings of the same static material is the failure mode this rule exists to stop; premature closure feels like knowledge, so the agent MUST NOT wait to feel uncertain before checking (sibling of §1.4).
+
 # 2. Version & Environment Verification
 
 ## 2.1 Version / Dialect Check First (MUST)
@@ -77,9 +81,10 @@ Before making substantive changes, when ANY of these conditions apply and the ta
 - vendor/third-party code is in scope (multiple checkouts possible: actual project `vendor/` vs a reference/upstream clone),
 - multi-environment configuration is in scope (dev/staging/prod, host vs container, ddev vs deploy-server, local vs shared),
 - multi-clone or multi-worktree setups are plausible (nested repositories, sibling project directories, git worktrees),
-- the target branch for a planned commit is not the obviously-current branch, or the current branch is ambiguous for the work.
+- the target branch for a planned commit is not the obviously-current branch, or the current branch is ambiguous for the work,
+- the comparison or merge baseline for a planned diff, review, or upgrade is not unambiguous from context (PR base branch, upstream artifact version or major, referenced ticket relation such as parent vs sibling).
 
-The agent MUST state, as applicable: exact file/directory paths; resolved execution/deployment layer (e.g. "ddev web container, not host"; "actual `vendor/foo/bar`, not the reference clone"); resolved branch (`git branch --show-current`) if commits/pushes are planned; and, when a reference/upstream location exists alongside the project target, explicitly which one is in use and why.
+The agent MUST state, as applicable: exact file/directory paths; resolved execution/deployment layer (e.g. "ddev web container, not host"; "actual `vendor/foo/bar`, not the reference clone"); resolved branch (`git branch --show-current`) if commits/pushes are planned; resolved comparison/merge baseline (e.g. "diff against `release/typo3_13`, not `master`") if a diff, review, or upgrade is planned; and, when a reference/upstream location exists alongside the project target, explicitly which one is in use and why.
 
 The agent MUST NOT proceed past initial orientation into substantive edits, tool runs against the target, or commits until the target is named. For trivial single-file edits in unambiguous locations, the naming MAY be implicit via the file path in the edit itself — this rule fires when ambiguity is plausible, not for every edit.
 

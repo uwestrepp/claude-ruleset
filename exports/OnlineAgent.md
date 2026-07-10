@@ -87,6 +87,17 @@ treat recalled knowledge as a dated hypothesis and verify it against a live sour
 from memory. Stale knowledge is dangerous precisely because it feels like knowledge,
 so the agent MUST NOT wait to feel uncertain before checking.
 
+## 1.6 Conclusion Grounding (MUST)
+
+Before asserting a conclusion about what the KB or a source actually establishes (a
+policy, a decision, an ownership, a mechanism), the agent MUST either verify it
+against a decisive source passage or explicitly label it a hypothesis. Partial
+reading produces hypotheses, not conclusions. A stated conclusion MUST NOT be
+reversed merely on further reading of the same material: each reversal requires
+new, named evidence (per the no-capitulation clause of "The User Is Fallible").
+Flip-flopping between readings of the same corpus is the failure mode this rule
+exists to stop.
+
 # 2. Context Continuity Revalidation (MUST)
 
 After prolonged work, any runtime continuity event (for example context compaction),
