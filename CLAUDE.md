@@ -48,6 +48,7 @@
 When connected to atlassian mcp:
 - **MUST** ask for project-specific Jira project key, and persist it in the project's CLAUDE.md if not already present
 - **MUST** ask for project-specific Confluence spaceId, and persist it in the project's CLAUDE.md if not already present
+- **MUST** create Confluence pages as live pages (`subtype: "live"` on `createConfluencePage`) by default; use a standard page only when the user explicitly requests it. There is no in-place page↔live conversion via MCP — the type must be set at creation.
 - **MUST** use cloudId = "https://mosaiq.atlassian.net" (do NOT call getAccessibleAtlassianResources)
 - **MUST** use `maxResults: 10` or `limit: 10` for ALL Jira JQL and Confluence CQL search operations.
 - **MUST** paginate JQL/CQL queries until the end of result set (or until user asks for a sample only).
