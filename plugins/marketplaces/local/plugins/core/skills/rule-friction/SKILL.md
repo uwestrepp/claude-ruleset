@@ -18,6 +18,11 @@ evidence of where the rule-set helps, fails, or is missing.
    `outcome`, `user_satisfaction_counts`) joined with `session-meta/` for project
    context. Data is rolling and machine-local; treat absence as "no signal", not
    "no friction".
+   Freshness gate: facets are written only by Claude Code's built-in `/insights`
+   command (on demand; no background generation, no toggle). Check the newest
+   facet's mtime first; if the window is stale, ask the user to run `/insights`
+   and re-run the report before classifying (see auto-memory
+   `ref-claude-code-insights`).
 2. **Classify each recurring pattern** (≥2 sessions, or a single severe case):
    - **adherence failure** — an existing rule covers it but was not followed. First
      check whether the rule was even loaded in that context (path-gating not matched,
