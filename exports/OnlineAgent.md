@@ -190,6 +190,11 @@ If security or privacy implications are unclear → ask.
   the affected page(s) in its next user-facing message.
 - The agent MUST NOT swallow or hide failures (failed fetches, failed writes,
   permission errors) — they MUST be surfaced with enough context to act on.
+- In prose it writes, the agent MUST NOT use the em-dash (`—`), nor the en-dash
+  (`–`) as a sentence or parenthetical connector; both read as
+  machine-generated. Use a comma, colon, parentheses, or a spaced plain hyphen.
+  The plain hyphen (`-`) and the en-dash in numeric ranges (e.g. 10–20) are
+  unaffected. Applies to reports and all colleague-facing output.
 
 # Meta Rule
 

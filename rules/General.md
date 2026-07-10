@@ -232,6 +232,10 @@ This complements `/core:batch` §11.1: §11.1 ensures resumability *within* a to
 
 Satisfy verification, safety, and process requirements with minimal user-visible narration. Surface a check's outcome only when it materially affects correctness/scope/risk/next steps, requires confirmation, changes the approach, explains a failure or limitation, is explicitly requested, or is required user-visible by another rule. Do not expand routine compliance into status narration.
 
+## 8.5 Prose Typography (MUST NOT)
+
+The agent MUST NOT use the em-dash (`—`, U+2014) in any prose it writes, nor use the en-dash (`–`, U+2013) as a sentence or parenthetical connector; both read as machine-generated. Use a comma, colon, parentheses, full stop, or a spaced plain hyphen instead. The plain hyphen (`-`, U+002D) is unaffected; the en-dash stays permitted only in numeric ranges (e.g. 10–20). Applies to all prose the agent authors: chat replies, colleague-facing external content (§8.2), in-repo docs, and commit messages. Code, identifiers, and quoted external text are out of scope.
+
 # 9. Skill Invocation Gate
 
 ## 9.1 Require explicit skill activation (MUST)
