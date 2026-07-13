@@ -1,6 +1,6 @@
 # Welcome to MOSAIQ
 
-This is a paste-into-Claude companion to the rule-set [README](https://bitbucket.org/mosaiq-gmbh/mq.agent-ruleset). The README covers setup mechanics; `CLAUDE.md` lists every rule and skill. This doc adds the team-knowledge pieces that READMEs don't usually carry, plus a Claude-mediated walkthrough when you paste it into Claude Code.
+This is a paste-into-Claude companion to the rule-set [README](https://bitbucket.org/mosaiq-gmbh/mq.agent-ruleset). The README covers setup mechanics; `CLAUDE.md` lists every rule and skill; `docs/RULESET-OVERVIEW.md` explains the *why* behind the set (design goals, architecture, skill decision matrix, observed usage). This doc adds the team-knowledge pieces that READMEs don't usually carry, plus a Claude-mediated walkthrough when you paste it into Claude Code.
 
 ## Your Setup Checklist
 
@@ -40,7 +40,9 @@ From the `claude-plugins-official` marketplace (Anthropic curated directory, `an
 
 - **PR reviews are Bitbucket-side.** Use `/pr-review-toolkit:review-pr` (host-agnostic, multi-aspect orchestrator) or the built-in `code-review` for local-diff review.
 - **Colleague-facing output is German.** Jira tickets, Confluence pages, and Bitbucket PR descriptions are written in German (per `rules/General.md §8.2`). Repo content (commit messages, code comments, README, agent chat) stays English.
-- **Workflow skills are gated.** `/typo3:*` and `/core:composer-update` require explicit activation — the agent will (or should) ask which one rather than starting from vague prompts like "use the typo3 skill". `/core:batch` auto-suggests: the agent proposes it when work grows multi-file/batch-shaped, but never silently runs it. Type the exact slash command upfront to skip the disambiguation round.
+- **Workflow skills are gated.** `/typo3:*`, `/composer:update`, and `/composer:major-upgrade` require explicit activation — the agent will (or should) ask which one rather than starting from vague prompts like "use the typo3 skill". `/core:batch` auto-suggests: the agent proposes it when work grows multi-file/batch-shaped, but never silently runs it. Type the exact slash command upfront to skip the disambiguation round.
+- **Start phased work with a resumption doc.** The proven entry point for multi-session workflows (upgrades, batch cycles) is a first prompt like "Phase N starten, lies ZUERST `.aiassistant/state/<handover>.md`" pointing at the previous session's handover. Durable handovers go to `.aiassistant/state/` (committed), never `/tmp` or scratch.
+- **Not sure which thinking/review skill fits?** `docs/RULESET-OVERVIEW.md` §5 has the decision matrix (brainstorm vs grill-me vs poke-holes, review-surface routing, composer/typo3 upgrade routing).
 - **Commit ticket traceability is deterministic.** Per `/core:commits`, extension-scoped commits resolve their Jira ticket from the project's `.aiassistant/state/extension-ticket-map.yaml`. Don't mix extensions that resolve to different tickets in one commit; if the mapping is missing or ambiguous, the agent will ask before committing.
 - **Two Anthropic marketplaces are configured, and they're not mirrors.** `claude-code-plugins` (upstream from `anthropics/claude-code`) ships newer versions of Anthropic-authored plugins. `claude-plugins-official` is a curated directory that also includes third-party (42Crunch, Adobe, etc.). When adding a new plugin: prefer `claude-code-plugins` for first-party Anthropic plugins; `claude-plugins-official` for third-party.
 - **`/effort` is a real workflow tool, not a knob to ignore.** Drop to `/effort medium` when a task gets simpler; raise to `/effort high` for complex refactors. Switching costs are real (the cache prefix re-processes) — per `rules/General.md §10`, raise only when projected savings clearly exceed the switch cost.
@@ -50,7 +52,8 @@ From the `claude-plugins-official` marketplace (Anthropic curated directory, `an
 1. **Install:** `git clone git@bitbucket.org:mosaiq-gmbh/mq.agent-ruleset.git ~/.claude && ~/.claude/setup.sh`
 2. **Read the three `[CRITICAL]` rules:** `rules/General.md`, `rules/Meta.md`, `rules/Persona.md`. These define agent default behavior on every task and are re-read on context revalidation.
 3. **Skim `CLAUDE.md`:** the authoritative rule and skill index. You don't need to memorize it — but you should know it exists.
-4. **Set up `~/.claude/CLAUDE.local.md`** for machine-local secrets (Bitbucket API token, etc.). See `CLAUDE.md` "Local overrides" for format.
+4. **Read `docs/RULESET-OVERVIEW.md`** when you want the why: the five design vectors behind the rules, how loading/gating works, and when to reach for which skill.
+5. **Set up `~/.claude/CLAUDE.local.md`** for machine-local secrets (Bitbucket API token, etc.). See `CLAUDE.md` "Local overrides" for format.
 
 <!-- INSTRUCTION FOR CLAUDE: A new teammate just pasted this guide for how the
 team uses Claude Code. You're their onboarding buddy — warm, conversational,
