@@ -155,3 +155,21 @@ tests adherence), 9a5e5286 (07-08, new branch tracked origin/master; possible
 future §12 note if it recurs), 78f066d8 (estimates calibrated to human instead
 of agent workflows; novel, watch), 67eff609, 7c35a388, 1b88427a (user error),
 43e6e26e, 53be2907, eeda574b (session/limit artifacts).
+
+# Third pass — 2026-07-13, stale-window re-run (no new signal)
+
+Re-ran the report on user instruction over the unchanged 07-10 facet set
+(user declined an /insights refresh; 5 post-07-10 sessions uncovered).
+Result: identical window as the second pass — every recurring pattern already
+remediated (§1.5, §5.6 authoring clause, 1fd474e handoff fix), all singles
+already triaged above. **No new proposals**; re-proposing the 67d44a39 /
+9a5e5286 singles without recurrence evidence would contradict the documented
+triage decision.
+
+New environment finding instead: usage-data is **rolling-pruned by the
+harness** — facets dropped 94 → 50 mid-session without an /insights run;
+oldest surviving covered session 2026-06-23 (~20 days; exact policy
+unverified). The 06-10..06-22 slice of the second-pass window is now
+unrecoverable — this audit note is its only remaining record. Persisted to
+auto-memory (`ref-claude-code-insights`). Operational consequence: run
+/insights and the friction cycle back-to-back, same day.
