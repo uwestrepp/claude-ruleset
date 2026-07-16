@@ -66,9 +66,9 @@ sub-item group if they diverge).
 | P1 | done | Ja (2026-07-16), Step-5 commit | Both carve-outs added to §10.2 (confirmed-autonomous: queue into handoff note; trivial task-start: condensed form, informational). Cross-side clarification sentence in /core:batch §5.1. |
 | P5 | done | Ja (2026-07-16), Step-6 commit | §10.3 is the spine (durable target `state/handoffs/handoff-<ts>-<slug>.md`, never OS-tmp/scratchpad); batch §11.1 promotes its scratch note on restart proposal; pocock:handoff declared producer + in-batch reconciliation clause. Activation stays **auto** per user decision. No export sync needed (checked, no handover content in exports/). |
 | P6 | done | Ja (2026-07-16), Step-7 commit | §1.5 extended: assertable system-state facts are diagnosis-class claims; act-on-hypothesis gate (ground-truth check or explicit user ack BEFORE applying). Salience language untouched. |
-| P7 | done | Ja (2026-07-16), Step-8 commit | §2.4 push remote/upstream naming + §5.2 push-time gate clause. Pre-push hook module deferred to Step 9 (bundled with P8 hook work) per user decision. |
+| P7 | done | Ja (2026-07-16), Step-8 commit | §2.4 push remote/upstream naming + §5.2 push-time gate clause. Deferred hook part landed in Step-9 commit (HOOK_PRE_PUSH_GATE_COMMAND in githooks template). |
 | P8 | done | Ja (2026-07-16), Step-9 commit | PreToolUse soft-block hook `warn-evidence-pipelines.sh` (§5.6 shapes, permissionDecision "ask", command-substitution exclusion) + 11 regression tests, registered in settings.json. Deferred P7 hook part landed too: `HOOK_PRE_PUSH_GATE_COMMAND` opt-in in githooks template pre-push (fail-closed, bypass via HOOK_BYPASS_ENV); gate paths exercised (pass/bypass/fail). |
-| P9 | pending | | |
+| P9 | done | Ja (2026-07-16), Step-10 commit | §4.5: chat evidence line as non-batch recording target + §5.2-style blocker fallback for payload replay. §4.6: explicit user change-task IS the confirmation; gate binds to agent-initiated changes beyond requested scope. |
 | P10 | pending | | |
 
 ## Session bootstrap

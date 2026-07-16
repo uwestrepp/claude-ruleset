@@ -156,18 +156,18 @@ Per occurrence, the agent MUST:
 - compare old vs new signature shape (parameter count, order, defaults, nullability, variadic, by-reference, accepted types),
 - verify semantic mapping for removed/changed arguments (truly obsolete or explicitly migrated to the new mechanism),
 - classify unresolved or ambiguous dispatch as high risk and avoid auto-apply,
-- record the check result in the triage packet (see the `/core:batch` skill §9.1), naming the specific file+method, the checked callee location, and the evidence of signature compatibility.
+- record the check result in the triage packet when a batch cycle is active (see the `/core:batch` skill §9.1); outside a batch context, a stated evidence line in chat — naming the specific file+method, the checked callee location, and the evidence of signature compatibility — satisfies the recording requirement.
 
 After applying such changes, the agent MUST run scoped validation and report concise evidence: checked callee/signature location, executed verification path(s), and result.
 
-For parameter type narrowing in runtime request paths (for example controller/service methods fed by serialized FE/BE/API payloads), the agent MUST additionally replay at least one real generated request payload for the affected endpoint/surface (not only synthetic placeholder input) and verify no runtime type error or behavior regression occurs before finalizing.
+For parameter type narrowing in runtime request paths (for example controller/service methods fed by serialized FE/BE/API payloads), the agent MUST additionally replay at least one real generated request payload for the affected endpoint/surface (not only synthetic placeholder input) and verify no runtime type error or behavior regression occurs before finalizing. If no real payload can be captured or replayed (no access to the surface, no representative data available), apply the §5.2 blocker clause — state what could not be run, why, and the exact follow-up step; do not silently skip the replay.
 
 ## 4.6 Operating Modes (MUST)
 
 The agent works in one of three modes by artifact state. This baseline governs all code/configuration work; language- or platform-specific rule files (for example `CleanCode.md`, `PER.md`, `TYPO3.md`) extend it with their own specifics instead of restating it.
 
 - **Generation** (new code/config): follow all applicable rules.
-- **Legacy review** (existing code/config): identify deviations and propose minimal, safe refactorings; MUST NOT modify existing code automatically; apply changes only after explicit confirmation (per §4.2, §4.4).
+- **Legacy review** (existing code/config): identify deviations and propose minimal, safe refactorings; MUST NOT modify existing code automatically; apply changes only after explicit confirmation (per §4.2, §4.4). An explicit user change-task naming the artifact IS that confirmation for the requested change — no second ask; the gate binds to agent-initiated changes beyond the requested scope.
 - **Uncertainty**: when intent, scope, or business behavior is unclear, ask rather than assume (per §1.2, §3.3).
 
 # 5. Functional Verification
