@@ -1,6 +1,6 @@
 ---
 name: rule-friction
-description: "Activate via /core:rule-friction to run the rule-set feedback loop: aggregate per-session usage-data facets (friction_counts, friction_detail, outcomes, satisfaction) via bin/rule-friction-report.sh, map recurring friction onto the rule-set, and emit Meta.md §3.1 improvement proposals. explicit activation required. Triggers: 'rule friction report', 'mine usage data', 'which rules are failing/working', periodic rule-set health review."
+description: "Activate via /core:rule-friction to run the rule-set feedback loop over aggregated usage-data facets (bin/rule-friction-report.sh) and emit Meta.md §3.1 improvement proposals. explicit activation required. Triggers: 'rule friction report', 'mine usage data', 'which rules are failing/working', periodic rule-set health review."
 argument-hint: ""
 allowed-tools: [Bash, Read, Grep, Glob]
 ---

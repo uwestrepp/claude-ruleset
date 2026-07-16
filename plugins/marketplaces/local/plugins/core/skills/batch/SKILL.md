@@ -1,6 +1,6 @@
 ---
 name: batch
-description: "Activate via /core:batch, or let Claude auto-suggest it (propose activation, never silently run) when work is batch-shaped: multi-file refactors/migrations (>=5 call sites or multiple packages/extensions), scanner- or analyzer-driven change batches, rector/fractor/php-cs-fixer/phpstan remediation cycles, scope growth from small task to multi-file work, or autonomous/unattended execution requests. Provides the shared phase template, the risk-sequenced Pass 1/2/3 model with non-skippable triage/compliance gates, reviewability/PR-split thresholds, autonomous-mode protocol, workflow chaining, and reporting templates. Foundation for the /typo3:* workflow skills — they layer domain specifics on this skill."
+description: "Activate via /core:batch, or let Claude auto-suggest it (propose activation, never silently run) when work is batch-shaped: multi-file refactors/migrations (>=5 call sites or multiple packages/extensions), scanner- or analyzer-driven change batches, rector/fractor/php-cs-fixer/phpstan remediation cycles, scope growth from small task to multi-file work, or autonomous/unattended execution requests. Foundation for the /typo3:* workflow skills — they layer domain specifics on this skill."
 argument-hint: [scope]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---

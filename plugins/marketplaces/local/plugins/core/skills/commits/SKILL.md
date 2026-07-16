@@ -1,6 +1,6 @@
 ---
 name: commits
-description: "Activate via /core:commits or let Claude auto-activate when the task involves creating, amending, or rewriting git commits. Enforces the commit message schema ([TYPE] JIRA (scope) summary), Jira ticket traceability rules (extension-ticket map resolution, branch override resolution, multi-extension commit splitting), body decision gate (when to include body vs subject-only), pre-commit validation checklist, and nested-repository commit handling. Triggers: 'commit these changes', 'create a commit', 'commit the fix', 'amend commit', 'git commit', 'write a commit message', preparing PR-worthy commits, splitting mixed changes across tickets, resolving which Jira ticket applies to a commit, any request mentioning commits/committing/amending."
+description: "Activate via /core:commits or let Claude auto-activate when the task involves creating, amending, or rewriting git commits — including commit-message drafting, Jira ticket resolution, and splitting mixed changes across tickets. Triggers: 'commit these changes', 'create a commit', 'commit the fix', 'amend commit', 'git commit', 'write a commit message', preparing PR-worthy commits, any request mentioning commits/committing/amending."
 argument-hint: [scope]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
