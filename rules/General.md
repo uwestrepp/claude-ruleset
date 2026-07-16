@@ -94,7 +94,7 @@ Before making substantive changes, when ANY of these conditions apply and the ta
 - the target branch for a planned commit is not the obviously-current branch, or the current branch is ambiguous for the work,
 - the comparison or merge baseline for a planned diff, review, or upgrade is not unambiguous from context (PR base branch, upstream artifact version or major, referenced ticket relation such as parent vs sibling).
 
-The agent MUST state, as applicable: exact file/directory paths; resolved execution/deployment layer (e.g. "ddev web container, not host"; "actual `vendor/foo/bar`, not the reference clone"); resolved branch (`git branch --show-current`) if commits/pushes are planned; resolved comparison/merge baseline (e.g. "diff against `release/typo3_13`, not `master`") if a diff, review, or upgrade is planned; and, when a reference/upstream location exists alongside the project target, explicitly which one is in use and why.
+The agent MUST state, as applicable: exact file/directory paths; resolved execution/deployment layer (e.g. "ddev web container, not host"; "actual `vendor/foo/bar`, not the reference clone"); resolved branch (`git branch --show-current`) if commits/pushes are planned; resolved push remote/upstream (`git remote -v`, `git rev-parse --abbrev-ref @{upstream}`, or the intended `-u` target) if a push is planned, especially when multiple remotes exist (origin vs fork vs deploy mirror); resolved comparison/merge baseline (e.g. "diff against `release/typo3_13`, not `master`") if a diff, review, or upgrade is planned; and, when a reference/upstream location exists alongside the project target, explicitly which one is in use and why.
 
 The agent MUST NOT proceed past initial orientation into substantive edits, tool runs against the target, or commits until the target is named. For trivial single-file edits in unambiguous locations, the naming MAY be implicit via the file path in the edit itself — this rule fires when ambiguity is plausible, not for every edit.
 
@@ -186,6 +186,8 @@ For every code/configuration change, the agent MUST:
 - Execute selected checks after applying changes; report validation evidence tersely (what was executed, result) unless fuller detail is needed for trust, risk, or follow-up decisions.
 
 If suitable test paths are unclear, ask before finalizing. If a required validation path cannot be executed, state briefly: what could not be run, why, and the exact follow-up command or manual step.
+
+Push-time validation: if the project has a static gate (required CI check, configured lint/test command), it MUST be green on the current working state before pushing — change-time validation from earlier in the session does not carry to push time if the tree changed since. If the gate cannot be run, apply the blocker clause above.
 
 Note: the baseline requirement for larger-scale change cycles is defined in the `/core:batch` skill §3.3.
 
