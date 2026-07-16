@@ -1,6 +1,6 @@
 ---
 name: upgrade-full
-description: "Activate with /typo3:upgrade-full to run the full TYPO3 upgrade chain end-to-end in one invocation: upgrade execution → ExtensionScanner → static code tests. This orchestration skill invokes the three component skills (/typo3:upgrade, /typo3:scanner, /typo3:static-tests) in sequence via the Skill tool. Applies the /core:batch skill §6 chaining model with one combined toolset gate, one preflight, one chain-level autonomous-mode gate, and one final Phase 9 handover."
+description: "Activate with /typo3:upgrade-full to run the full TYPO3 upgrade chain end-to-end in one invocation: upgrade execution → ExtensionScanner → static code tests. Invokes the three component skills (/typo3:upgrade, /typo3:scanner, /typo3:static-tests) in sequence; do not pre-activate them."
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Skill]
 ---
 

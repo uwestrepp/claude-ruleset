@@ -1,6 +1,6 @@
 ---
 name: scanner
-description: "Activate with /typo3:scanner before starting any TYPO3 ExtensionScanner triage, scanner-driven migration, or scanner pass within an upgrade workflow. Provides the full ExtensionScanner execution workflow: command standard, pass model (Pass 1 triage/false-positives, Pass 2 safe replacements, Pass 3 high-risk migrations), false-positive handling, verification gates, and reporting. Required before structured ExtensionScanner work begins."
+description: "Activate with /typo3:scanner before starting any TYPO3 ExtensionScanner triage, scanner-driven migration, or scanner pass within an upgrade workflow. Required before structured ExtensionScanner work begins."
 argument-hint: [extKey...]
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
