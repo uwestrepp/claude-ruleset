@@ -20,18 +20,18 @@
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
   * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material, no nitpick bucket); no interview, no alternatives, NOT code-diff review. Disambiguate from grill-me (which interviews) on overlap.
 * **Core workflow skills** — activation policy per entry:
-  * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Phase template, Pass 1/2/3 + triage gates, autonomous protocol, chaining. Foundation for the typo3 workflow skills.
-  * `/core:rule-friction` — explicit activation required. Rule-set feedback loop: aggregate usage-data friction facets (`bin/rule-friction-report.sh`) → classify adherence failure / coverage gap / rule friction → `Meta.md` §3.1 proposals.
+  * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Foundation for the typo3 workflow skills.
+  * `/core:rule-friction` — explicit activation required. Rule-set feedback loop (`bin/rule-friction-report.sh` → `Meta.md` §3.1 proposals).
 * **Composer skills** (`composer` plugin) — system-agnostic Composer workflow, activation policy per entry:
-  * `/composer:knowledge` — auto-activate on prompt relevance. Composer resolution order, dev-overrides, canonical-priority trap, lock-file discipline. (Formerly `/core:composer`.)
-  * `/composer:update` — explicit activation required. Informed, gated minor/security Composer updates for *customized* projects; NOT trivial adds in vanilla projects (`/composer:knowledge`), NOT major-version migrations (`/composer:major-upgrade`). (Formerly `/core:composer-update`.)
-  * `/composer:major-upgrade` — explicit activation required. System-agnostic spine for major-version upgrades (branch/baseline → changeset+collision → scan → staged impl → before/after → decoupled runtime → rollout doc); layers on `/core:batch`, reuses `/composer:update` machinery, pluggable framework slots (`references/framework-slot-contract.md`); `/typo3:upgrade` is the TYPO3 specialization. NOT patch/minor (`/composer:update`).
+  * `/composer:knowledge` — auto-activate on prompt relevance. Composer resolution order, dev-overrides, canonical-priority trap, lock-file discipline.
+  * `/composer:update` — explicit activation required. Informed, gated minor/security Composer updates for *customized* projects; NOT trivial adds in vanilla projects (`/composer:knowledge`), NOT major-version migrations (`/composer:major-upgrade`).
+  * `/composer:major-upgrade` — explicit activation required. System-agnostic spine for major-version upgrades; layers on `/core:batch`; `/typo3:upgrade` is the TYPO3 specialization. NOT patch/minor (`/composer:update`).
 * **TYPO3 projects** — the following rules apply when working on TYPO3-based projects:
   * rules/TYPO3.md (path-gated: `**/packages/**`, `**/ext_{localconf,tables,emconf}.php`, `**/typo3conf/**`, `**/config/sites/**`, `**/*.typoscript`, `**/*.tsconfig`) — TYPO3 operating policy + upgrade-impact behavior; Composer via `/composer:*`, commits via `/core:commits`, workflow-activation via `General.md` §9.
 * **TYPO3 workflow skills** — explicit activation required:
-  * `/typo3:upgrade` — Upgrade Workflow (execution + DoD); the TYPO3 specialization of `/composer:major-upgrade` (fills its framework slots); v10–v14 changelog + migration patterns in `references/`.
+  * `/typo3:upgrade` — Upgrade Workflow (execution + DoD); the TYPO3 specialization of `/composer:major-upgrade`; v10–v14 changelog + migration patterns in `references/`.
   * `/typo3:scanner` — ExtensionScanner workflow: command standard, pass model, false-positive handling.
-  * `/typo3:static-tests` — ordered static run (php-cs-fixer → rector1 → rector2 → fractor → typoscriptlint → phpstan), triage, ledgers.
+  * `/typo3:static-tests` — ordered static analyzer/fixer run, triage, ledgers.
   * `/typo3:upgrade-full` — orchestrates the three component skills in sequence; do NOT pre-activate the components.
 * **Pocock skills** — vendored/adapted subset of `mattpocock/skills` (provenance + upstream-refresh path in `plugins/marketplaces/local/plugins/pocock/UPDATING.md`):
   * `/pocock:prototype`, `/pocock:design-an-interface`, `/pocock:improve-codebase-architecture`, `/pocock:handoff` — auto-activate on prompt relevance; stack-agnostic engineering/prototyping aids.
