@@ -7,3 +7,16 @@
 
 # CCM Monitoring PoC (FEINSITE-1916) — https://n8n.mosaiq.com
 1qK5oetmSDJiUnVP
+
+# KAVO-1047 AI-Readiness (W0 + shared error handler) — https://n8n.mosaiq.com
+pcGtofMUEmddP5WR
+baZybLV2XxNzuS50
+
+# KAVO-1047 AI-Readiness (W1 chatbot) — https://n8n.mosaiq.com
+vL6w7sIPzs63LOJ4
+
+# KAVO-1047 AI-Readiness (W2 content summary) — https://n8n.mosaiq.com
+hh7uR9LSgbo7oJQc
+
+# KAVO-1047 AI-Readiness (W3 alt-text generator) — https://n8n.mosaiq.com
+gdYEmSkz1GN24n7G
