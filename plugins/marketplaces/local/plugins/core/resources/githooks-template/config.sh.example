@@ -32,6 +32,13 @@ HOOK_PROTECTED_BRANCHES="release/* main master dev staging*"
 # command needed. Override at push time with the bypass env below.
 HOOK_BLOCK_DIRECT_PUSH=0
 
+# --- push-time static gate (opt-in; General.md §5.2 push-time clause) ---
+# Command run once per push, before any ref validation; non-zero exit rejects
+# the push (fail-closed). Bind the project's static gate here so a tree
+# validated hours earlier cannot be pushed past a now-red gate.
+# Example: HOOK_PRE_PUSH_GATE_COMMAND="ddev exec vendor/bin/phpstan analyse --no-progress"
+HOOK_PRE_PUSH_GATE_COMMAND=""
+
 # --- protected-branch content guard (opt-in, project-specific) ---
 HOOK_PROTECTED_BRANCH_GUARD=0
 # Command invoked as: <cmd> --branch <local_ref> --rev <local_sha>
