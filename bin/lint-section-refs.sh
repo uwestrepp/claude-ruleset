@@ -49,11 +49,16 @@ resolve_target() {
 
 heading_exists() { # $1=file $2=section number
     local esc="${2//./\\.}"
-    grep -qE "^#{1,6}[[:space:]]+§?${esc}([.[:space:]]|$)" "$1"
+    # NOTE: the optional § must be a GROUP quantifier "(§)?". A bare "§?" puts the
+    # quantifier on the last BYTE of the multibyte char in GNU grep/sed, making the
+    # first byte mandatory — every §-less numbered heading then fails to match.
+    # (ugrep quantifies the full character; do not "simplify" this back.)
+    grep -qE "^#{1,6}[[:space:]]+(§)?${esc}([.[:space:]]|$)" "$1"
 }
 
 extract_headings() { # stdin = markdown; emits "<number>\t<title>" for numbered headings
-    sed -nE 's/^#{1,6}[[:space:]]+§?([0-9]+(\.[0-9]+)*)[.]?[[:space:]]+(.*)$/\1\t\3/p'
+    # group quantifier for §, see heading_exists — capture groups shift accordingly
+    sed -nE 's/^#{1,6}[[:space:]]+(§)?([0-9]+(\.[0-9]+)*)[.]?[[:space:]]+(.*)$/\2\t\4/p'
 }
 
 FAIL=0
