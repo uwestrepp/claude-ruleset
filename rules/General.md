@@ -149,7 +149,7 @@ If a change alters behavior, the behavioral impact MUST be explicitly described 
 
 ## 4.5 Upstream Contract Verification (MUST)
 
-Before applying call-site changes (manual or automated) that modify method/function calls, the agent MUST verify the upstream callee contract and semantic equivalence. This trigger also applies retroactively during Phase 2 inventory: any signature change already present in the working scope from a prior session or base-branch merge MUST be identified, listed as a §4.5 item in the triage packet, and verified before Phase 5 implementation begins.
+Before applying call-site changes (manual or automated) that modify method/function calls, the agent MUST verify the upstream callee contract and semantic equivalence. In batch cycles this trigger also applies retroactively to inventory findings (see the `/core:batch` skill §3.1, per §9.3).
 
 Per occurrence, the agent MUST:
 - resolve the effective callee used at runtime (interface/implementation path),
@@ -372,9 +372,8 @@ Default branch model; a project or the user MAY override it.
 
 - Mainline branch is `master` or `main` (per project) — the canonical line merged work lands on. Optional integration tiers `dev`/`development` and `staging` MAY exist between feature branches and mainline.
 - Ticketed work uses `feature/`, `bugfix/`, or `hotfix/` branches named `<prefix>/PROJ-123-slug`, cut from the branch they will merge into.
-- Major upgrades use a temporary `release/<target>` integration branch (e.g. `release/typo3_13`): upgrade branches are cut from and merged back to `release/<target>` via PR; `release/<target>` merges to mainline at completion, then is retired.
-- Deployment MAY be decoupled from mainline via a **deployment-trigger branch** (e.g. `production`, an environment branch) that derives from mainline and holds no unique work — merging mainline → it triggers the deploy, batching several merged features into one release. Detect the project's real deploy mapping (e.g. CI `branches:` config) before assuming a push deploys: merging to mainline ≠ deploying.
-- PR target: mainline (or the `dev`/`staging` tier the project uses) for normal work; the active `release/<target>` during a major upgrade.
+- A **deployment-trigger branch** (e.g. `production`) MAY decouple deployment from mainline (merging mainline into it triggers the deploy). Detect the project's real deploy mapping (e.g. CI `branches:` config) before assuming a push deploys: merging to mainline ≠ deploying.
+- PR target: mainline (or the `dev`/`staging` tier the project uses) for normal work; during a major upgrade, the active `release/<target>` integration branch (mechanics in `/composer:major-upgrade`, per §9.3).
 
 Protected set — `master`/`main`, `dev`/`development`, `staging`, `release/*`, and any deployment-trigger branch (e.g. `production`): reach these via PR only, never a direct commit or push, even when git/server does not technically protect them. Override only on explicit user request. The agent commits only on `feature/`|`bugfix/`|`hotfix/` working branches.
 

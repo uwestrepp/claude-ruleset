@@ -32,7 +32,7 @@ pluggable slot contract. Resolve every referenced section into context before re
 - **`/core:commits`** — commit schema + ticket traceability for the upgrade commits.
 - **`General.md` §2.1/§2.2** (version/compat verification), **§2.3** (exec-context routing), **§2.4**
   (target disambiguation), **§4.5** (upstream-contract verification), **§5.2** (test-path selection),
-  **§12** (git workflow: `release/<target>` integration branch), **`Meta.md` §1.1** (checkpoints).
+  **§12** (git workflow: protected set, PR-only branches), **`Meta.md` §1.1** (checkpoints).
 
 ## Scope boundary (read first)
 
@@ -81,7 +81,7 @@ that mutates code/data. The **runtime bump is not a phase** — it is either fol
 | Phase | Batch name | Major-upgrade content |
 |-------|-----------|------------------------|
 | 0 | Toolset Gate | `Batch.md` §2 + composer root + exec context + `framework-detect`/`runtime-matrix` version verification (§3) |
-| 1 | Preflight | `release/<target>` integration branch (`General.md` §12); restorable DB/state snapshot at the *old* version (§4) |
+| 1 | Preflight | `release/<target>` integration branch; restorable DB/state snapshot at the *old* version (§4) |
 | 2 | Scope, Inventory & Baseline | inventory of entry points + touchpoints; functional **and** visual baseline at the *old* version (`Batch.md` §3.2) (§5) |
 | 3 | Scan / Analysis | (a) changeset & collision map — reuse `/composer:update` §4–§7 mechanics; (b) deprecation/breaking scan via `changelog-source`/`deprecation-hotspots`. Then the **escalation gate (§10)** (§6) |
 | 4 | Triage & Plan | triage packet (`Batch.md` §9.1); cleanup-on-old plan; **runtime coupled/decoupled decision** (§7) |
@@ -116,10 +116,13 @@ Do not proceed past Phase 0 if the root, exec context, or target major is ambigu
 
 ## 4. Phase 1 — Preflight (MUST)
 
-1. **Integration branch** — cut/confirm a `release/<target>` branch per `General.md` §12; individual
-   upgrade work branches off it via PR, and it merges to mainline only at completion. Confirm the
-   real deploy mapping before assuming any push deploys (`General.md` §12, `/composer:update` §9
-   deploy-target step).
+1. **Integration branch** — cut/confirm a temporary `release/<target>` integration branch
+   (e.g. `release/typo3_13`) from mainline: individual upgrade work branches are cut from and
+   merged back to `release/<target>` via PR; it merges to mainline at completion, then is
+   retired. It is part of the `General.md` §12 protected set (PR-only, no direct commits).
+   Confirm the real deploy mapping before assuming any push deploys (`General.md` §12,
+   `/composer:update` §9 deploy-target step); a deployment-trigger branch (e.g. `production`)
+   derives from mainline, holds no unique work, and batches merged features into one release.
 2. **State snapshot** — capture a restorable DB/state snapshot at the *old* version **before any
    change**. This is the rollback point for every later destructive step. Record its exact name and
    the restore command.

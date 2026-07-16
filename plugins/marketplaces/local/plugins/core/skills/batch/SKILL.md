@@ -70,6 +70,10 @@ Identify and document:
 - integration/dependency touchpoints (other components consuming this scope).
 - relevant configuration options that can affect behavior (for option-matrix coverage
   in Phase 6).
+- retroactive `General.md` §4.5 items: any signature change already present in the
+  working scope from a prior session or base-branch merge — identify it, list it as a
+  §4.5 item in the triage packet (§9.1), and verify it before Phase 5 implementation
+  begins.
 
 ### 3.2 Functional Baseline (MUST)
 
