@@ -13,11 +13,14 @@ evidence of where the rule-set helps, fails, or is missing.
 
 ## Procedure
 
-1. **Aggregate** — run `~/.claude/bin/rule-friction-report.sh`. Data source is
-   `~/.claude/usage-data/facets/` (per-session `friction_counts`, `friction_detail`,
-   `outcome`, `user_satisfaction_counts`) joined with `session-meta/` for project
-   context. Data is rolling and machine-local; treat absence as "no signal", not
-   "no friction".
+1. **Aggregate & archive** — run `~/.claude/bin/rule-friction-report.sh --archive`.
+   Data source is `~/.claude/usage-data/facets/` (per-session `friction_counts`,
+   `friction_detail`, `outcome`, `user_satisfaction_counts`) joined with
+   `session-meta/` for project context. Data is rolling and machine-local; treat
+   absence as "no signal", not "no friction".
+   `--archive` persists the aggregate as a dated artifact under
+   `.aiassistant/state/rule-friction/`; commit it with the review's change-set.
+   Facets rolling-prune after ~20 days — an unarchived window is unrecoverable.
    Freshness gate: facets are written only by Claude Code's built-in `/insights`
    command (on demand; no background generation, no toggle). Check the newest
    facet's mtime first; if the window is stale, ask the user to run `/insights`
@@ -35,6 +38,16 @@ evidence of where the rule-set helps, fails, or is missing.
    expected impact, risk/tradeoff), each tied to its evidence (session ids).
 4. **Persist** substantive findings per `Meta.md` §1.1/§2 (audit note or rule
    change-set proposal).
+
+## Effectiveness claims (MUST)
+
+- A per-rule effectiveness claim (a rule "works", "prevented X", "reduced friction")
+  requires at least 2 archived report windows AND named incident-class counts
+  compared across them. Without that baseline, label the rule **"untested"** — do
+  not present retention as evidence of effectiveness.
+- Per-skill usage claims require Skill-tool call counts from session transcripts;
+  facets do not capture Skill-tool invocations and badly undercount auto-activated
+  skills.
 
 ## Boundaries (MUST)
 

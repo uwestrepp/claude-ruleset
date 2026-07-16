@@ -117,7 +117,8 @@ for TYPO3; `/typo3:upgrade-full` chains upgrade, scanner, and static-tests with 
 gate set. Referenced normative content must be resolved, not remembered (General §9.3).
 
 The feedback loop, end to end: run `/insights` (writes usage-data facets on demand) →
-`bin/rule-friction-report.sh` aggregates friction/outcome/satisfaction →
+`bin/rule-friction-report.sh --archive` aggregates friction/outcome/satisfaction and
+persists the window under `.aiassistant/state/rule-friction/` (facets prune ~20 days) →
 `/core:rule-friction` classifies each recurring facet (adherence failure vs coverage gap vs
 rule friction) → `Meta.md` §3.1 proposals → rule commits → `bin/lint-section-refs.sh` keeps
 the structure sound.
@@ -268,4 +269,5 @@ Outcomes are healthy: 30/48 fully achieved, 13 mostly, 1 not (session-limit cuto
 - New skills: ledger entry required before the skill counts as complete (General §9.2);
   the literal phrase "explicit activation required" gates §9.1 detection.
 - Rule-set health: run `/insights`, then `/core:rule-friction`, roughly every 2-3 weeks
-  (facet pruning makes longer intervals lossy).
+  (facet pruning makes longer intervals lossy). Archive each window (`--archive`);
+  per-rule effectiveness claims need ≥2 archived windows, else the rule is "untested".

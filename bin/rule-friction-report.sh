@@ -22,6 +22,19 @@ NOISE_RE='token maximum|truncated|preventing analysis|unavailable due to'
 [[ -d "$FACETS" ]] || { echo "No facets dir at $FACETS" >&2; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "jq required" >&2; exit 1; }
 
+# --archive [dir]: additionally persist the report as a dated artifact
+# (default: <repo>/.aiassistant/state/rule-friction/). Facets rolling-prune
+# after ~20 days; an unarchived window is unrecoverable, and per-rule
+# effectiveness claims need >=2 archived windows to compare.
+if [[ "${1:-}" == "--archive" ]]; then
+    dir="${2:-$CLAUDE_DIR/.aiassistant/state/rule-friction}"
+    mkdir -p "$dir" || { echo "Cannot create archive dir $dir" >&2; exit 1; }
+    out="$dir/$(date +%F)-report.md"
+    "$0" | tee "$out" || exit 1
+    echo "(Archived to $out)" >&2
+    exit 0
+fi
+
 GOOD=()
 NOISE=()
 for f in "$FACETS"/*.json; do

@@ -61,7 +61,7 @@ sub-item group if they diverge).
 | P11 | done | Ja (2026-07-16), Step-1 commit | githooks-install decided **auto** (ledger+frontmatter win; RULESET-OVERVIEW corrected). NOT-clauses written without cross-skill references per user instruction (positive own-scope wording instead). |
 | P12 | done | Ja (2026-07-16), Step-1 commit | Live-page note corrected per user: conversion IS possible manually in the UI, just not via MCP. §8.2 override sentence included. Meta §2.2 resolved to speculative-persist+flag with 3 tie-breakers; global CLAUDE.md added as layer. exports/OnlineAgent.md deliberately NOT synced (KB writes are colleague-facing; ask-first stays correct there). |
 | P2 | done | Ja (2026-07-16), Step-2 commit | User extension bundled in: §12 gained a generic override-persistence mechanism (project CLAUDE.md/CLAUDE.local.md MAY grant direct commits to a protected branch; agent offers once to persist after a first concrete user authorization). |
-| P3 | pending | | |
+| P3 | done | Ja (2026-07-16), Step-3 commit | `--archive` flag added to report script; skill gains archive step + "Effectiveness claims (MUST)" section (≥2 archived windows or label "untested"; per-skill claims need transcript Skill-tool counts). First window archived: `.aiassistant/state/rule-friction/2026-07-16-report.md` (48 sessions, matches the review's evidence base). |
 | P4 | pending | | |
 | P1 | pending | | |
 | P5 | pending | | |
