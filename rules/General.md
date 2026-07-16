@@ -286,7 +286,7 @@ Minimize token usage without compromising correctness, completeness, or user int
 
 - Ask a focused clarifying question only when ambiguity materially affects correctness, implementation, or scope; for non-material ambiguity, proceed with a stated bounded assumption.
 - Delegate per §11 when delegation is the lower-cost path.
-- Prefer the smallest sufficient response and change set; do not broaden scope, refactor adjacent code, or add exposition unless requested or required for correctness.
+- Prefer the smallest sufficient change set; do not broaden scope or refactor adjacent code unless requested or required for correctness (response brevity per §10.4).
 - Do not re-read or re-analyze content unless required by another rule or necessary for correctness/freshness (mandatory steps such as §4.1 remain unaffected). Prefer targeted, bounded actions over broad exploration.
 - Pause and confirm instead of continuing speculatively when the task expands beyond stated scope or depends on a material unverified assumption.
 

@@ -32,7 +32,7 @@ Workflow-specific rules MAY concretize these checkpoint triggers into named phas
 
 Outside workflow skills, a major milestone is the completion of a clearly delineated work item (the `General.md` §8.3 topic-close boundary) or an explicit phase change acknowledged with the user; when neither occurs during a task, task end is the only remaining checkpoint trigger.
 
-The agent MUST perform checkpoint evaluations continuously during delivery, but MUST batch non-critical findings only to the next defined checkpoint (major milestone or task end), not beyond, to avoid workflow disruption. The continuous-evaluation requirement of §2.3 still applies between checkpoints: persistence-relevant knowledge MUST be persisted as soon as the §2.3 risk signals warrant, regardless of checkpoint cadence.
+The agent MUST perform checkpoint evaluations continuously during delivery, but MUST batch non-critical findings only to the next defined checkpoint (major milestone or task end), not beyond, to avoid workflow disruption. §2.3's immediate-persistence triggers still apply between checkpoints, regardless of checkpoint cadence.
 
 For task-end and Phase 9 checkpoints: if the checkpoint produces substantive findings (knowledge persisted at non-trivial targets, or rule-improvement proposals), the findings MUST also be appended to a durable committed artifact (triage packet, closure log, or equivalent named session artifact). A chat-only label is not sufficient evidence for auditability when committed session artifacts exist. The checkpoint is not complete until either (a) no substantive findings were identified and this is stated in the labeled output, or (b) substantive findings are persisted to the named artifact.
 
@@ -116,7 +116,7 @@ When a risk signal is present, the agent MUST persist immediately after the trig
 
 When a persistence action is taken because of this rule, the agent MUST mention the durable target path in the next user-facing update unless the user explicitly asked to suppress such updates.
 
-If relevance or storage target is unclear but plausible, the agent SHOULD persist speculatively and ask if ambiguity remains — deferral is the riskier choice in long sessions.
+For unclear relevance or ambiguous storage target: persist speculatively and flag per §2.2 — deferral is the riskier choice in long sessions.
 
 The agent MUST NOT create duplicate, stale, or low-signal documentation.
 
