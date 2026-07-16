@@ -203,6 +203,9 @@ The scope confirmation statement MUST include:
 The agent MUST wait for the user to explicitly confirm the scope statement before
 activating autonomous mode.
 
+Effort/model recommendations (`General.md` §10.2) do not pause an autonomous run;
+they are queued into the handoff note / phase report per the §10.2 carve-out.
+
 ### 5.2 Scope boundary
 
 Autonomous mode is active only for the explicitly confirmed scope. If work outside
