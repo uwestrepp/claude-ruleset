@@ -106,3 +106,31 @@ rule bends to the review's own "one plugin per change-set" instruction).
 
 Recommended setting: `/effort high`, model claude-fable-5 (normative rule edits,
 high blast radius, precision over speed).
+
+## Post-P10 cross-check of the day's pre-P10 commits (2026-07-16, same session)
+
+All 14 commits of 2026-07-16 before the P10 run re-reviewed against the P10
+criteria (placement layer, Meta §3.2 terseness, duplication, §5.6 authoring
+integrity). Verified clean: P1/P2/P5/P6/P7/P9 diffs match decisions and are
+terse; P3 script has `set -uo pipefail` (archive gate sound); pre-push gate is
+explicitly fail-closed with documented bypass; P11 frontmatter↔ledger alignment
+confirmed at ground truth (zoom-out/diagnose/grill-with-docs); Drupal.md is
+path-gated with same-change-set index update; hook test suite passes; no missed
+exports sync. Open findings (proposal-only, not yet applied):
+
+- **F1 (material)** `1a3be2c` §2.3 effective-UID/GID block: incident-backed and
+  correctly always-on, but ~390 est. tokens with reference-level detail
+  (docker-inspect format string, 403/404 mechanism, cache-path examples) against
+  Meta §3.2 terseness; compressible ~40% by reducing bullets to constraints and
+  moving mechanism examples to auto-memory/reference.
+- **F2 (material)** `1fe93d5` lint check 6: `[[ -f "$f" ]] || continue` fails
+  open — renaming/deleting a budgeted file silently drops budget enforcement;
+  should `report` a missing budget file instead (§5.6 authoring clause).
+- **F3 (minor)** `3da14dd` hook: probe-confirmed false positives on quoted text
+  (heredoc commit bodies citing §5.6 shapes) and on progress-echo
+  (`| sort > f && echo done`); soft-block keeps cost at one click — document the
+  two classes and the implicit fail-open on missing jq in the hook header.
+- **F4 (minor)** `1a3be2c` bundles two topics (UID/GID + §8.5 exemption) in one
+  commit; disclosed in the body, historical, no action.
+- **F5 (minor, self)** the G1-G8 ledger notes above were written in German;
+  in-repo docs are English per General.md §8.2 — translate on next touch.
