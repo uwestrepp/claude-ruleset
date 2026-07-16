@@ -1,6 +1,7 @@
 # Project rule-set
 * `CLAUDE.md` is the authoritative rule index and rule-maintenance ledger. Keep entries concise and index-like.
 * Reusable agent behavior belongs in `./rules/`. Record only project-wide rule-authoring caveats here when no single rule file is the right source of truth.
+* Git workflow override per `General.md` §12: in this repository, `main` is the working branch; rule-maintenance commits land directly on `main` (recorded standing override; no PR flow).
 * Rule authoring note: keep rule-file frontmatter minimal. Use `apply:` and optional `instructions:` for IDE compatibility (PhpStorm AiRulesEditor). Claude Code's native rule-gating uses `paths:` — add it to rule files that should only load when matching file paths are in scope (see https://code.claude.com/docs/en/memory#path-specific-rules). Workflow-scoped content should live in skills, not rules, so it only loads when Claude detects prompt relevance.
 * Follow the rules as defined in this explicit rule index:
   * @rules/Meta.md `[CRITICAL]` — always-on meta-rules: knowledge persistence, durable agent memory, labeled rule-set governance/self-improvement checkpoints. Re-read on every revalidation (§3.4).

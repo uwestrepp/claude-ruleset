@@ -371,6 +371,8 @@ Default branch model; a project or the user MAY override it.
 
 Protected set — `master`/`main`, `dev`/`development`, `staging`, `release/*`, and any deployment-trigger branch (e.g. `production`): reach these via PR only, never a direct commit or push, even when git/server does not technically protect them. Override only on explicit user request. The agent commits only on `feature/`|`bugfix/`|`hotfix/` working branches.
 
+A project MAY grant direct commits to a protected branch via an explicit override recorded in its `CLAUDE.md` (team-wide) or `CLAUDE.local.md` (machine-local). After the user has once explicitly authorized or requested a direct commit to a protected branch in a project without such a record, the agent SHOULD offer once to persist the override there.
+
 Before the first commit of a task, resolve and name the target branch (§2.4). If the current branch is in the protected set and no override was given, stop and ask.
 
 # Meta Rule
