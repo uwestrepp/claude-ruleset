@@ -57,7 +57,7 @@ FAIL=0
 report() { echo "REF-LINT: $1"; FAIL=1; }
 
 RE_FILE='(General|Meta|Persona|CleanCode|PER|Twig|TYPO3|Batch)\.md`?[[:space:]]*(§|sections?)[[:space:]]*`?[0-9]+(\.[0-9]+)*'
-RE_SKILL='/(core|typo3):[a-z0-9-]+`?[[:space:]]+(skill[[:space:]]+)?§[[:space:]]*[0-9]+(\.[0-9]+)*'
+RE_SKILL='/(core|typo3|composer|pocock):[a-z0-9-]+`?[[:space:]]+(skill[[:space:]]+)?§[[:space:]]*[0-9]+(\.[0-9]+)*'
 
 while IFS= read -r f; do
     while IFS= read -r hit; do
@@ -92,7 +92,7 @@ while IFS= read -r f; do
     if [[ "$f" == rules/*.md ]]; then
         while IFS= read -r ln; do
             line="${ln%%:*}"; text="${ln#*:}"
-            case "$text" in *.md*|*/core:*|*/typo3:*) continue ;; esac
+            case "$text" in *.md*|*/core:*|*/typo3:*|*/composer:*|*/pocock:*) continue ;; esac
             for num in $(printf '%s' "$text" | grep -oE '§[[:space:]]*[0-9]+(\.[0-9]+)*' | sed -E 's/§[[:space:]]*//'); do
                 heading_exists "$f" "$num" || report "$f:$line: same-file §$num has no heading in $f"
             done

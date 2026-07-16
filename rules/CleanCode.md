@@ -25,6 +25,7 @@ demeter, tests must be readable, etc.).
 Per `General.md` §4.6 (generation / legacy-review / uncertainty). Clean-code specifics:
 
 - **Generation:** prefer clarity over cleverness and explicitness over implicit behavior. Non-compliance with a MUST rule below is an error.
+- **Generation into an existing codebase:** where a MUST rule below conflicts with a dominant, deliberate convention of the surrounding code (for example an established fluent/chaining API vs command–query separation), the codebase convention wins (`General.md` §3.1/§3.3); state the deviation briefly instead of breaking consistency. Greenfield code follows the rules below without exception.
 - **Legacy review:** identify deviations from this spec and suggest minimal, safe refactorings (do not auto-modify — `General.md` §4.6).
 - **Uncertainty:** avoid assumptions about business intent; do not introduce new architectural patterns without confirmation (`General.md` §3.3).
 

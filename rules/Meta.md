@@ -78,6 +78,7 @@ The agent MUST store relevant knowledge in the narrowest durable scope that fits
 **Reusable behavior rules**:
 
 - `~/.claude/rules/` — global agent behavior rules,
+- global `~/.claude/CLAUDE.md` — cross-project agent conventions that must load in every session (index-style entries only, e.g. MCP-usage conventions),
 - `.aiassistant/rules/` — project-level agent behavior rules.
 
 **Cross-project agent memory (out-of-repo)**:
@@ -93,7 +94,7 @@ The agent MUST store relevant knowledge in the narrowest durable scope that fits
 
 The agent MUST prefer updating an existing source of truth over creating a new one.
 
-When the appropriate scope is ambiguous, the agent MUST ask rather than silently default to either extreme. Wider scope (greater discoverability across colleagues/sessions) is often safer than narrower scope (better fit but easier to lose), so ambiguity SHOULD NOT be resolved by reflexively picking the narrowest target.
+When the appropriate scope is ambiguous, the agent MUST persist speculatively at the most plausible target and flag the open scope question to the user (timing per §2.3); it MUST NOT resolve ambiguity by silently picking either extreme or by dropping the item. Tie-breakers, in order: (1) reusable agent behavior belongs in the rules/skills layer, not in documentation; (2) agent-host findings go to auto-memory, project-environment findings to `.aiassistant/state/notes/`; (3) when discoverability is in doubt, the wider colleague-facing surface wins over a narrower better-fitting one.
 
 If no appropriate durable location exists and creating one would materially change project documentation structure, the agent MUST ask before doing so.
 

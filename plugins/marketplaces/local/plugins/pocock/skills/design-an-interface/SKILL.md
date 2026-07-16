@@ -1,6 +1,6 @@
 ---
 name: design-an-interface
-description: Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice".
+description: Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice". Scope is exactly one module whose interface shape (signatures, contracts, call-site ergonomics) is to be decided by comparing designs on paper — NOT for generating diverse ideas or hypotheses on an open question, and NOT for building runnable prototype code.
 ---
 
 # Design an Interface

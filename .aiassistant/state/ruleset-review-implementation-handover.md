@@ -58,8 +58,8 @@ sub-item group if they diverge).
 
 | Proposal | Status | Decision / commit | Note |
 |---|---|---|---|
-| P11 | pending | | |
-| P12 | pending | | |
+| P11 | done | Ja (2026-07-16), Step-1 commit | githooks-install decided **auto** (ledger+frontmatter win; RULESET-OVERVIEW corrected). NOT-clauses written without cross-skill references per user instruction (positive own-scope wording instead). |
+| P12 | done | Ja (2026-07-16), Step-1 commit | Live-page note corrected per user: conversion IS possible manually in the UI, just not via MCP. §8.2 override sentence included. Meta §2.2 resolved to speculative-persist+flag with 3 tie-breakers; global CLAUDE.md added as layer. exports/OnlineAgent.md deliberately NOT synced (KB writes are colleague-facing; ask-first stays correct there). |
 | P2 | pending | | |
 | P3 | pending | | |
 | P4 | pending | | |

@@ -7,7 +7,7 @@ not symlinked, because local copies diverge from upstream (frontmatter flags, Ji
 
 ## Local adaptations applied at vendor time
 
-- `diagnose/SKILL.md` — added `disable-model-invocation: true` (overlaps the built-in diagnose; manual-only).
+- `diagnose/SKILL.md` — added `disable-model-invocation: true` (kept manual-only as a deliberately heavyweight loop; the original "overlaps the built-in diagnose" rationale is obsolete — no built-in diagnose skill exists as of 2026-07).
 - `grill-with-docs/SKILL.md` — added `disable-model-invocation: true` (depends on CONTEXT.md/ADR conventions; manual-only).
 - `zoom-out/SKILL.md` — upstream already ships `disable-model-invocation: true`; unchanged.
 - `handoff/SKILL.md` — save target changed from the OS temp dir to the project's `.aiassistant/state/handoffs/` (OS temp is wiped on reboot → handoff lost); added unitary-file + non-destructive-write rules (one handover = one timestamped file, never overwrite an existing handoff). Re-apply on any upstream refresh.

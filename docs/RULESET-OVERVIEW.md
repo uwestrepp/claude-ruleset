@@ -104,9 +104,11 @@ Three activation policies for skills (General §9):
   (`/core:batch` on batch-shaped work or scope growth, `/composer:update`,
   `/composer:major-upgrade` on matching requests).
 - **explicit activation required**: the agent must interrupt and ask for invocation
-  (`/typo3:*`, `/core:rule-friction`, `/core:githooks-install`, `/pocock:diagnose`,
+  (`/typo3:*`, `/core:rule-friction`, `/pocock:zoom-out`, `/pocock:diagnose`,
   `/pocock:grill-with-docs`). The literal ledger phrase "explicit activation required"
-  is load-bearing for detection.
+  is load-bearing for detection. `/composer:update` and `/composer:major-upgrade` are
+  hybrids: their ledger entries carry the literal phrase (General §9.1 detection
+  applies), while the agent surfaces them via auto-suggest on matching requests.
 
 Spine and specialization: `/core:batch` defines the phase template (0-9), Pass 1/2/3 risk
 model, gates, autonomous protocol, and chaining. `/composer:major-upgrade` specializes it
@@ -128,7 +130,7 @@ the structure sound.
 |---|---|---|
 | `/core:batch` | auto-suggest gate | Work is batch-shaped: ≥5 call sites, analyzer/rector cycles, scope grew multi-file, autonomous runs. Foundation for composer/typo3 workflows. |
 | `/core:commits` | auto | Any commit create/amend/rewrite. Schema `[TYPE] JIRA (scope) summary`, ticket traceability, splitting. |
-| `/core:githooks-install` | explicit | Install native git-hook enforcement of the commit schema in a project; suggested by `/core:commits` when hooks are absent. |
+| `/core:githooks-install` | auto (suggested by `/core:commits`) | Install native git-hook enforcement of the commit schema in a project; suggested by `/core:commits` when hooks are absent. |
 | `/core:brainstorm` | explicit / narrow auto | You genuinely want N diverse candidates (designs, hypotheses, test angles), not an answer to a converged question. |
 | `/core:grill-me` | explicit / narrow auto | You have a *forming* plan and want to be interviewed until its open decisions are resolved; ends in a decision record. |
 | `/core:poke-holes` | explicit / narrow auto | You have a *finished* artifact (plan, spec, doc) and want severity-ranked flaws, no questions asked, no alternatives. |
@@ -159,10 +161,10 @@ the structure sound.
 | `/pocock:design-an-interface` | auto | Compare radically different module/API shapes ("design it twice"). |
 | `/pocock:improve-codebase-architecture` | auto | Find shallow→deep module consolidation, guided by CONTEXT.md/ADRs. |
 | `/pocock:zoom-out` | explicit | Map the module/caller landscape at a higher abstraction level. |
-| `/pocock:handoff` | explicit | Compact the conversation into a handoff doc for a fresh agent. |
-| `/pocock:diagnose` | explicit | Disciplined reproduce→minimise→hypothesise→fix bug loop (overlaps built-in diagnose). |
+| `/pocock:handoff` | auto | Compact the conversation into a handoff doc for a fresh agent. |
+| `/pocock:diagnose` | explicit | Disciplined reproduce→minimise→hypothesise→fix bug loop; deliberately manual-only. |
 | `/pocock:grill-with-docs` | explicit | grill-me variant that challenges a plan against CONTEXT.md/ADR domain language. |
-| `/pocock:caveman` | explicit | Ultra-compressed output mode; subordinate to General §10.4/§8.2. |
+| `/pocock:caveman` | auto | Ultra-compressed output mode; subordinate to General §10.4/§8.2. |
 
 ## 5. Choosing between overlapping skills
 
@@ -171,6 +173,7 @@ the structure sound.
 | I have... | I want... | Use |
 |---|---|---|
 | An open question / early idea | N genuinely different candidates | `/core:brainstorm` |
+| One module whose interface/API needs its shape decided | Radically different interface designs, compared on paper | `/pocock:design-an-interface` |
 | A forming plan with open decisions | To be interviewed until it converges | `/core:grill-me` |
 | A finished artifact | Flaws found, no interview, no alternatives | `/core:poke-holes` |
 | A forming plan + a CONTEXT.md/ADR-driven repo | Interview grounded in the domain model | `/pocock:grill-with-docs` |

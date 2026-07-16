@@ -33,8 +33,8 @@
   * `/typo3:static-tests` — ordered static run (php-cs-fixer → rector1 → rector2 → fractor → typoscriptlint → phpstan), triage, ledgers.
   * `/typo3:upgrade-full` — orchestrates the three component skills in sequence; do NOT pre-activate the components.
 * **Pocock skills** — vendored/adapted subset of `mattpocock/skills` (provenance + upstream-refresh path in `plugins/marketplaces/local/plugins/pocock/UPDATING.md`):
-  * `/pocock:prototype`, `/pocock:design-an-interface`, `/pocock:improve-codebase-architecture`, `/pocock:zoom-out`, `/pocock:handoff` — auto-activate on prompt relevance; stack-agnostic engineering/prototyping aids.
-  * `/pocock:diagnose`, `/pocock:grill-with-docs` — explicit activation required (`disable-model-invocation`); diagnose overlaps the built-in diagnose, grill-with-docs depends on CONTEXT.md/ADR conventions.
+  * `/pocock:prototype`, `/pocock:design-an-interface`, `/pocock:improve-codebase-architecture`, `/pocock:handoff` — auto-activate on prompt relevance; stack-agnostic engineering/prototyping aids.
+  * `/pocock:zoom-out`, `/pocock:diagnose`, `/pocock:grill-with-docs` — explicit activation required (`disable-model-invocation`); zoom-out ships upstream-gated, diagnose is a deliberately manual heavyweight loop (baseline diagnosis discipline: `General.md` §1.5), grill-with-docs depends on CONTEXT.md/ADR conventions.
   * `/pocock:caveman` — brevity mode; subordinate to General.md §10.4 / §8.2 (which already govern output brevity and language).
 * Global MCP servers are configured in `~/.claude.json` under the `mcpServers` key (canonical location).
   * If MCP resources/templates are empty, treat this as a non-blocking beta behavior.
@@ -49,7 +49,8 @@
 When connected to atlassian mcp:
 - **MUST** ask for project-specific Jira project key, and persist it in the project's CLAUDE.md if not already present
 - **MUST** ask for project-specific Confluence spaceId, and persist it in the project's CLAUDE.md if not already present
-- **MUST** create Confluence pages as live pages (`subtype: "live"` on `createConfluencePage`) by default; use a standard page only when the user explicitly requests it. There is no in-place page↔live conversion via MCP — the type must be set at creation.
+- **MUST** create Confluence pages as live pages (`subtype: "live"` on `createConfluencePage`) by default; use a standard page only when the user explicitly requests it. There is no page↔live conversion via MCP — the type must be set at creation; converting afterwards is possible only manually in the Confluence UI.
+  - Precedence with `General.md` §10.5 (offer-first): the offer gate governs whether the agent creates the page at all; the live-page MUST binds only the MCP-create path. When offering the paste path, state that the resulting page can become a live page only via manual conversion in the UI, not via MCP.
 - **MUST** use cloudId = "https://mosaiq.atlassian.net" (do NOT call getAccessibleAtlassianResources)
 - **MUST** use `maxResults: 10` or `limit: 10` for ALL Jira JQL and Confluence CQL search operations.
 - **MUST** paginate JQL/CQL queries until the end of result set (or until user asks for a sample only).

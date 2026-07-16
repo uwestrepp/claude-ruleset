@@ -233,6 +233,8 @@ Colleague-facing external content MUST be written in German: Jira tickets (summa
 
 The following MUST remain in English: git commit messages, code comments/DocBlocks/inline TODOs, repo-level `README.md` and equivalent in-repo developer docs, agent-to-user chat replies (match the user's language; default English).
 
+A project or the user MAY override these language mappings; record a project-level override in the project's `CLAUDE.md`.
+
 If the target surface is ambiguous (for example a release-notes artifact that is both a repo file and published to Confluence), ask before writing.
 
 ## 8.3 Topic-Close Commit Proposal (MUST)
