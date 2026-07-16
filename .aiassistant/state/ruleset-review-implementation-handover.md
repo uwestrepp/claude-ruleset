@@ -71,13 +71,37 @@ sub-item group if they diverge).
 | P9 | done | Ja (2026-07-16), Step-10 commit | §4.5: chat evidence line as non-batch recording target + §5.2-style blocker fallback for payload replay. §4.6: explicit user change-task IS the confirmation; gate binds to agent-initiated changes beyond requested scope. |
 | P10 | pending | | |
 
-## Session bootstrap
+## Session bootstrap (updated 2026-07-16: only Step 11 / P10 remains)
 
-Read first, in order:
-1. This file.
-2. `.aiassistant/state/ruleset-critical-review-2026-07-13.md` (findings + proposal content).
+Steps 1-10 (P11, P12, P2, P3, P4, P1, P5, P6, P7, P8, P9) are done and
+committed (`ec05c93`..`ae34207`, see ledger). Read first, in order:
+
+1. This file (ledger + P10 preconditions below).
+2. `.aiassistant/state/ruleset-critical-review-2026-07-13.md` §B5 + §C/P10
+   (evidence + proposal content).
 3. `docs/RULESET-OVERVIEW.md` §1 (the five vectors, as evaluation frame) — skim.
 
-Then start at the first `pending` ledger row with the process protocol above.
+Then execute Step 11 with the process protocol above (P10 MAY be split into
+one decision+commit per plugin/file group; the protocol's one-commit-per-step
+rule bends to the review's own "one plugin per change-set" instruction).
+
+### P10 preconditions established this session (2026-07-16)
+
+- Token budgets are now MECHANICAL: `bin/lint-section-refs.sh` check 6 fails
+  commits when a file exceeds its budget (General 10500 / Meta 4500 /
+  Persona 1000 / CLAUDE.md 3000 estimated tokens, chars/3.8).
+- `rules/General.md` is at ~10461/10500 — the trip-wire is effectively armed;
+  P10's §4.5 batch-machinery and §12 release-mechanics moves free that space.
+  Re-measure after every change-set: `wc -c <file>` (×10/38 ≈ tokens).
+- NOT-clauses added 2026-07-16 to `core:brainstorm` and
+  `pocock:design-an-interface` descriptions MUST survive the description trim
+  (written deliberately without cross-skill references — keep that property).
+- CLAUDE.md ledger lines changed this session (zoom-out moved to explicit,
+  diagnose rationale replaced, Atlassian precedence note): trim against the
+  CURRENT file state, not the review's quoted excerpts.
+- Standing constraints above still bind, especially: Meta.md §3.2 salience
+  exception (Persona's anti-capitulation half stays; only the ~400-token
+  procedural restatements are in scope), and §10.5's offer list MUST NOT move.
+
 Recommended setting: `/effort high`, model claude-fable-5 (normative rule edits,
 high blast radius, precision over speed).
