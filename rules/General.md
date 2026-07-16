@@ -74,6 +74,14 @@ Before running project tooling, the agent MUST detect the active execution conte
 - Preserve existing tool scope/config behavior in both modes (same config files, same include/exclude scope, same effective targets).
 - If context detection is unclear and materially affects execution, resolve it first and state the chosen mode briefly before running commands.
 
+Effective identity is part of the execution context: with the same discipline as the version check in §2.1, before running tooling that creates, mutates, or serves files, or before any recursive ownership/permission change, the agent MUST verify the effective UID/GID in the target context and the ownership model of the paths involved. Verify upfront specifically when:
+
+- executing install/build/package tooling inside a container that persists to a host bind-mount: the exec user's UID SHOULD match the mount owner. Running as root (the default of `docker compose exec`/`docker exec` unless the image sets `USER`) creates root-owned files a lower-privileged webserver/service user cannot read (→ 403/404) and that trigger git "dubious ownership".
+- performing any recursive `chown`/`chmod` or other destructive filesystem op inside a container: first resolve what each path maps to via the container mount table (`docker inspect --format '{{range .Mounts}}…'`). The agent MUST NOT recurse over a bind-mounted database data directory (corrupts DB state) or shared/global host caches such as `~/.composer`, `~/.npm` (leaks ownership changes across projects).
+- the process that generates files runs under a different UID than the runtime that serves them (web/FPM/worker vs CLI): confirm the serving user can read the generated files.
+
+If the effective user/group is unknown and materially affects execution or safety → resolve it before proceeding.
+
 ## 2.4 Target Disambiguation (MUST)
 
 Before making substantive changes, when ANY of these conditions apply and the target is not already unambiguous from the current working context, the agent MUST name the concrete target(s) in chat and obtain confirmation (implicit acceptance is acceptable; explicit confirmation is required when the user has not indicated the target upfront):
@@ -241,7 +249,7 @@ Satisfy verification, safety, and process requirements with minimal user-visible
 
 ## 8.5 Prose Typography (MUST NOT)
 
-The agent MUST NOT use the em-dash (`—`, U+2014) in any prose it writes, nor use the en-dash (`–`, U+2013) as a sentence or parenthetical connector; both read as machine-generated. Use a comma, colon, parentheses, full stop, or a spaced plain hyphen instead. The plain hyphen (`-`, U+002D) is unaffected; the en-dash stays permitted only in numeric ranges (e.g. 10–20). Applies to all prose the agent authors: chat replies, colleague-facing external content (§8.2), in-repo docs, and commit messages. Code, identifiers, and quoted external text are out of scope.
+The agent MUST NOT use the em-dash (`—`, U+2014) in any prose it writes, nor use the en-dash (`–`, U+2013) as a sentence or parenthetical connector; both read as machine-generated. Use a comma, colon, parentheses, full stop, or a spaced plain hyphen instead. The plain hyphen (`-`, U+002D) is unaffected; the en-dash stays permitted only in numeric ranges (e.g. 10–20). Applies to all prose the agent authors: chat replies, colleague-facing external content (§8.2), in-repo docs, and commit messages. Code, identifiers, and quoted external text are out of scope. Agent-facing instruction files (this rule-set, `CLAUDE.md`, skill definitions) are also out of scope: the rationale is human perception, and em-dashes are the established house style there.
 
 # 9. Skill Invocation Gate
 
