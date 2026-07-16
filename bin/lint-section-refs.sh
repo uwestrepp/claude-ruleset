@@ -126,7 +126,12 @@ declare -A BUDGETS=(
     [CLAUDE.md]=3000
 )
 for f in "${!BUDGETS[@]}"; do
-    [[ -f "$f" ]] || continue
+    if [[ ! -f "$f" ]]; then
+        # Fail closed: a renamed/removed budgeted file must not silently drop
+        # budget enforcement — update the BUDGETS table in the same change-set.
+        report "$f: budgeted always-on file missing — update the budget table in this script if it was renamed/removed (Meta.md §3.3)"
+        continue
+    fi
     est=$(( $(wc -c < "$f") * 10 / 38 ))
     if (( est > BUDGETS[$f] )); then
         report "$f: ~${est} estimated tokens exceeds always-on budget ${BUDGETS[$f]} (Meta.md §3.3) — demote content or raise the budget via explicit user decision"
