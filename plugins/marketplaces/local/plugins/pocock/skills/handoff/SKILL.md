@@ -6,6 +6,8 @@ argument-hint: "What will the next session be used for?"
 
 Write a handoff document summarising the current conversation so a fresh agent can continue the work.
 
+This skill produces the continuation-doc component of the `General.md` §10.3 handover bundle. If a `/core:batch` cycle is active, its §11.1 scratch note remains the in-cycle bookmark — incorporate that note's state into the handoff document instead of duplicating or replacing it.
+
 ## Where to save
 
 - Save into the project's `.aiassistant/state/handoffs/` directory (repository / working-tree root). Create the directory if it does not exist. NEVER save to the OS temporary directory (`/tmp` or equivalent) — those are wiped on reboot and the handoff is lost.

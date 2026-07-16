@@ -64,7 +64,7 @@ sub-item group if they diverge).
 | P3 | done | Ja (2026-07-16), Step-3 commit | `--archive` flag added to report script; skill gains archive step + "Effectiveness claims (MUST)" section (≥2 archived windows or label "untested"; per-skill claims need transcript Skill-tool counts). First window archived: `.aiassistant/state/rule-friction/2026-07-16-report.md` (48 sessions, matches the review's evidence base). |
 | P4 | done | Ja (2026-07-16), Step-4 commit | New Meta.md §3.3 (demotion review, proposal-only; salience-protected exempt from demotion not justification) + token-budget trip-wire as lint check 6 (General 10500 / Meta 4500 / Persona 1000 / CLAUDE.md 3000; budgets live in the script). B4 folded in per user: §1.1 milestone definition (§8.3 topic-close boundary) + checkpoint-delegation briefing restriction (main agent identifies candidates, sub-agent verifies). |
 | P1 | done | Ja (2026-07-16), Step-5 commit | Both carve-outs added to §10.2 (confirmed-autonomous: queue into handoff note; trivial task-start: condensed form, informational). Cross-side clarification sentence in /core:batch §5.1. |
-| P5 | pending | | |
+| P5 | done | Ja (2026-07-16), Step-6 commit | §10.3 is the spine (durable target `state/handoffs/handoff-<ts>-<slug>.md`, never OS-tmp/scratchpad); batch §11.1 promotes its scratch note on restart proposal; pocock:handoff declared producer + in-batch reconciliation clause. Activation stays **auto** per user decision. No export sync needed (checked, no handover content in exports/). |
 | P6 | pending | | |
 | P7 | pending | | |
 | P8 | pending | | |

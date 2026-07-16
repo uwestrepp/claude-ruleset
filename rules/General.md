@@ -311,7 +311,7 @@ For sessions grown large, the agent SHOULD suggest starting a fresh session at a
 
 When the agent suggests a restart and prior context must carry to the next session, it MUST offer a complete **handover bundle** in one collected proposal — never a bare "you could restart" hint. The bundle comprises:
 
-- **continuation doc** — the handover/brain-dump note capturing current state and the next concrete step (in a batch cycle this is the §11.1 handoff note; otherwise a doc-file or an inline brain-dump);
+- **continuation doc** — the handover note capturing current state and the next concrete step, at a durable, reboot-safe target: in projects with the `.aiassistant/` convention `state/handoffs/handoff-<timestamp>-<slug>.md` (committed, never overwritten; `/pocock:handoff` produces this format), elsewhere a committed doc-file — NEVER the OS temp dir or the session scratchpad. In an active batch cycle the `/core:batch` §11.1 scratch note is the working bookmark; promote it to the durable target when the restart is proposed;
 - **memory** — durable persistence per `Meta.md` §2 of anything that must survive the session (confirmed facts, decisions, env quirks) at its correct scope;
 - **trigger prompt** — a ready-to-paste prompt that bootstraps the next session: what to read first (the continuation doc / state paths), the immediate next action, and the recommended `/effort` level + model per §10.2.
 

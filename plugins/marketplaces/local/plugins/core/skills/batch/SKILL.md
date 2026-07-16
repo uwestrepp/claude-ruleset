@@ -529,9 +529,9 @@ For cycles expected to span multiple sessions or where phases exceed a single na
 - create the handoff note at Phase 2 (Preflight/Inventory) and update it at each subsequent phase boundary,
 - on continuation (new session or resumed after interruption), read the handoff note as the first orientation step, before `General.md` §3.4 revalidation.
 
-When a session restart is proposed at a phase boundary (per `General.md` §10.2/§10.3), the agent MUST offer the full `General.md` §10.3 handover bundle, not just the note: this handoff note is the bundle's continuation-doc component — additionally persist memory (`Meta.md` §2) and emit a ready-to-paste trigger prompt that points the next session at this note's path and names the next phase/step plus the recommended effort/model.
+When a session restart is proposed at a phase boundary (per `General.md` §10.2/§10.3), the agent MUST offer the full `General.md` §10.3 handover bundle, not just the note: promote this note to the bundle's continuation-doc component at the durable target (`.aiassistant/state/handoffs/handoff-<timestamp>-<slug>.md`, committed, per `General.md` §10.3) — additionally persist memory (`Meta.md` §2) and emit a ready-to-paste trigger prompt that points the next session at the promoted note's path and names the next phase/step plus the recommended effort/model.
 
-The handoff note MUST NOT be committed (it lives in `.aiassistant/scratch/` per `Meta.md` §2.4) unless the user explicitly requests retention and promotes it to `.aiassistant/state/`.
+The in-cycle scratch note MUST NOT be committed (it lives in `.aiassistant/scratch/` per `Meta.md` §2.4); the durable copy created at a restart proposal lives in `.aiassistant/state/handoffs/` and is committed (`General.md` §10.3).
 
 Rationale:
 - Converts session interruption from a recovery event into a bookmark.
