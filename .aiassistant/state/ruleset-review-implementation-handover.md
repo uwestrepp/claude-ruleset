@@ -116,7 +116,9 @@ terse; P3 script has `set -uo pipefail` (archive gate sound); pre-push gate is
 explicitly fail-closed with documented bypass; P11 frontmatter↔ledger alignment
 confirmed at ground truth (zoom-out/diagnose/grill-with-docs); Drupal.md is
 path-gated with same-change-set index update; hook test suite passes; no missed
-exports sync. Open findings (proposal-only, not yet applied):
+exports sync. Findings F1-F3 applied same-day per user decision (F1: Ja,
+compressed as proposed; F2 commit 99c71d0; F3 commit 7d5e6a3); F4/F5 remain
+open notes:
 
 - **F1 (material)** `1a3be2c` §2.3 effective-UID/GID block: incident-backed and
   correctly always-on, but ~390 est. tokens with reference-level detail

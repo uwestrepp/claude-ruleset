@@ -76,11 +76,11 @@ Before running project tooling, the agent MUST detect the active execution conte
 - Preserve existing tool scope/config behavior in both modes (same config files, same include/exclude scope, same effective targets).
 - If context detection is unclear and materially affects execution, resolve it first and state the chosen mode briefly before running commands.
 
-Effective identity is part of the execution context: with the same discipline as the version check in §2.1, before running tooling that creates, mutates, or serves files, or before any recursive ownership/permission change, the agent MUST verify the effective UID/GID in the target context and the ownership model of the paths involved. Verify upfront specifically when:
+Effective identity is part of the execution context: before running tooling that creates, mutates, or serves files, or before any recursive ownership/permission change, the agent MUST verify (per the §2.1 discipline) the effective UID/GID in the target context and the ownership model of the paths involved. Specifically:
 
-- executing install/build/package tooling inside a container that persists to a host bind-mount: the exec user's UID SHOULD match the mount owner. Running as root (the default of `docker compose exec`/`docker exec` unless the image sets `USER`) creates root-owned files a lower-privileged webserver/service user cannot read (→ 403/404) and that trigger git "dubious ownership".
-- performing any recursive `chown`/`chmod` or other destructive filesystem op inside a container: first resolve what each path maps to via the container mount table (`docker inspect --format '{{range .Mounts}}…'`). The agent MUST NOT recurse over a bind-mounted database data directory (corrupts DB state) or shared/global host caches such as `~/.composer`, `~/.npm` (leaks ownership changes across projects).
-- the process that generates files runs under a different UID than the runtime that serves them (web/FPM/worker vs CLI): confirm the serving user can read the generated files.
+- container tooling persisting to a host bind-mount: match the exec user's UID to the mount owner — `docker exec`/`docker compose exec` default to root unless the image sets `USER`, and root-owned output breaks serving users and git ownership checks.
+- recursive `chown`/`chmod` or other destructive filesystem ops in a container: resolve each path's mount mapping first (container mount table); the agent MUST NOT recurse over a bind-mounted database data directory or shared host caches (`~/.composer`, `~/.npm`).
+- generator UID ≠ serving UID (web/FPM/worker vs CLI): confirm the serving user can read the generated files.
 
 If the effective user/group is unknown and materially affects execution or safety → resolve it before proceeding.
 
