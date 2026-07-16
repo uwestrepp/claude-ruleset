@@ -12,6 +12,17 @@
 # Verdict: PermissionDecision "ask" (soft-block; false positives cost one
 # user click, never a hard stop).
 #
+# Known false-positive classes (accepted, probe-confirmed 2026-07-16):
+#   - the pattern inside quoted text: the hook sees only the raw command
+#     string, so e.g. a heredoc commit body *citing* a §5.6 example triggers,
+#   - progress narration (`... | sort > f && echo done`) where the echo is
+#     not used as evidence.
+#
+# Fail-open by design: if jq is missing or the input JSON is unparseable,
+# COMMAND resolves empty and the hook exits 0 (allow). This is a deliberate
+# §5.6 authoring-clause decision — the hook is an advisory layer, not a
+# security gate; a broken hook must not block all Bash usage.
+#
 # Input:  JSON on stdin with tool_input containing a "command" field.
 # Output: JSON on stdout to request confirmation; exit 0.
 
