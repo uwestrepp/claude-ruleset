@@ -20,6 +20,9 @@
 #      number present at HEAD was removed/renumbered or had its title changed
 #      (pure additions are allowed). This is what catches insert-and-shift
 #      drift that checks 1–2 cannot (a still-existing number with new meaning).
+#   6. Always-on token budgets — Meta.md §3.3 trip-wire: estimated tokens
+#      (chars/3.8) per always-on file must stay under its budget; raise a
+#      budget only via explicit user decision.
 #
 # Limitations (by design): same-file check is rules/-only and line-based, so a
 # bare §N sharing a line with a cross-file qualifier is skipped; a cross-file
@@ -114,6 +117,21 @@ while IFS= read -r f; do
         unset _hm _wm
     fi
 done < <(git ls-files '*.md')
+
+# Check 6: always-on token budgets (Meta.md §3.3 trip-wire).
+declare -A BUDGETS=(
+    [rules/General.md]=10500
+    [rules/Meta.md]=4500
+    [rules/Persona.md]=1000
+    [CLAUDE.md]=3000
+)
+for f in "${!BUDGETS[@]}"; do
+    [[ -f "$f" ]] || continue
+    est=$(( $(wc -c < "$f") * 10 / 38 ))
+    if (( est > BUDGETS[$f] )); then
+        report "$f: ~${est} estimated tokens exceeds always-on budget ${BUDGETS[$f]} (Meta.md §3.3) — demote content or raise the budget via explicit user decision"
+    fi
+done
 
 # Check 3: every tracked local-plugin skill is in the CLAUDE.md ledger.
 for sk in "$PLUGIN_ROOT"/*/skills/*/SKILL.md; do

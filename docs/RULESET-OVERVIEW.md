@@ -271,3 +271,5 @@ Outcomes are healthy: 30/48 fully achieved, 13 mostly, 1 not (session-limit cuto
 - Rule-set health: run `/insights`, then `/core:rule-friction`, roughly every 2-3 weeks
   (facet pruning makes longer intervals lossy). Archive each window (`--archive`);
   per-rule effectiveness claims need ≥2 archived windows, else the rule is "untested".
+- Demotion review: at each rule-friction cycle (minimum quarterly) per Meta §3.3;
+  always-on token budgets are enforced by `bin/lint-section-refs.sh` (check 6).

@@ -30,6 +30,8 @@ Both aspects MUST be addressed. When BOTH aspects are no-op, a condensed single-
 
 Workflow-specific rules MAY concretize these checkpoint triggers into named phase boundaries; when such concretization exists, the phase-level triggers supplement — but do not replace — the baseline triggers defined here.
 
+Outside workflow skills, a major milestone is the completion of a clearly delineated work item (the `General.md` §8.3 topic-close boundary) or an explicit phase change acknowledged with the user; when neither occurs during a task, task end is the only remaining checkpoint trigger.
+
 The agent MUST perform checkpoint evaluations continuously during delivery, but MUST batch non-critical findings only to the next defined checkpoint (major milestone or task end), not beyond, to avoid workflow disruption. The continuous-evaluation requirement of §2.3 still applies between checkpoints: persistence-relevant knowledge MUST be persisted as soon as the §2.3 risk signals warrant, regardless of checkpoint cadence.
 
 For task-end and Phase 9 checkpoints: if the checkpoint produces substantive findings (knowledge persisted at non-trivial targets, or rule-improvement proposals), the findings MUST also be appended to a durable committed artifact (triage packet, closure log, or equivalent named session artifact). A chat-only label is not sufficient evidence for auditability when committed session artifacts exist. The checkpoint is not complete until either (a) no substantive findings were identified and this is stated in the labeled output, or (b) substantive findings are persisted to the named artifact.
@@ -40,7 +42,7 @@ At each major milestone, the agent MUST provide one explicit checkpoint result w
 
 At task end, the agent MUST always provide one explicit batched checkpoint result with both lines.
 
-When a checkpoint involves reviewing multiple files, inspecting rule-set coverage, or drafting substantive proposals, the agent SHOULD delegate to the `checkpoint` sub-agent per `General.md` §11.1 rather than performing the review inline. Inline checkpoint is acceptable only when the result is a brief no-op (no new knowledge persistence, no rule improvements).
+When a checkpoint involves reviewing multiple files, inspecting rule-set coverage, or drafting substantive proposals, the agent SHOULD delegate to the `checkpoint` sub-agent per `General.md` §11.1 rather than performing the review inline. Inline checkpoint is acceptable only when the result is a brief no-op (no new knowledge persistence, no rule improvements). When delegating, the main agent MUST include its candidate list of session findings in the briefing — the sub-agent cannot see unbriefed session knowledge, so identifying persistence candidates stays with the main agent; the sub-agent verifies coverage, storage targets, and rule-set impact.
 
 # 2. Knowledge Persistence
 
@@ -180,3 +182,15 @@ Salience exception (MUST): where a rule guards a failure mode the model exhibits
 Testing requirements MUST be maintained as one general mandatory rule (test-path selection plus execution after changes). Scoped rules should specialize that baseline instead of duplicating or conflicting with it.
 
 When adding, removing, renaming, or materially changing files in the applicable rules directory (`~/.claude/rules/` for global rules, `.aiassistant/rules/` for project-level rules), the agent MUST update the explicit rule index in `CLAUDE.md` in the same change-set.
+
+## 3.3 Demotion review (MUST)
+
+Always-on context is a budget: every always-on token dilutes attention on every other rule, so additions without a removal path are a ratchet. This section is the counterweight.
+
+At each `/core:rule-friction` cycle (at minimum quarterly), a demotion review MUST be run over the always-on surface ([CRITICAL] rule files, the `CLAUDE.md` index, skill descriptions):
+
+- each always-on section MUST either name an incident from the archived friction windows that it prevented or answered, or carry an explicit justification for staying always-on (for example: safety-critical with low-frequency/high-cost failure, structural index entry, load-bearing literal phrase),
+- sections with neither become demotion candidates: propose per §3.1 moving them to a path-gated rule file, a skill, or reference documentation — demotion is proposal-only, never auto-applied,
+- salience-protected rules (§3.2) are exempt from demotion, NOT from justification.
+
+Per-file token budgets are the trip-wire, enforced mechanically by `bin/lint-section-refs.sh` (the budget table lives there). When an always-on file exceeds its budget, further always-on additions to it are blocked until a demotion review has freed space or the user has explicitly raised the budget.
