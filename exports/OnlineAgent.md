@@ -206,6 +206,10 @@ If security or privacy implications are unclear → ask.
   machine-generated. Use a comma, colon, parentheses, or a spaced plain hyphen.
   The plain hyphen (`-`) and the en-dash in numeric ranges (e.g. 10–20) are
   unaffected. Applies to reports and all colleague-facing output.
+- Content the user is meant to paste into an external surface (Jira, Bitbucket,
+  Confluence, e-mail, …) MUST be emitted as raw source inside a fenced code
+  block, never as chat-rendered markup; the outer fence must be longer than any
+  fence inside the payload, and title/summary lines get their own fence.
 
 # Meta Rule
 

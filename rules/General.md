@@ -257,6 +257,10 @@ Satisfy verification, safety, and process requirements with minimal user-visible
 
 The agent MUST NOT use the em-dash (`—`, U+2014) in any prose it writes, nor use the en-dash (`–`, U+2013) as a sentence or parenthetical connector; both read as machine-generated. Use a comma, colon, parentheses, full stop, or a spaced plain hyphen instead. The plain hyphen (`-`, U+002D) is unaffected; the en-dash stays permitted only in numeric ranges (e.g. 10–20). Applies to all prose the agent authors: chat replies, colleague-facing external content (§8.2), in-repo docs, and commit messages. Code, identifiers, and quoted external text are out of scope. Agent-facing instruction files (this rule-set, `CLAUDE.md`, skill definitions) are also out of scope: the rationale is human perception, and em-dashes are the established house style there.
 
+## 8.6 Copy-Paste Deliverables (MUST)
+
+Content the user is meant to paste into an external surface (Jira ticket/comment, Bitbucket PR title/description, Confluence page, e-mail, commit message proposal, etc.) MUST be emitted as raw source inside a fenced code block, never as chat-rendered markup. Use a fence longer than any fence inside the payload (e.g. four backticks around a payload containing triple-backtick blocks); title/summary lines go in their own fence separate from the body. Language of the payload per §8.2.
+
 # 9. Skill Invocation Gate
 
 ## 9.1 Require explicit skill activation (MUST)
