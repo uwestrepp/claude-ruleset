@@ -233,13 +233,7 @@ Before creating or amending commits: apply the `/core:commits` skill as the auth
 
 ## 8.2 Output Language (MUST)
 
-Colleague-facing external content MUST be written in German: Jira tickets (summary, description, comments), Confluence pages (content, comments), Bitbucket pull request titles and descriptions. When such content is handed to the user to paste onward, format it per §8.6.
-
-The following MUST remain in English: git commit messages, code comments/DocBlocks/inline TODOs, repo-level `README.md` and equivalent in-repo developer docs, agent-to-user chat replies (match the user's language; default English).
-
-A project or the user MAY override these language mappings; record a project-level override in the project's `CLAUDE.md`.
-
-If the target surface is ambiguous (for example a release-notes artifact that is both a repo file and published to Confluence), ask before writing.
+Agent-to-user chat matches the user's language (default English). Colleague-facing communication follows `/core:communication`, which owns the full language mapping and drafting rules: Jira / Confluence / Bitbucket PRs in German; git commit messages in English (commit messages are colleague-facing communication too, drafted per `/core:commits`). In-repo developer artifacts (`README.md` and equivalents, code comments/DocBlocks/inline TODOs) stay English and are NOT colleague communication. A project or the user MAY override these mappings in the project's `CLAUDE.md`.
 
 ## 8.3 Topic-Close Commit Proposal (MUST)
 
@@ -255,11 +249,11 @@ Satisfy verification, safety, and process requirements with minimal user-visible
 
 ## 8.5 Prose Typography (MUST NOT)
 
-The agent MUST NOT use the em-dash (`—`, U+2014) in any prose it writes, nor use the en-dash (`–`, U+2013) as a sentence or parenthetical connector; both read as machine-generated. Use a comma, colon, parentheses, full stop, or a spaced plain hyphen instead. The plain hyphen (`-`, U+002D) is unaffected; the en-dash stays permitted only in numeric ranges (e.g. 10–20). Applies to all prose the agent authors: chat replies, colleague-facing external content (§8.2), in-repo docs, and commit messages. Code, identifiers, and quoted external text are out of scope. Agent-facing instruction files (this rule-set, `CLAUDE.md`, skill definitions) are also out of scope: the rationale is human perception, and em-dashes are the established house style there.
+No em-dash (`—`, U+2014) in any prose the agent writes, and no en-dash (`–`, U+2013) as a sentence or parenthetical connector; use a comma, colon, parentheses, full stop, or a spaced plain hyphen. The en-dash is permitted only in numeric ranges (e.g. 10–20); the plain hyphen (`-`) is unaffected. Scope: all agent-authored prose (chat replies, commit messages, in-repo docs, colleague-facing content). Out of scope: code, identifiers, quoted external text, and agent-facing instruction files (this rule-set, `CLAUDE.md`, skill definitions). This kernel stays always-on because it binds chat and commit prose that need not activate the skill; rationale and colleague-facing application in `/core:communication` §2.
 
 ## 8.6 Copy-Paste Deliverables (MUST)
 
-Content the user is meant to paste into an external surface (Jira ticket/comment, Bitbucket PR title/description, Confluence page, e-mail, commit message proposal, etc.) MUST be emitted as raw source inside a fenced code block, never as chat-rendered markup. Use a fence longer than any fence inside the payload (e.g. four backticks around a payload containing triple-backtick blocks); title/summary lines go in their own fence separate from the body. Language of the payload per §8.2.
+Content the user is meant to paste into an external surface (Jira ticket/comment, Bitbucket PR title/description, Confluence page, e-mail, commit-message proposal, etc.) MUST be emitted as raw source inside a fenced code block, never as chat-rendered markup. This kernel stays always-on because commit-message proposals arise in any session; the fence-length rule, title/body separation, and payload language (§8.2) are in `/core:communication` §3.
 
 # 9. Skill Invocation Gate
 
