@@ -233,7 +233,7 @@ Before creating or amending commits: apply the `/core:commits` skill as the auth
 
 ## 8.2 Output Language (MUST)
 
-Agent-to-user chat matches the user's language (default English). Colleague-facing communication follows `/core:communication`, which owns the full language mapping and drafting rules: Jira / Confluence / Bitbucket PRs in German; git commit messages in English (commit messages are colleague-facing communication too, drafted per `/core:commits`). In-repo developer artifacts (`README.md` and equivalents, code comments/DocBlocks/inline TODOs) stay English and are NOT colleague communication. A project or the user MAY override these mappings in the project's `CLAUDE.md`.
+Agent-to-user chat matches the user's language. Colleague-facing communication follows `/core:communication`, which owns the full language mapping and drafting rules: Jira / Confluence / Bitbucket PRs in German; git commit messages in English (commit messages are colleague-facing communication too, drafted per `/core:commits`). In-repo developer artifacts (`README.md` and equivalents, code comments/DocBlocks/inline TODOs) stay English and are NOT colleague communication. A project or the user MAY override these mappings in the project's `CLAUDE.md`.
 
 ## 8.3 Topic-Close Commit Proposal (MUST)
 
@@ -249,11 +249,11 @@ Satisfy verification, safety, and process requirements with minimal user-visible
 
 ## 8.5 Prose Typography (MUST NOT)
 
-No em-dash (`—`, U+2014) in any prose the agent writes, and no en-dash (`–`, U+2013) as a sentence or parenthetical connector; use a comma, colon, parentheses, full stop, or a spaced plain hyphen. The en-dash is permitted only in numeric ranges (e.g. 10–20); the plain hyphen (`-`) is unaffected. Scope: all agent-authored prose (chat replies, commit messages, in-repo docs, colleague-facing content). Out of scope: code, identifiers, quoted external text, and agent-facing instruction files (this rule-set, `CLAUDE.md`, skill definitions). This kernel stays always-on because it binds chat and commit prose that need not activate the skill; rationale and colleague-facing application in `/core:communication` §2.
+No em-dash (`—`) in any agent-authored prose, and no en-dash (`–`) as a connector (en-dash only in numeric ranges, 10–20); out of scope: code, identifiers, quoted text, agent-facing instruction files. Kept always-on because it binds commit messages and in-repo docs, which the skill does not cover; full rule in `/core:communication` §2.
 
 ## 8.6 Copy-Paste Deliverables (MUST)
 
-Content the user is meant to paste into an external surface (Jira ticket/comment, Bitbucket PR title/description, Confluence page, e-mail, commit-message proposal, etc.) MUST be emitted as raw source inside a fenced code block, never as chat-rendered markup. This kernel stays always-on because commit-message proposals arise in any session; the fence-length rule, title/body separation, and payload language (§8.2) are in `/core:communication` §3.
+Content the user will paste into an external surface (Jira, Bitbucket PR, Confluence, e-mail, commit-message proposal, etc.) MUST be emitted as raw source in a fenced code block, never chat-rendered markup. Fence-length rule, title/body separation, and payload language: `/core:communication` §3.
 
 # 9. Skill Invocation Gate
 
