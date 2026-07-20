@@ -1,5 +1,14 @@
 # Handoff — Phase D: Colleague-facing Communication Profile
 
+> **DONE 2026-07-20 (commit `7ed0473`).** Built `/core:communication` (core plugin):
+> two-layer global/project profile for Jira/Bitbucket/Confluence output. Trimmed the
+> CLAUDE.md "Atlassian Rovo MCP" block to keep only the two safety MUST-guards
+> always-on (live-page-default, Jira comment-visibility); mechanics moved into the
+> skill. Ledger + plugin.json updated; lint + rule-index-auditor clean. Skill name
+> `/core:communication` and "always-on rule suffices (no hook now)" were user
+> decisions. Comment-visibility PreToolUse-hook option recorded in the skill for
+> later. Document retained for audit; no further action.
+
 Created 2026-07-20. Resume target: `~/.claude` (rule-set repo, working branch `main`).
 Recommended settings: `/effort high | claude-opus-4-8` (design-heavy).
 
