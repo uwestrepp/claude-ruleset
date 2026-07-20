@@ -57,7 +57,10 @@ Output line for a ticket (German, `§8.2`), e.g.:
 ## 4. Reference bands (seed calibration)
 
 Observed bands from the GMP-304/340 sessions (Shopware/PHP; agent-assisted,
-`/effort high`). Treat as a starting prior, not a law:
+`/effort high`). Treat as a starting prior, not a law. The concrete per-ticket
+estimates + outcomes these generalise (agent-made, calibrated against a prior
+execution, practitioner-assessed as accurate; no recorded actuals) are the
+validated seed baseline in `references/gmp-304-340-baseline.md`.
 
 | Task type | Typical AWS |
 |---|---|
