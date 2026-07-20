@@ -20,6 +20,7 @@
   * `/core:brainstorm` — N distinct candidates → ranked shortlist; genuine exploration only, NOT converged work.
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
   * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material, no nitpick bucket); no interview, no alternatives, NOT code-diff review. Disambiguate from grill-me (which interviews) on overlap.
+  * `/core:effort-estimation` — agent-session-wall-clock effort estimates (AWS = Aufwandsschätzung): scope boundary (impl+verification in, review/deploy/external out as lead-time drivers), task-type bands, calibration factors. NOT PM scheduling.
 * **Core workflow skills** — activation policy per entry:
   * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Foundation for the typo3 workflow skills.
   * `/core:rule-friction` — explicit activation required. Rule-set feedback loop (`bin/rule-friction-report.sh` → `Meta.md` §3.1 proposals).
