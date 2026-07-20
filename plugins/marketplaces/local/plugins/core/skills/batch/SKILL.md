@@ -285,6 +285,11 @@ delegation policy in `General.md` §11.
   spawn to process the batch sequentially in isolated context. Below threshold, the main
   agent handles verification inline. Collect classification results before finalizing
   the triage packet.
+- **`payload-replay-verifier` (SHOULD after request-path type narrowing)**: when a
+  pass narrows a parameter type or changes a call-site on a controller/service fed by
+  serialized FE/BE/API payloads, spawn to replay a real captured payload against the
+  running app (`General.md §4.5`) before finalizing. Below that specific trigger the
+  main agent verifies inline. Collect the pass/fail/blocked verdict before committing.
 
 If a custom agent is unavailable in the current environment, the main agent performs
 the task inline and notes the missing agent in the phase report.

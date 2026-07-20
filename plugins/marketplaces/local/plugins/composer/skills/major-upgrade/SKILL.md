@@ -169,7 +169,9 @@ framework's published upgrade guide + a grep of removed/renamed symbols). Map ea
 - **safe path available** — should fix now; deterministic migration,
 - **needs decision** — no safe path in context; backlog with rationale, or raise to the user.
 
-Delegate large finding sets per `Batch.md` §7 (`contract-researcher` for >10 §4.5 lookups). Then run
+For a multi-step jump, gather the per-delta patterns first via parallel `migration-pattern-researcher`
+instances (one per version step/package; their output is a hypothesis set to verify against the installed
+code, `General.md §1.4`). Delegate large finding sets per `Batch.md` §7 (`contract-researcher` for >10 §4.5 lookups). Then run
 the **escalation gate (§10)** on the now-known scope before planning implementation.
 
 ---

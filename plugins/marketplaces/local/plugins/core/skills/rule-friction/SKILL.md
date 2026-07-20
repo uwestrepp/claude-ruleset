@@ -39,6 +39,12 @@ evidence of where the rule-set helps, fails, or is missing.
 4. **Persist** substantive findings per `Meta.md` §1.1/§2 (audit note or rule
    change-set proposal).
 
+Structural consistency: when the cycle runs after a `rules/` or `skills/` change-set,
+or as part of the `Meta.md §3.3` demotion review, delegate an internal-consistency
+audit (CLAUDE.md index vs rule files, §-cross-refs, skill-ledger completeness,
+exports/ sync drift, agent-reference validity) to the `rule-index-auditor` sub-agent
+(`General.md §11.1`) and fold its drift findings into step 3's proposals.
+
 ## Effectiveness claims (MUST)
 
 - A per-rule effectiveness claim (a rule "works", "prevented X", "reduced friction")
