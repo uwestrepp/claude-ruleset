@@ -372,11 +372,11 @@ Workflow-specific delegation patterns (test-runner after changes, checkpoint at 
 
 # 12. Git Workflow (MUST)
 
-Default branch model; a project or the user MAY override it.
+Default branch model; a project or the user MAY override it. Operational how-to beyond this baseline: `/core:git-knowledge`.
 
 - Mainline branch is `master` or `main` (per project) — the canonical line merged work lands on. Optional integration tiers `dev`/`development` and `staging` MAY exist between feature branches and mainline.
 - Ticketed work uses `feature/`, `bugfix/`, or `hotfix/` branches named `<prefix>/PROJ-123-slug`, cut from the branch they will merge into.
-- A **deployment-trigger branch** (e.g. `production`) MAY decouple deployment from mainline (merging mainline into it triggers the deploy). Detect the project's real deploy mapping (e.g. CI `branches:` config) before assuming a push deploys: merging to mainline ≠ deploying.
+- A **deployment-trigger branch** (e.g. `production`) MAY decouple deployment from mainline (merging mainline into it triggers the deploy). Merging to mainline ≠ deploying: detect the project's real deploy mapping before assuming a push deploys.
 - PR target: mainline (or the `dev`/`staging` tier the project uses) for normal work; during a major upgrade, the active `release/<target>` integration branch (mechanics in `/composer:major-upgrade`, per §9.3).
 
 Protected set — `master`/`main`, `dev`/`development`, `staging`, `release/*`, and any deployment-trigger branch (e.g. `production`): reach these via PR only, never a direct commit or push, even when git/server does not technically protect them. Override only on explicit user request. The agent commits only on `feature/`|`bugfix/`|`hotfix/` working branches.

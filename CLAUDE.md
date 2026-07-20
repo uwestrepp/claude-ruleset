@@ -16,6 +16,7 @@
 * **Core skills** — auto-activate on prompt relevance, or invoke explicitly:
   * `/core:commits` — commit schema `[TYPE] JIRA (scope) summary`, ticket traceability, body gate, pre-commit checklist.
   * `/core:githooks-install` — native git-hook scaffold install/`--update`; auto-suggested by `/core:commits`.
+  * `/core:git-knowledge` — git operational depth beyond the `General.md` §12 safety baseline: deploy-mapping detection, remote/worktree/baseline disambiguation, rebase/merge/force-with-lease hygiene, reflog recovery. NOT commit drafting (`/core:commits`), NOT hook install (`/core:githooks-install`).
   * `/core:brainstorm` — N distinct candidates → ranked shortlist; genuine exploration only, NOT converged work.
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
   * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material, no nitpick bucket); no interview, no alternatives, NOT code-diff review. Disambiguate from grill-me (which interviews) on overlap.
