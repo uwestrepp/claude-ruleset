@@ -21,6 +21,7 @@
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
   * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material, no nitpick bucket); no interview, no alternatives, NOT code-diff review. Disambiguate from grill-me (which interviews) on overlap.
   * `/core:effort-estimation` — agent-session-wall-clock effort estimates (AWS = Aufwandsschätzung): scope boundary (impl+verification in, review/deploy/external out as lead-time drivers), task-type bands, calibration factors. NOT PM scheduling.
+  * `/core:communication` — colleague-facing output profile (Jira/Confluence/Bitbucket): German + typography + paste format (refs `General.md` §8.2/§8.5/§8.6), Atlassian MCP mechanics, Bitbucket PR conventions, MOSAIQ house-style seed, project comm-facts + refinement loop. Consolidates the mechanics trimmed from the "Atlassian Rovo MCP" block; the two safety MUST-guards stay always-on there. NOT agent-to-user chat, NOT commit messages (`/core:commits`).
 * **Core workflow skills** — activation policy per entry:
   * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Foundation for the typo3 workflow skills.
   * `/core:rule-friction` — explicit activation required. Rule-set feedback loop (`bin/rule-friction-report.sh` → `Meta.md` §3.1 proposals).
@@ -49,13 +50,8 @@
 - `CLAUDE.local.md` is intended for machine-local or private settings and should remain gitignored.
 
 ## Atlassian Rovo MCP
-When connected to atlassian mcp:
-- **MUST** ask for project-specific Jira project key, and persist it in the project's CLAUDE.md if not already present
-- **MUST** ask for project-specific Confluence spaceId, and persist it in the project's CLAUDE.md if not already present
+When connected to atlassian mcp. Colleague-facing communication style + mechanics (search paging, page/comment/PR drafting, project onboarding facts, house-style, refinement loop) live in `/core:communication`; the language/typography/paste baseline is `General.md` §8.2/§8.5/§8.6. Instance fact: cloudId = `https://mosaiq.atlassian.net` (do NOT call getAccessibleAtlassianResources). The two safety MUST-guards below stay always-on — a missed skill activation must never leak customer-visible content:
 - **MUST** create Confluence pages as live pages (`subtype: "live"` on `createConfluencePage`) by default; use a standard page only when the user explicitly requests it. There is no page↔live conversion via MCP — the type must be set at creation; converting afterwards is possible only manually in the Confluence UI.
   - Precedence with `General.md` §10.5 (offer-first): the offer gate governs whether the agent creates the page at all; the live-page MUST binds only the MCP-create path. When offering the paste path, state that the resulting page can become a live page only via manual conversion in the UI, not via MCP.
-- **MUST** use cloudId = "https://mosaiq.atlassian.net" (do NOT call getAccessibleAtlassianResources)
-- **MUST** use `maxResults: 10` or `limit: 10` for ALL Jira JQL and Confluence CQL search operations.
-- **MUST** paginate JQL/CQL queries until the end of result set (or until user asks for a sample only).
 - **MUST** restrict every Jira comment to internal visibility: pass `commentVisibility: {type: "role", value: "Users"}` on all comment-creating or -updating calls (the same tool updates when given a `commentId`; an edit that omits the param can re-expose a previously restricted comment). If the "Users" role is unavailable in a project, stop and ask instead of posting unrestricted.
   - Success/failure signal: the authoritative indicator is the `visibility` object in the create/update response — `visibility: {type: "role", value: "Users"}` present means the restriction IS applied. `jsdPublic: true` alongside an applied `visibility` object is a known false positive (mosaiq.atlassian.net returns it on every restricted comment; user-verified in the UI, 2026-07-16 GMP-341/343) — do NOT flag it. Flag for manual restriction only when the response lacks the requested `visibility` object.
