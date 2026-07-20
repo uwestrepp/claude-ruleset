@@ -41,9 +41,21 @@ probe HARD-BLOCK "rm --no-preserve-root -rf /etc"         'rm --no-preserve-root
 probe ASK        "rm -rf absolute subpath"               'rm -rf /etc/foo'
 probe ASK        "rm -rf glob"                           'rm -rf /var/www/*'
 
+# Single recursive-OR-force rm (NOT both) is not a recursive-force rm → allow.
+probe ALLOW      "rm -r only (no force)"                 'rm -r /tmp/claude-1/scratch/dir'
+probe ALLOW      "rm -f only (no recursive)"             'rm -f /etc/foo'
+
 # Scoped relative / system-temp scratch — must allow.
 probe ALLOW      "rm -rf relative dir"                   'rm -rf node_modules'
 probe ALLOW      "rm -rf /tmp scratch"                   'rm -rf /tmp/scratch123'
+
+# Scoped /tmp cleanup WITH a glob confined to a literal subtree — must allow.
+probe ALLOW      "rm -rf /tmp scratch glob"              'rm -rf /tmp/claude-1234/scratch/*'
+probe ALLOW      "rm -f /tmp scratch suffix glob"        'rm -f /tmp/claude-1234/scratch/*.tmp'
+probe ALLOW      "rm -rf multiple /tmp globs"            'rm -rf /tmp/claude-1234/a/* /tmp/claude-1234/b/*'
+# But a bare-root or first-segment /tmp glob is too broad — must ask.
+probe ASK        "rm -rf bare /tmp glob"                 'rm -rf /tmp/*'
+probe ASK        "rm -rf glob on first /tmp segment"     'rm -rf /tmp/foo*'
 
 echo
 if [[ $fail -eq 0 ]]; then echo "ALL PASS"; else echo "SOME FAILED"; fi

