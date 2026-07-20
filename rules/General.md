@@ -233,7 +233,7 @@ Before creating or amending commits: apply the `/core:commits` skill as the auth
 
 ## 8.2 Output Language (MUST)
 
-Colleague-facing external content MUST be written in German: Jira tickets (summary, description, comments), Confluence pages (content, comments), Bitbucket pull request titles and descriptions.
+Colleague-facing external content MUST be written in German: Jira tickets (summary, description, comments), Confluence pages (content, comments), Bitbucket pull request titles and descriptions. When such content is handed to the user to paste onward, format it per §8.6.
 
 The following MUST remain in English: git commit messages, code comments/DocBlocks/inline TODOs, repo-level `README.md` and equivalent in-repo developer docs, agent-to-user chat replies (match the user's language; default English).
 
@@ -341,7 +341,7 @@ Unconditional — no "unless needed for trust" escape. Brevity removes what is n
 Before initiating a predictably token-heavy action for which an effective lower-cost path exists, the agent MUST route by the type of that path:
 
 - **Self-executable cheaper path** — a deterministic/local tool or sub-agent the agent runs itself at negligible cost with no loss the user would care about: take it directly, MUST NOT ask (this is §10.1, §11). Covers, non-exhaustively: grep/rg/sed/jq/SQL to extract a slice instead of loading a large file/dataset/diff into context; a codegen CLI or a small template+expansion script instead of emitting bulk boilerplate; a codemod/rector/sed pass instead of per-file model edits; a scheduler/Monitor/background loop instead of a model-driven poll; a sub-agent for read-heavy work whose intermediate reads need not enter context.
-- **Off-agent path requiring the user or an external actor** — the saving exists only by shifting work to the user or an external agent via manual relay, trading away agent context/autonomy the user might want. For actions in the mandatory offer list below the agent MUST, before executing, proactively offer the offload — naming the action, the concrete avoidance path, and (if assessable) a rough size cue — and MUST wait. Default is NOT to execute the expensive action; an explicit "do it" (or equivalent) releases it.
+- **Off-agent path requiring the user or an external actor** — the saving exists only by shifting work to the user or an external agent via manual relay, trading away agent context/autonomy the user might want. For actions in the mandatory offer list below the agent MUST, before executing, proactively offer the offload — naming the action, the concrete avoidance path, and (if assessable) a rough size cue — and MUST wait. Default is NOT to execute the expensive action; an explicit "do it" (or equivalent) releases it. Any paste payload offered here is emitted per §8.6.
 
 Mandatory offer list — offer-and-wait is REQUIRED for each. Closed set: extend only by editing this rule, and only with actions that have a genuine off-agent path (never self-executable ones — those belong above):
 
