@@ -206,6 +206,10 @@ facts; do not present them to a colleague or customer as settled MOSAIQ policy.
 - Do not fabricate house-style; ground each convention in observed history or an
   explicit user statement before persisting it. This is how the §8 directory grows
   from a seed into a real MOSAIQ Sprechweise reference.
+- **Inbound mining arm:** to derive comm-facts *from* a real received artifact (a
+  ticket, PR, comment, or a "you suggested X, I sent Y" correction) rather than as a
+  by-product of drafting, use `/core:comm-calibrate`. It extracts against the §8
+  schema and writes back to these same §9 targets.
 
 ## 10. Onboarding a new project
 

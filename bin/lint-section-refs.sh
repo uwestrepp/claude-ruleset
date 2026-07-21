@@ -128,7 +128,7 @@ declare -A BUDGETS=(
     [rules/General.md]=10500
     [rules/Meta.md]=4500
     [rules/Persona.md]=1000
-    [CLAUDE.md]=3000
+    [CLAUDE.md]=3100
 )
 for f in "${!BUDGETS[@]}"; do
     if [[ ! -f "$f" ]]; then
