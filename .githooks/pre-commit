@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # pre-commit — mq.agent-ruleset integrity checks.
-#   1. bin/lint-section-refs.sh  — cross-file §-references, skill-ledger, budgets.
-#   2. bin/lint-skill-files.py   — SKILL.md frontmatter/body + rule frontmatter.
-# Bypass a single commit: SKIP_REF_LINT=1 and/or SKIP_SKILL_LINT=1 git commit ...
+#   1. bin/lint-section-refs.sh — cross-file §-references, skill-ledger, budgets.
+#   2. agnix validate           — SKILL.md / rule / memory validation (config in
+#                                 .agnix.toml). The real agent-sh/agnix linter,
+#                                 non-strict: blocks on errors, warnings are shown
+#                                 but do not block.
+# Bypass a single commit: SKIP_REF_LINT=1 and/or SKIP_AGNIX=1 git commit ...
 set -uo pipefail
 root="$(git rev-parse --show-toplevel)"
 rc=0
@@ -11,12 +14,14 @@ if [ "${SKIP_REF_LINT:-}" != "1" ]; then
     "$root/bin/lint-section-refs.sh" || rc=1
 fi
 
-if [ "${SKIP_SKILL_LINT:-}" != "1" ]; then
-    if command -v python3 >/dev/null 2>&1; then
-        python3 "$root/bin/lint-skill-files.py" || rc=1
+if [ "${SKIP_AGNIX:-}" != "1" ]; then
+    if command -v npx >/dev/null 2>&1; then
+        # pinned version → reproducible; npx caches after first download.
+        ( cd "$root" && npx --yes agnix@0.40.0 validate \
+            plugins/marketplaces/local/plugins rules ) || rc=1
     else
-        # deliberate fail-open: don't block commits just because python3 is absent.
-        echo "SKILL-LINT: python3 not found — skipped (set SKIP_SKILL_LINT=1 to silence)" >&2
+        # deliberate fail-open: don't block commits just because Node/npx is absent.
+        echo "agnix: npx not found — skipped (set SKIP_AGNIX=1 to silence)" >&2
     fi
 fi
 

@@ -19,7 +19,7 @@ applications with no recognized framework override surface.
 No monorepo/API assumption. Per bumped package, degrade:
 1. **CHANGELOG / release notes** between the locked and target versions (most packages ship one).
 2. **Git-tag diff** — resolve the source repo (Packagist → `source.url`), fetch, `git diff
-   <BASE>..<TARGET>` on the tags. Precise when a CHANGELOG is thin.
+   {BASE}..{TARGET}` on the tags. Precise when a CHANGELOG is thin.
 3. **GitHub/GitLab compare UI** if hosted there.
 4. **Opaque** — no usable source. Record as opaque; scan degrades to public-API/reference checks
    only for that package, and the verdict says so.

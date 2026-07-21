@@ -43,7 +43,3 @@ CLAUDE.local.md
 
 # IDE
 .idea/
-
-# Python bytecode cache (from bin/*.py linters)
-__pycache__/
-*.pyc

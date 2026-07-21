@@ -1,0 +1,25 @@
+# agnix config — SKILL.md / rule / memory validation (agent-sh/agnix).
+# Run: npx agnix@<pinned> validate <paths>   (see .githooks/pre-commit)
+# Docs: https://agent-sh.github.io/agnix/docs/rules/
+
+# This project targets Claude Code (the "target" field is deprecated in favor of "tools").
+tools = ["claude-code"]
+
+# Only our own local plugins + rules are ours to validate; third-party marketplaces are not.
+exclude = [
+    "node_modules/**",
+    ".git/**",
+    "plugins/marketplaces/claude-plugins-official/**",
+    "plugins/marketplaces/*/external_plugins/**",
+]
+
+[rules]
+# Deliberate deviations we own (see the AskUserQuestion decisions 2026-07-21):
+#   XP-SK-001  argument-hint is a "client-specific field" — we use it on purpose
+#              (Claude Code surfaces it); pure noise here (21x, info).
+#   CC-MEM-012 apply:/instructions: in rules/*.md flagged as unknown keys — kept
+#              deliberately for PhpStorm AiRulesEditor; Claude Code ignores them
+#              and gates on paths:. Revisit if JetBrains AiRules use is ruled out.
+# Everything else stays ON. Best-practice warnings (CC-SK-007 unrestricted Bash,
+# AS-012 >500 lines, AS-013 ref depth) remain visible but non-blocking (non-strict).
+disabled_rules = ["XP-SK-001", "CC-MEM-012"]
