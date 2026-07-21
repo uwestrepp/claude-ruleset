@@ -209,7 +209,10 @@ If security or privacy implications are unclear → ask.
 - Content the user is meant to paste into an external surface (Jira, Bitbucket,
   Confluence, e-mail, …) MUST be emitted as raw source inside a fenced code
   block, never as chat-rendered markup; the outer fence must be longer than any
-  fence inside the payload, and title/summary lines get their own fence.
+  fence inside the payload, and title/summary lines get their own fence. For a
+  target that renders Markdown input (Jira, Bitbucket, Confluence at minimum),
+  write the payload AS Markdown so it renders on paste; fall back to plain text
+  only for targets without Markdown support.
 
 # Meta Rule
 

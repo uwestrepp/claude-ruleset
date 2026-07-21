@@ -89,6 +89,10 @@ inside a fenced code block**, never as chat-rendered markup:
   payload that itself contains triple-backtick blocks).
 - Title/summary line in its own fence, separate from the body.
 - Payload language per §2.
+- Payload format: for any target that renders Markdown input (Jira, Bitbucket,
+  Confluence at minimum), write the payload AS Markdown (headings, bold, lists,
+  inline code) so it renders on paste. Fall back to plain text only for a target
+  without Markdown support (e.g. plain-text e-mail).
 
 Offer-first (`General.md` §10.5): for token-heavy MCP writes (long Confluence
 bodies, long Jira descriptions/comments) offer the paste path and wait, rather than
