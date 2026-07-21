@@ -1,11 +1,13 @@
 ---
 name: static-tests
 description: "Activate with /typo3:static-tests before starting any TYPO3 static code analyzer or fixer run (php-cs-fixer, Rector, Fractor, TypoScript lint, PHPStan). Required before structured static-test cycles begin."
-argument-hint: [scope]
+argument-hint: "[scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
 
 # TYPO3 Static Code Test Workflow
+
+*Input (`$ARGUMENTS`): optional scope of the static-test run.*
 
 This skill standardizes static code test execution and triage for TYPO3 projects using ddev-based tooling.
 It specializes `General.md` section `5.2` and `Batch.md` §1 and must not conflict with either.

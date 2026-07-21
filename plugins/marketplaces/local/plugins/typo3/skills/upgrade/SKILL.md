@@ -1,11 +1,13 @@
 ---
 name: upgrade
 description: "Activate with /typo3:upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. The TYPO3 specialization of /composer:major-upgrade. Required before any structured TYPO3 version upgrade work begins. NOT a patch/minor/security bump (use /composer:update)."
-argument-hint: [scope]
+argument-hint: "[scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
 
 # TYPO3 Upgrade Workflow (specialization of /composer:major-upgrade)
+
+*Input (`$ARGUMENTS`): optional upgrade scope.*
 
 The TYPO3 specialization of the generic Composer major-upgrade spine. The **phase model, Pass 1/2/3
 model, escalation gate, branch/baseline + before/after discipline, runtime-decoupling decision, and

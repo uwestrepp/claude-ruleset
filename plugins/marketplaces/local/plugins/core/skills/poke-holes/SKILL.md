@@ -1,11 +1,13 @@
 ---
 name: poke-holes
-description: "Activate via /core:poke-holes or let Claude auto-activate when the user supplies an artifact (plan, proposal, design, assumption-set, spec, or implementation) and asks to critique it, find its flaws, or stress-test it WITHOUT being interviewed. Returns a severity-ranked findings list (Blocking / Material) — never nitpicks, never asks questions, never proposes alternatives. Triggers: '/core:poke-holes', 'poke holes in this <doc/proposal/design>', 'critique this', 'find the flaws in this', 'what's wrong with this plan', 'tear this apart', 'any showstoppers in this?', 'red-team this design'. DOES NOT auto-trigger on routine task phrasing, on 'improve/implement/refactor X', or when no concrete artifact is supplied. Distinct from /core:grill-me (INTERVIEWS you to converge a plan — poke-holes asks nothing), /core:brainstorm (GENERATES alternatives), and code-review/pr-review tools (line-level CODE-diff review — poke-holes operates at the design/claim level). On genuine ambiguity with grill-me, disambiguate before invoking."
+description: "Activate via /core:poke-holes or let Claude auto-activate when the user supplies an artifact (plan, design, spec, or implementation) and asks to critique it, find its flaws, or stress-test it WITHOUT being interviewed. Returns a severity-ranked findings list (Blocking / Material), never nitpicks, never asks questions, never proposes alternatives. Triggers: '/core:poke-holes', 'poke holes in this <doc/proposal/design>', 'critique this', 'find the flaws in this', 'what's wrong with this plan', 'tear this apart', 'any showstoppers in this?', 'red-team this design'. DOES NOT auto-trigger on routine task phrasing, on 'improve/implement/refactor X', or when no concrete artifact is supplied. Distinct from /core:grill-me (INTERVIEWS you to converge a plan; poke-holes asks nothing), /core:brainstorm (GENERATES alternatives), and code-review/pr-review tools (line-level CODE-diff review; poke-holes operates at the design/claim level). On genuine ambiguity with grill-me, disambiguate before invoking."
 argument-hint: "<the artifact to attack — inline text, file path, 'the current plan', or a diff/reference> [tier2] [steelman]"
 allowed-tools: [Read, Grep, Glob, Agent]
 ---
 
 # /core:poke-holes — Adversarial Artifact Critique
+
+*Input (`$ARGUMENTS`): the artifact to attack, inline text, a file path, or a reference.*
 
 ## 1. Purpose
 

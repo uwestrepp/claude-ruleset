@@ -1,10 +1,12 @@
 ---
 name: communication
-description: "Activate via /core:communication or let Claude auto-activate when producing colleague-facing output — anything directed at other people rather than the user's chat: Jira issues/comments, Confluence pages/comments, Bitbucket PR titles/descriptions, the wording/register of git commit messages, or content the user will paste into one of those. Owns the authoritative language mapping (German for Jira/Confluence/Bitbucket, English for commit messages), prose typography, copy-paste raw-fence format, Atlassian MCP mechanics, Bitbucket PR conventions, and the MOSAIQ house-style / Sprechweise directory — how we communicate per audience (devs, PMs, customers) — plus where project-scoped comm-facts live and how to sharpen them. Triggers: \"schreib ein Jira-Ticket / einen Kommentar\", \"Confluence-Seite anlegen/aktualisieren\", \"PR-Beschreibung / pull request description\", \"formulier das für den Kunden / fürs Team\", \"wie schreiben wir das intern/an den Kunden\", drafting or updating any Jira/Confluence/Bitbucket surface or a commit message's wording. NOT the commit schema/ticket resolution (that is /core:commits), NOT agent-to-user chat replies, NOT in-repo README/code comments (those stay English in-repo docs)."
-argument-hint: [topic]
+description: "Activate via /core:communication or let Claude auto-activate when producing colleague-facing output (directed at other people, not the user's chat): Jira issues/comments, Confluence pages/comments, Bitbucket PR titles/descriptions, the wording/register of git commit messages, or content the user will paste into those. Owns the authoritative language mapping (German for Jira/Confluence/Bitbucket, English for commit messages), prose typography, copy-paste raw-fence format, Atlassian MCP mechanics, Bitbucket PR conventions, and the MOSAIQ house-style / Sprechweise directory (how we communicate per audience: devs, PMs, customers), plus where project-scoped comm-facts live and how to sharpen them. Triggers: \"schreib ein Jira-Ticket / einen Kommentar\", \"Confluence-Seite anlegen/aktualisieren\", \"PR-Beschreibung\", \"formulier das für den Kunden / fürs Team\", \"wie schreiben wir das intern/an den Kunden\". NOT the commit schema/ticket resolution (/core:commits), NOT agent-to-user chat, NOT in-repo README/code comments."
+argument-hint: "[topic]"
 ---
 
 # Colleague-facing Communication Profile
+
+*Input (`$ARGUMENTS`): optionally the topic or surface to draft for.*
 
 Operational profile for output the agent produces for **other people** (colleagues,
 teams, customers), not for the user's chat. This is where the "how do we talk to

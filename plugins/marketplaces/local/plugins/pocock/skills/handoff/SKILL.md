@@ -6,6 +6,8 @@ argument-hint: "What will the next session be used for?"
 
 Write a handoff document summarising the current conversation so a fresh agent can continue the work.
 
+*Input (`$ARGUMENTS`): what the next session will be used for, to focus the handoff.*
+
 This skill produces the continuation-doc component of the `General.md` §10.3 handover bundle. If a `/core:batch` cycle is active, its §11.1 scratch note remains the in-cycle bookmark — incorporate that note's state into the handoff document instead of duplicating or replacing it.
 
 ## Where to save

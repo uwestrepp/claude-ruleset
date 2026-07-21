@@ -1,11 +1,13 @@
 ---
 name: update
 description: "Activate via /composer:update (optional ecosystem hint, e.g. typo3) before any non-trivial Composer update in a customized project — security patches and patch/minor bumps where project customizations (local packages, patches, XCLASS/decoration/overrides) could collide with the update delta. explicit activation required — auto-suggest (do not auto-run) on requests like 'safely update <package>', 'roll out a security update / CVE fix across projects', 'will this update break our customizations'. NOT trivial adds in vanilla projects (/composer:knowledge); NOT major-version migrations (/composer:major-upgrade, or /typo3:upgrade for TYPO3)."
-argument-hint: [ecosystem|scope]
+argument-hint: "[ecosystem|scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
 
 # Composer Update Workflow (informed, gated)
+
+*Input (`$ARGUMENTS`): optional ecosystem or scope hint.*
 
 Safe, informed Composer updates for **customized** projects. The premise: never run
 `composer update` blind. First learn the exact version delta, map what upstream changed between

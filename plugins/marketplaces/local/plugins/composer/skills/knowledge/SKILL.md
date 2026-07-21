@@ -1,11 +1,13 @@
 ---
 name: knowledge
 description: "Activate via /composer:knowledge or let Claude auto-activate when the task involves Composer dependency management: version resolution, tag-driven releases, dev-overrides, canonical priority, lock-file discipline. Triggers: editing composer.json or composer.lock, running composer/ddev composer commands, \"composer update\", \"composer require\", \"composer install\", dev-override setup (local path package editing), debugging \"composer keeps installing the registry version instead of my local path\", canonical-priority conflicts, lock-file surprises during package bumps, tag-driven release confusion, package not resolving as expected, mixed dev/prod dependency questions."
-argument-hint: [scope]
+argument-hint: "[scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---
 
 # Composer Operational Rules
+
+*Input (`$ARGUMENTS`): optional scope to focus on.*
 
 Project-agnostic rules that apply when editing Composer configuration, running
 `composer …`, or wiring a local path package. Normative keywords per `General.md`.

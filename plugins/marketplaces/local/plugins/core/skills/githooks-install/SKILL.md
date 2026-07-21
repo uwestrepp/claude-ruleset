@@ -7,6 +7,8 @@ allowed-tools: [Read, Write, Edit, Bash, Glob, Grep]
 
 # Git-Hooks Install Skill
 
+*Input (`$ARGUMENTS`): pass `--update` to refresh an existing scaffold instead of installing.*
+
 Installs the reusable native git-hook scaffold from
 `~/.claude/plugins/marketplaces/local/plugins/core/resources/githooks-template/`
 into the current git project. Covers commit-subject format validation,

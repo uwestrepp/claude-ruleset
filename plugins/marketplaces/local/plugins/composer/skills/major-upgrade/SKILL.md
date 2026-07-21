@@ -1,11 +1,13 @@
 ---
 name: major-upgrade
 description: "Activate via /composer:major-upgrade (optional ecosystem/target hint, e.g. typo3 13) before any major-version upgrade of a framework or platform managed through Composer — a jump that crosses a deprecation/breaking-change line (e.g. cms-core ^12→^13, symfony 6→7, shopware 6.5→6.6), not a patch/minor bump. /typo3:upgrade is the TYPO3 specialization. explicit activation required — auto-suggest (do not auto-run) on requests like 'upgrade <framework> from major X to Y', 'major version migration', 'bump cms-core to the next major'. NOT patch/minor/security updates (/composer:update); NOT resolution/lock questions (/composer:knowledge)."
-argument-hint: [ecosystem|target-version]
+argument-hint: "[ecosystem|target-version]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
 
 # Composer Major-Upgrade Workflow (generic spine)
+
+*Input (`$ARGUMENTS`): optional ecosystem or target-version hint (e.g. `typo3 13`).*
 
 The system-agnostic backbone for a **major-version** upgrade of a Composer-managed framework or
 platform. The premise: a major jump is not one `composer update` — it is a staged, gated cycle that

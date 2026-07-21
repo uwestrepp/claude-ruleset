@@ -7,6 +7,8 @@ allowed-tools: [Read, Grep, Glob, Agent]
 
 # /core:brainstorm — Verbalized-Sampling Brainstorming
 
+*Input (`$ARGUMENTS`): the question or topic to explore, optionally prefixed `n=<count>`.*
+
 ## 1. Purpose
 
 This skill provides a deliberate, scoped brainstorming primitive based on the *verbalized sampling* technique: surface N distinct candidate approaches in parallel — not the single most-likely-correct answer — then condense to a ranked shortlist using an explicit rubric.

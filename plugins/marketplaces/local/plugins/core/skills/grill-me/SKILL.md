@@ -7,6 +7,8 @@ allowed-tools: [Read, Grep, Glob, AskUserQuestion, Write]
 
 # /core:grill-me — Adversarial Plan Elicitation
 
+*Input (`$ARGUMENTS`): the plan or design to grill, inline or as a reference.*
+
 ## 1. Purpose
 
 Pressure-test a plan by resolving its *material, decision-altering* uncertainties in dependency order, before any code is written. The goal is convergence: turn a half-formed plan into a spec where every load-bearing decision is either resolved or recorded as an explicit assumption.

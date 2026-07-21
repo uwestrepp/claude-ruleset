@@ -1,11 +1,13 @@
 ---
 name: effort-estimation
 description: "Activate via /core:effort-estimation or let Claude auto-activate when asked to estimate the effort/time for a task, ticket, or work package, size a change, or produce an \"Aufwandsschätzung\" (AWS = Aufwandsschätzung, the German term, NOT Amazon). Triggers: \"wie lange dauert X\", \"schätz den Aufwand\", \"Aufwandsschätzung / AWS für\", \"how long will this take\", \"estimate effort for\", \"size this ticket\", \"story points / t-shirt size\", sizing a backlog item, filling an effort field on a Jira ticket, comparing scope options by cost. Produces agent-session-wall-clock estimates with explicit scope boundaries and calibration factors; NOT project management scheduling."
-argument-hint: [task-or-ticket]
+argument-hint: "[task-or-ticket]"
 allowed-tools: [Read, Grep, Glob, Bash]
 ---
 
 # Agent-Assisted Effort Estimation (AWS)
+
+*Input (`$ARGUMENTS`): the task or ticket to estimate.*
 
 Method for estimating the effort of a coding/ops task when **an agent (Claude
 Code) does the work**. In this house the estimate is called an **AWS**

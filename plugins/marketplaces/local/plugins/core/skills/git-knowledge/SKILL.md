@@ -1,11 +1,13 @@
 ---
 name: git-knowledge
 description: "Activate via /core:git-knowledge or let Claude auto-activate when the task involves git branch/workflow mechanics beyond the General.md §12 safety baseline: how to detect a project's real deploy mapping, disambiguate remotes/worktrees/upstreams, choose a diff or merge baseline, rebase/merge/force-push hygiene, or recover lost work. Triggers: \"which branch does this deploy\", \"does merging to main deploy\", CI deploy-mapping questions (bitbucket-pipelines.yml / .gitlab-ci.yml / GitHub Actions branch filters), multiple remotes (origin vs fork vs deploy mirror), git worktree setup, choosing a PR/diff/upgrade baseline, \"undo a bad reset / recover a deleted branch / find a lost commit\", reflog recovery, force-push safety, interactive-rebase alternatives. NOT commit-message drafting (/core:commits), NOT git-hook install (/core:githooks-install)."
-argument-hint: [topic]
+argument-hint: "[topic]"
 allowed-tools: [Read, Grep, Glob, Bash]
 ---
 
 # Git Operational Knowledge
+
+*Input (`$ARGUMENTS`): optional git topic to focus on.*
 
 Project-agnostic operational depth for git branch/workflow tasks. Normative
 keywords per `General.md`. This skill is ADDITIVE: the always-on safety and
