@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 # pre-commit — mq.agent-ruleset integrity checks.
-# Verifies cross-file §-references and skill-ledger completeness before each
-# commit. Bypass for a single commit: SKIP_REF_LINT=1 git commit ...
-exec "$(git rev-parse --show-toplevel)/bin/lint-section-refs.sh"
+#   1. bin/lint-section-refs.sh  — cross-file §-references, skill-ledger, budgets.
+#   2. bin/lint-skill-files.py   — SKILL.md frontmatter/body + rule frontmatter.
+# Bypass a single commit: SKIP_REF_LINT=1 and/or SKIP_SKILL_LINT=1 git commit ...
+set -uo pipefail
+root="$(git rev-parse --show-toplevel)"
+rc=0
+
+if [ "${SKIP_REF_LINT:-}" != "1" ]; then
+    "$root/bin/lint-section-refs.sh" || rc=1
+fi
+
+if [ "${SKIP_SKILL_LINT:-}" != "1" ]; then
+    if command -v python3 >/dev/null 2>&1; then
+        python3 "$root/bin/lint-skill-files.py" || rc=1
+    else
+        # deliberate fail-open: don't block commits just because python3 is absent.
+        echo "SKILL-LINT: python3 not found — skipped (set SKIP_SKILL_LINT=1 to silence)" >&2
+    fi
+fi
+
+exit $rc
