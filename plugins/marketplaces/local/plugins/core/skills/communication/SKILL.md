@@ -194,15 +194,15 @@ terminology/glossary are **unknowns until grounded** (§9). The table's non-veri
 cells (`beobachten`, "konservativer Default") are placeholders, not house-style
 facts; do not present them to a colleague or customer as settled MOSAIQ policy.
 
-**PM detail-tightening (observed pattern, anchor: GMP 2026-07 via /core:comm-calibrate).**
+**PM detail-tightening (observed pattern, anchors: GMP 2026-07 + OW-47/OP-45 2026-07 via /core:comm-calibrate).**
 When condensing a technical draft for a PM / non-tech-internal reader, the draft→sent delta
 consistently showed these moves; apply them pre-emptively rather than leaving them for the human:
-- drop over-precise single-run metrics ("Score 77/83" → "Score Home / Listing");
+- drop over-precise single-run metrics ("Score 77/83" → "Score Home / Listing"), internal-process labels ("Daily-Zweig", "Punkt 2 des Splits") and API/tooling mechanics ("GA4 Data API", "eventName-Filter");
 - collapse internal breakdowns and repo paths into one pointer ("... im Repository dokumentiert");
 - keep the honesty calibration explicit: Konjunktiv for hypotheticals ("wäre reine Verbesserung"),
   attribute measurement limits to their source ("vom Agent nicht messbar"), prefer precise terms
   ("nicht beobachtet" statt "ungenutzt"), spell out technical qualifiers ("mit brotli Kompression").
-This concretises the PM row's "mittel; Jargon reduzieren"; observed pattern (1 ticket), not yet hard policy.
+This concretises the PM row's "mittel; Jargon reduzieren"; observed pattern (2 tickets), hardening toward convention.
 
 **To sharpen per project (do NOT fabricate):**
 - salutation and register per audience (`du`/`Sie`, internal vs external tone),
