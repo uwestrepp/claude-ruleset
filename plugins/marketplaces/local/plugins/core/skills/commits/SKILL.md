@@ -39,7 +39,7 @@ Must be one of (choose the best fit):
 -   Apply branch overrides first from `.aiassistant/state/commit-ticket-overrides.yaml` (if current branch is listed)
 -   For extension-scoped commits (per project package layout, e.g., `packages/*/...`), resolve from `.aiassistant/state/extension-ticket-map.yaml` if present
 -   If multiple mapped extensions with different tickets are touched, split into separate commits per ticket
--   For non-extension commits, fallback to branch ticket from `$GIT_BRANCH_NAME` (`feature/`, `bugfix/`, or `hotfix/` branch named `<prefix>/PROJ-123-...`; the ticket token is matched regardless of prefix). Branch model per `General.md` §12.
+-   For non-extension commits, fallback to branch ticket from `$GIT_BRANCH_NAME` (`feature/`, `bugfix/`, or `hotfix/` branch named `{prefix}/PROJ-123-...`; the ticket token is matched regardless of prefix). Branch model per `General.md` §12.
 -   If no deterministic ticket can be resolved: ask and do not commit until clarified
 -   If user explicitly provides a Jira ticket and it conflicts with resolver output, stop and ask before committing
 
@@ -51,7 +51,7 @@ Must be one of (choose the best fit):
 
 ### Nested repositories (MUST)
 
--   If touched files are inside a nested Git repository (for example `packages/<extension>/.git`), commit from that nested repository
+-   If touched files are inside a nested Git repository (for example `packages/{extension}/.git`), commit from that nested repository
 -   Do not assume root repository commits include nested-repo file changes
 -   Report branch and commit hash from each affected repository
 
@@ -136,7 +136,7 @@ Add a body **iff** the change:
 Commit-schema enforcement runs at two independent layers:
 
 1. **Claude-side PreToolUse hook** (`~/.claude/hooks/validate-commit-message.sh`, `block-forbidden-stages.sh`) — intercepts `git commit` tool calls from any Claude session before the shell runs them. Global, applies in every project, no per-project setup. Covers: subject-format validation, denylisted path soft-blocking (`settings.local.json`, `.aiassistant/scratch/`, override/secret patterns — see `rules/Meta.md` §2.4).
-2. **Project-native git hooks** (`<repo>/.githooks/` activated via `core.hooksPath`) — run at the git level regardless of commit source (Claude, IDE, CLI, colleague). Project-specific (ticket map, branch conventions, protected-branch guard). Installed via `/core:githooks-install`.
+2. **Project-native git hooks** (`{repo}/.githooks/` activated via `core.hooksPath`) — run at the git level regardless of commit source (Claude, IDE, CLI, colleague). Project-specific (ticket map, branch conventions, protected-branch guard). Installed via `/core:githooks-install`.
 
 Neither layer alone is sufficient:
 - Claude-side only protects against *this* agent's tool calls.
@@ -154,10 +154,10 @@ Before executing the per-commit checklist for the first time in a session, the a
 
 1. Resolve repo root: `git rev-parse --show-toplevel`.
 2. Detect native-hook state:
-   - `<repo>/.githooks/` exists, OR
+   - `{repo}/.githooks/` exists, OR
    - `git config --get core.hooksPath` returns non-empty,
    - → native hooks present; record and skip to step 4.
-3. Check opt-out/install marker at `<repo>/.aiassistant/state/githooks-install.yaml`:
+3. Check opt-out/install marker at `{repo}/.aiassistant/state/githooks-install.yaml`:
    - `status: installed` → treat as installed (skip step 4).
    - `status: declined` → respect opt-out; do NOT suggest (skip step 4).
    - missing → continue to step 4.
@@ -198,9 +198,9 @@ Before running any `git commit`, the agent MUST execute this checklist:
    - if one or more criteria match: include concise body sections
 10. For TYPO3 upgrade/migration scoped commits: confirm `TYPO3.md` §6.1 completion criteria are all addressed. Criterion 4 (UPDATE*.md synchronized) MUST be explicitly marked as complete or confirmed not applicable with a short rationale before the final commit in the cycle.
 11. For nested repositories, run `git commit` in the affected nested repository context.
-12. **Verify staged scope before committing.** Run `git diff --cached --name-only` and confirm ONLY the intended files are listed. IDEs and other tooling commonly auto-stage newly-added/untracked files into the index, and a bare `git commit` records the *entire* index — so any stray here is swept into the commit. Unstage strays before continuing: `git restore --staged <paths>`.
-13. **Commit the verified index:** run `git commit` (`git -C <repo> commit` for nested repos). Do NOT use `git commit -a`. Use `git commit -- <paths>` ONLY when you deliberately want those paths' *working-tree* content regardless of the index — it commits the working-tree version of the named paths, not their staged snapshot, so anything a formatter or post-edit hook changed after staging gets included.
-14. **Post-commit scope check:** run `git show HEAD --name-only` and confirm only the intended files are present. If a stray slipped in, `git reset --soft HEAD~1`, unstage it (`git restore --staged <paths>`), and recommit.
+12. **Verify staged scope before committing.** Run `git diff --cached --name-only` and confirm ONLY the intended files are listed. IDEs and other tooling commonly auto-stage newly-added/untracked files into the index, and a bare `git commit` records the *entire* index — so any stray here is swept into the commit. Unstage strays before continuing: `git restore --staged {paths}`.
+13. **Commit the verified index:** run `git commit` (`git -C {repo} commit` for nested repos). Do NOT use `git commit -a`. Use `git commit -- {paths}` ONLY when you deliberately want those paths' *working-tree* content regardless of the index — it commits the working-tree version of the named paths, not their staged snapshot, so anything a formatter or post-edit hook changed after staging gets included.
+14. **Post-commit scope check:** run `git show HEAD --name-only` and confirm only the intended files are present. If a stray slipped in, `git reset --soft HEAD~1`, unstage it (`git restore --staged {paths}`), and recommit.
 
 If validation fails at any step:
 
@@ -218,4 +218,4 @@ If a non-compliant commit was already created in the current session:
 
 ## Mechanics tips
 
-- **Splitting a single file across commits when sections are adjacent**: `git add -p` cannot separate hunks that share diff context (e.g. two new sections with no unchanged line between them get merged into one hunk). Instead: copy the working-tree file to `.aiassistant/scratch/<name>-full.md`, `git checkout HEAD -- <file>`, then re-apply sections via `Edit` one commit at a time, committing between each application.
+- **Splitting a single file across commits when sections are adjacent**: `git add -p` cannot separate hunks that share diff context (e.g. two new sections with no unchanged line between them get merged into one hunk). Instead: copy the working-tree file to `.aiassistant/scratch/{name}-full.md`, `git checkout HEAD -- {file}`, then re-apply sections via `Edit` one commit at a time, committing between each application.

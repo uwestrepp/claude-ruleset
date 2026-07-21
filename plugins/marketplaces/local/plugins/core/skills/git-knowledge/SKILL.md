@@ -27,8 +27,8 @@ Baseline definitions (authoritative in `General.md §12`):
 - Mainline is `master` or `main` per project. Optional integration tiers
   `dev`/`development` and `staging` may sit between feature branches and mainline.
 - Ticketed work: `feature/`, `bugfix/`, or `hotfix/` branch named
-  `PREFIX/PROJ-123-slug`, cut from the branch it will merge into.
-- During a major upgrade the integration branch is `release/TARGET` (mechanics
+  `{prefix}/PROJ-123-slug`, cut from the branch it will merge into.
+- During a major upgrade the integration branch is `release/{target}` (mechanics
   in `/composer:major-upgrade`).
 
 Resolve the current branch with `git branch --show-current` before any commit
@@ -71,9 +71,9 @@ Before a push, review, or upgrade diff, resolve which target you mean (`§2.4`):
 
 ## 4. Rebase / merge / force-push hygiene
 
-- Prefer `git rebase BASE` (non-interactive) to linearize; `git rebase -i` is
+- Prefer `git rebase {base}` (non-interactive) to linearize; `git rebase -i` is
   blocked in this environment. To reword/squash without `-i`: reset softly
-  (`git reset --soft BASE`) and re-commit, or use `git commit --amend` for the
+  (`git reset --soft {base}`) and re-commit, or use `git commit --amend` for the
   tip only.
 - Force-push only with `--force-with-lease` (rejects if the remote moved);
   the destructive-command hook asks on a bare `--force`/`-f`. Never force-push a
@@ -86,11 +86,11 @@ Before a push, review, or upgrade diff, resolve which target you mean (`§2.4`):
 Most "lost" work is recoverable via the reflog before gc:
 
 - **Undo a bad `reset --hard`** — `git reflog`, find the pre-reset SHA, then
-  `git reset --hard SHA` (or `git branch rescue SHA` to inspect first).
+  `git reset --hard {sha}` (or `git branch rescue {sha}` to inspect first).
 - **Recover a deleted branch** — `git reflog` (or `git fsck --no-reflogs
-  --lost-found` for dangling commits), then `git branch NAME SHA`.
+  --lost-found` for dangling commits), then `git branch {name} {sha}`.
 - **Recover a dropped stash** — `git fsck --unreachable | grep commit`, inspect
-  with `git show SHA`, restore via `git stash apply SHA`.
+  with `git show {sha}`, restore via `git stash apply {sha}`.
 - Recovery is time-bounded by `gc.reflogExpire`/`gc.pruneExpire`; act before a
   `git gc --prune=now` (which the hook asks on).
 

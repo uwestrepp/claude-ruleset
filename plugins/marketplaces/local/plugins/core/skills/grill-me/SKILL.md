@@ -83,18 +83,18 @@ Stop when **no unresolved decision would still change the design** — i.e. ever
 
 ### 4.7 Emit the decision record (MUST)
 
-Convergence that lives only in chat evaporates (Meta.md §2 knowledge persistence). At the end, produce a written record and tell the user where it is. Default location: the plan/topic's own doc, or `.aiassistant/scratch/grill-<topic>.md` (transient) — promote to `.aiassistant/state/` only if it has durable continuation value. Ask if the target scope is ambiguous (Meta.md §2.2). The record contains:
+Convergence that lives only in chat evaporates (Meta.md §2 knowledge persistence). At the end, produce a written record and tell the user where it is. Default location: the plan/topic's own doc, or `.aiassistant/scratch/grill-{topic}.md` (transient) — promote to `.aiassistant/state/` only if it has durable continuation value. Ask if the target scope is ambiguous (Meta.md §2.2). The record contains:
 
 ```
-# Grill: <topic>
+# Grill: {topic}
 ## Resolved decisions
-- <decision> → <choice> (rationale)
+- {decision} → {choice} (rationale)
 ## Stated assumptions (accepted, unverified)
-- <assumption> — revisit if <condition>
+- {assumption} — revisit if {condition}
 ## Rejected alternatives
-- <option> — why dropped
+- {option} — why dropped
 ## Open / deferred
-- <anything explicitly punted, with why it's safe to defer>
+- {anything explicitly punted, with why it's safe to defer}
 ```
 
 Then offer the next step: proceed to `EnterPlanMode`/implementation, or grill a remaining branch.

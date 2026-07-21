@@ -36,11 +36,11 @@ If any other check fails: report which tooling is missing, do not continue the w
 Use the project command wrapper:
 
 - Summary mode:
-  - `ddev typo3-extensionscanner summary <extKey...>`
-  - or `ddev typo3-extensionscanner --summary <extKey...>`
+  - `ddev typo3-extensionscanner summary {extKey...}`
+  - or `ddev typo3-extensionscanner --summary {extKey...}`
 - JSON detail mode:
-  - `ddev typo3-extensionscanner json <extKey...>`
-  - or `ddev typo3-extensionscanner --json <extKey...>`
+  - `ddev typo3-extensionscanner json {extKey...}`
+  - or `ddev typo3-extensionscanner --json {extKey...}`
 
 If extension scope is not explicitly given, ask once before scanning all extensions.
 
@@ -52,7 +52,7 @@ If `ddev typo3-extensionscanner` is not callable and no project copy exists at `
 
 1. copy this skill's `resources/typo3-extension-scanner` to the project's `.aiassistant/scripts/typo3-extension-scanner`,
 2. create the DDEV wrapper `.ddev/commands/web/typo3-extensionscanner` (stub in `resources/README.md`),
-3. verify it is callable (e.g. `ddev typo3-extensionscanner --summary <one extKey>`), then proceed.
+3. verify it is callable (e.g. `ddev typo3-extensionscanner --summary {one extKey}`), then proceed.
 
 This writes committable files into the project repo (the copy is meant to be shared with team/CI per `resources/README.md`) — confirm with the user before installing, and surface the new files at the next commit. If a project copy already exists, prefer it (it MAY carry project-specific tweaks per the README drift policy); do not overwrite it from resources without confirmation.
 

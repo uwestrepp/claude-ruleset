@@ -24,7 +24,7 @@ Apply `Batch.md` §2 general toolset gate. TYPO3 static-test-specific checks:
 - step 1 (project type): confirm `composer.json` references `typo3/cms-core` or equivalent.
 - step 3 (required commands): confirm project-specific wrapper commands exist and are callable.
 
-**Reference project notice:** All concrete tool commands in this skill (for example `ddev mq-tests-*`, `ddev tests <action>`, directory names like `mqtests/`) originate from the reference project's toolchain. Before first use in any project, the agent MUST validate that these commands exist, identify project-specific equivalents where they differ, and use the validated commands for the remainder of the workflow. Do not assume reference-project commands are universally available.
+**Reference project notice:** All concrete tool commands in this skill (for example `ddev mq-tests-*`, `ddev tests {action}`, directory names like `mqtests/`) originate from the reference project's toolchain. Before first use in any project, the agent MUST validate that these commands exist, identify project-specific equivalents where they differ, and use the validated commands for the remainder of the workflow. Do not assume reference-project commands are universally available.
 
 If any check fails: report which tooling is missing, do not continue the workflow, and ask the user how to proceed.
 
@@ -37,7 +37,7 @@ Use `.aiassistant/state/upgraded-extensions.yaml` as the canonical extension sco
 If this list expands, all scoped static tests must include the new extension automatically.
 
 Legacy compatibility:
-- default direct `ddev tests <static-action>` behavior remains legacy/all-packages compatible.
+- default direct `ddev tests {static-action}` behavior remains legacy/all-packages compatible.
 - migration workflow wrappers (`ddev mq-tests-upgrade`, `ddev mq-tests-rector1-baseline`) must enforce upgraded-scope mode.
 - in legacy default runs (no explicit scope), tool config path definitions remain authoritative for tools that define their own path scope (for example php-cs-fixer/fractor/typoscriptlint).
 - in scoped extension runs, exclude extension-local test fixture directories (`mqtests/`) from analyzed/fixed paths by default.
@@ -70,20 +70,20 @@ Clarification:
 
 Run relevant commands in exactly this order:
 
-1. `ddev tests php-cs-fixer-apply <scope>`
-2. `ddev tests rector1-dry <scope>`
-3. `ddev tests rector2-dry <scope>`
-4. `ddev tests fractor-dry <scope>`
-5. `ddev tests typoscriptlint <scope>`
-6. `ddev tests phpstan <scope>`
+1. `ddev tests php-cs-fixer-apply {scope}`
+2. `ddev tests rector1-dry {scope}`
+3. `ddev tests rector2-dry {scope}`
+4. `ddev tests fractor-dry {scope}`
+5. `ddev tests typoscriptlint {scope}`
+6. `ddev tests phpstan {scope}`
 
 Project wrapper (recommended):
-- `ddev mq-tests-upgrade <scope>` — runs the ordered sequence above for the given scope.
+- `ddev mq-tests-upgrade {scope}` — runs the ordered sequence above for the given scope.
 
 One-time legacy baseline helper:
 - `ddev mq-tests-rector1-baseline --scope=<...>`
 
-`<scope>` is either:
+`{scope}` is either:
 - one extension key (preferred default),
 - or `all` for complete upgraded-extension scope.
 
@@ -142,7 +142,7 @@ Suppression policy:
 ## 6. Logging (MUST)
 
 Persist run outputs under:
-- `var/log/tests/<timestamp>/<scope>/<step>.log`
+- `var/log/tests/{timestamp}/{scope}/{step}.log`
 
 Keep logs for iterative process evaluation; prune policy can be decided later.
 

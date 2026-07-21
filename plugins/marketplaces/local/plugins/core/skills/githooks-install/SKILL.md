@@ -32,12 +32,12 @@ with an actionable diagnostic on failure:
 
 1. `git rev-parse --show-toplevel` succeeds (cwd is inside a git repo).
 2. Fresh-install mode only:
-   - `<repo>/.githooks/` does NOT exist.
+   - `{repo}/.githooks/` does NOT exist.
    - `git config --get core.hooksPath` returns empty.
 3. If `.aiassistant/state/githooks-install.yaml` exists with `status: declined`,
    warn the user ("this project previously opted out") and ask whether to
    proceed; do not auto-install.
-4. Write access to `<repo>/.githooks/` and `<repo>/.aiassistant/state/`.
+4. Write access to `{repo}/.githooks/` and `{repo}/.aiassistant/state/`.
 
 ## Configuration prompts
 
@@ -108,18 +108,18 @@ Let `REPO="$(git rev-parse --show-toplevel)"` and
    ```yaml
    # .aiassistant/state/githooks-install.yaml
    status: installed
-   recorded: <today's date, absolute ISO>
-   template_version: <git describe of template dir, or short SHA>
+   recorded: {today's date, absolute ISO}
+   template_version: {git describe of template dir, or short SHA}
    modules:
-     extension_ticket_map: <true|false>
-     protected_branch_guard: <true|false>
+     extension_ticket_map: {true|false}
+     protected_branch_guard: {true|false}
    ```
 10. Run a smoke test: `bash .githooks/validate-commit-subject.sh '[CHORE] AGENT (install) githooks install smoke test'` — expect exit 0 (format OK; ticket check will fail on branch mismatch but only if require_ticket=1 and branch has no ticket — handle gracefully: if exit is non-zero due to branch check, note it and tell the user the install is functional).
 
 ## Install steps (--update)
 
 1. For each template file in use (core + enabled modules):
-   - Diff against `$REPO/.githooks/<file>`.
+   - Diff against `$REPO/.githooks/{file}`.
    - If identical: skip.
    - If different: show diff, ask (keep / overwrite / show-full).
 2. Re-read `$REPO/.githooks/config.sh` as defaults for config prompts; only
@@ -136,8 +136,8 @@ or from this skill's fresh-install flow), write:
 ```yaml
 # .aiassistant/state/githooks-install.yaml
 status: declined
-recorded: <absolute ISO date>
-reason: <free-text from user or 'user declined' default>
+recorded: {absolute ISO date}
+reason: {free-text from user or 'user declined' default}
 ```
 
 Subsequent `/core:commits` precheck runs see this marker and MUST NOT
@@ -150,7 +150,7 @@ To re-enable prompting later, the user removes the marker file (or changes
 
 Emit a short summary:
 - What was installed (files, modules, target dirs).
-- How to commit with bypass: `<HOOK_BYPASS_ENV>=1 git commit -m "..."`.
+- How to commit with bypass: `{HOOK_BYPASS_ENV}=1 git commit -m "..."`.
 - How to sync after editing `.githooks/` (re-copy to `$HOOKS_DIR`, see
   template README.md).
 - If extension-map was enabled: reminder to populate the map file.

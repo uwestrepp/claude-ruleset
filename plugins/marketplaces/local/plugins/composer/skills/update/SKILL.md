@@ -105,7 +105,7 @@ If a reusable change-map already exists for this ecosystem/release (§6), reconc
 Get the authoritative update set **without changing anything**:
 
 ```
-composer update <selector> --dry-run --with-dependencies     # scoped
+composer update {selector} --dry-run --with-dependencies     # scoped
 composer update --dry-run -W                                  # or full, incl. transitive
 ```
 
@@ -136,12 +136,12 @@ Then:
 1. **Detect the ecosystem** from `composer.json`/lock (e.g. `typo3/cms-core` → TYPO3;
    `symfony/framework-bundle` → Symfony; `shopware/core` → Shopware; otherwise generic library).
    A project may match more than one — handle each in-scope package under the catalog that owns it.
-2. **Resolve the catalog**: load `references/catalogs/<ecosystem>.md`. Each catalog states what the
+2. **Resolve the catalog**: load `references/catalogs/{ecosystem}.md`. Each catalog states what the
    skill needs per `references/catalog-contract.md`: detection signature, change-map source
    strategy, ordered collision vectors + scan recipes, regression surfaces, deploy caveats.
 3. **No catalog for the detected ecosystem** → load `references/catalogs/generic.md` for a
    best-effort scan, AND tell the user no ecosystem catalog exists. Offer to **author one**
-   (self-extension): a new `references/catalogs/<ecosystem>.md` satisfying the contract, derived
+   (self-extension): a new `references/catalogs/{ecosystem}.md` satisfying the contract, derived
    from what this run discovers. Do not silently proceed as if the generic scan were complete —
    state the reduced confidence.
 
@@ -155,11 +155,11 @@ For each meaningfully-bumped package, build a map of what changed between BASE a
 **best-effort and method-agnostic** — be explicit about which method yielded each package's map and
 flag packages that stayed opaque. Source ladder (use the catalog's strategy first, then degrade):
 
-1. **Monorepo compare API** (e.g. TYPO3 on GitHub: `compare/<BASE>...<TARGET>`) → file- and often
+1. **Monorepo compare API** (e.g. TYPO3 on GitHub: `compare/{BASE}...{TARGET}`) → file- and often
    method-precise. Best.
 2. **CHANGELOG / release notes between tags** → coarse but usually names the touched areas.
 3. **Git-tag diff on the locked source reference** (clone/fetch the package's repo, `git diff
-   <BASE>..<TARGET>`) → precise when no API exists.
+   {BASE}..{TARGET}`) → precise when no API exists.
 4. **Packagist → repository link** to locate the source for (3).
 5. **Opaque** — no usable source. Record it as opaque; the impact scan for that package falls back
    to public-API/reference checks only, and the verdict says so.
@@ -170,7 +170,7 @@ update. Mirror the proven two-artifact split:
 
 - **Fat shared change-map** — `change-map.md` (override-risk surface, per-method notes, collision
   vectors) + `data/` (machine-readable changed-file list, FQCNs, provenance). Lives in a portable
-  package outside any single project (e.g. `~/work/projects/<release>-rollout/`), so any project can
+  package outside any single project (e.g. `~/work/projects/{release}-rollout/`), so any project can
   pick it up. Build it once; on later projects, reuse and only re-confirm the BASE (§3).
 - **Thin per-project record** — produced in Phase 6, per project.
 
@@ -209,7 +209,7 @@ Two durable artifacts (`Meta.md` §2.2):
 
 - **Fat shared change-map** (§6) — already project-independent; update its per-project status
   tracker.
-- **Thin per-project record** at `.aiassistant/state/<release>-update-map.md` in the project. It
+- **Thin per-project record** at `.aiassistant/state/{release}-update-map.md` in the project. It
   records only what was checked *here*: BASE/exec-context/app-root, the project dirs scanned (SCAN),
   a findings table (vector → finding → verdict), the conclusion, and the concrete rollout recipe for
   this project. Keep project-independent facts in the shared map; keep project-specific evidence in
@@ -233,7 +233,7 @@ Two durable artifacts (`Meta.md` §2.2):
 4. **Confirm the deploy target before assuming a rollout shape** — a project mid-major-upgrade can
    carry the new line on a *separate branch* while its production branch is an older major; merging
    the lock onto the wrong branch is destructive and there may be no standalone deploy. Check the
-   core/framework version on each candidate branch (`git show <branch>:composer.lock`), identify
+   core/framework version on each candidate branch (`git show {branch}:composer.lock`), identify
    which branch carries the target line, and confirm the deploy mechanism before committing.
 5. **Commit** the lock (lock-only expected) per `/core:commits`, on the correct branch, under the
    resolved ticket.

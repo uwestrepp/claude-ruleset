@@ -92,7 +92,7 @@ For each identified entry point and surface, the agent MUST:
      proceeding or carry as known-broken baseline.
    - verification blocked (environment, credentials, etc.): state blocker and
      exact follow-up step; do not silently skip.
-4. **Persist** baseline artifact to `.aiassistant/state/functional-baseline-<scope>.md`
+4. **Persist** baseline artifact to `.aiassistant/state/functional-baseline-{scope}.md`
    (create or update).
 5. **If a baseline artifact from a prior session already exists** for the same scope,
    explicitly verify it is still current before using it as Phase 2 evidence: confirm
@@ -356,7 +356,7 @@ Before the first code edit in such a cycle, the agent MUST:
   - planned validation depth per group and impacted runtime surfaces,
   - explicit list of `manual` topics requiring approval.
 - persist the same packet to:
-  - `.aiassistant/state/workflow-triage/<timestamp>-<workflow>-<scope>.md`
+  - `.aiassistant/state/workflow-triage/{timestamp}-{workflow}-{scope}.md`
 - confirm the triage packet exists at the mandatory path before proceeding: work MUST NOT advance to Phase 5 (Implementation) until this artifact is present with all prescribed fields populated. An informal or equivalently structured triage document at another path does not satisfy this requirement unless explicitly reformatted or mapped into a compliant artifact at the correct path in the same step.
 - wait for explicit user approval before applying:
   - any `provable` batch,
@@ -529,7 +529,7 @@ Batch cycles often span hours or multiple sessions and are subject to interrupti
 At each phase boundary (per §1 Execution Phase Template), the work state MUST be one of:
 
 - a clean commit representing the completed phase, OR
-- a persisted handoff note at `.aiassistant/scratch/<scope>-handoff.md` documenting:
+- a persisted handoff note at `.aiassistant/scratch/{scope}-handoff.md` documenting:
   - current phase and step,
   - concrete progress (what was completed, what is in-flight),
   - next concrete step (file, command, or decision),
@@ -540,7 +540,7 @@ For cycles expected to span multiple sessions or where phases exceed a single na
 - create the handoff note at Phase 2 (Preflight/Inventory) and update it at each subsequent phase boundary,
 - on continuation (new session or resumed after interruption), read the handoff note as the first orientation step, before `General.md` §3.4 revalidation.
 
-When a session restart is proposed at a phase boundary (per `General.md` §10.2/§10.3), the agent MUST offer the full `General.md` §10.3 handover bundle, not just the note: promote this note to the bundle's continuation-doc component at the durable target (`.aiassistant/state/handoffs/handoff-<timestamp>-<slug>.md`, committed, per `General.md` §10.3) — additionally persist memory (`Meta.md` §2) and emit a ready-to-paste trigger prompt that points the next session at the promoted note's path and names the next phase/step plus the recommended effort/model.
+When a session restart is proposed at a phase boundary (per `General.md` §10.2/§10.3), the agent MUST offer the full `General.md` §10.3 handover bundle, not just the note: promote this note to the bundle's continuation-doc component at the durable target (`.aiassistant/state/handoffs/handoff-{timestamp}-{slug}.md`, committed, per `General.md` §10.3) — additionally persist memory (`Meta.md` §2) and emit a ready-to-paste trigger prompt that points the next session at the promoted note's path and names the next phase/step plus the recommended effort/model.
 
 The in-cycle scratch note MUST NOT be committed (it lives in `.aiassistant/scratch/` per `Meta.md` §2.4); the durable copy created at a restart proposal lives in `.aiassistant/state/handoffs/` and is committed (`General.md` §10.3).
 

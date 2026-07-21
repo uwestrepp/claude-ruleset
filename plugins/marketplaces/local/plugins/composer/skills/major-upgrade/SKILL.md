@@ -29,7 +29,7 @@ pluggable slot contract. Resolve every referenced section into context before re
 - **`/composer:update`** — **read (do not activate)** its §4–§7 (dry-run delta, ecosystem-catalog
   resolve, change-map build, collision/impact scan). You reuse its *mechanics* in Phase 3; activating
   the skill would trip its own scope gate, which refuses major jumps and redirects back here. The
-  collision-vector catalogs (`../update/references/catalogs/<eco>.md`) are shared.
+  collision-vector catalogs (`../update/references/catalogs/{eco}.md`) are shared.
 - **`/composer:knowledge`** — version resolution order, lock discipline, `-W` semantics, dev-overrides.
 - **`/core:commits`** — commit schema + ticket traceability for the upgrade commits.
 - **`General.md` §2.1/§2.2** (version/compat verification), **§2.3** (exec-context routing), **§2.4**
@@ -83,14 +83,14 @@ that mutates code/data. The **runtime bump is not a phase** — it is either fol
 | Phase | Batch name | Major-upgrade content |
 |-------|-----------|------------------------|
 | 0 | Toolset Gate | `Batch.md` §2 + composer root + exec context + `framework-detect`/`runtime-matrix` version verification (§3) |
-| 1 | Preflight | `release/<target>` integration branch; restorable DB/state snapshot at the *old* version (§4) |
+| 1 | Preflight | `release/{target}` integration branch; restorable DB/state snapshot at the *old* version (§4) |
 | 2 | Scope, Inventory & Baseline | inventory of entry points + touchpoints; functional **and** visual baseline at the *old* version (`Batch.md` §3.2) (§5) |
 | 3 | Scan / Analysis | (a) changeset & collision map — reuse `/composer:update` §4–§7 mechanics; (b) deprecation/breaking scan via `changelog-source`/`deprecation-hotspots`. Then the **escalation gate (§10)** (§6) |
 | 4 | Triage & Plan | triage packet (`Batch.md` §9.1); cleanup-on-old plan; **runtime coupled/decoupled decision** (§7) |
 | 5 | Implementation | 5a cleanup-on-old · 5b version bump + boot fixes (incl. *coupled* runtime) · 5c framework remediation (`remediation-toolchain`) · 5d gated destructive schema/data. Pass 1/2/3 per `Batch.md` §9 (§8) |
 | 6 | Validation | re-run the Phase 2 baseline; functional + visual diff; option coverage via `config-sources` (§9) |
 | 7 | Documentation Sync | running upgrade log + a **separate** migration/rollout runbook at `doc-location` (§11) |
-| 8 | Commits | per `/core:commits`; `release/<target>` → mainline via PR (§12) |
+| 8 | Commits | per `/core:commits`; `release/{target}` → mainline via PR (§12) |
 | 9 | Handover & Reporting | `Batch.md` §8.2 final report + `Meta.md` §1.1 (§13) |
 
 Meta checkpoints (`Meta.md` §1.1) are mandatory at the end of Phase 3 (changeset/scan known), Phase 5
@@ -118,9 +118,9 @@ Do not proceed past Phase 0 if the root, exec context, or target major is ambigu
 
 ## 4. Phase 1 — Preflight (MUST)
 
-1. **Integration branch** — cut/confirm a temporary `release/<target>` integration branch
+1. **Integration branch** — cut/confirm a temporary `release/{target}` integration branch
    (e.g. `release/typo3_13`) from mainline: individual upgrade work branches are cut from and
-   merged back to `release/<target>` via PR; it merges to mainline at completion, then is
+   merged back to `release/{target}` via PR; it merges to mainline at completion, then is
    retired. It is part of the `General.md` §12 protected set (PR-only, no direct commits).
    Confirm the real deploy mapping before assuming any push deploys (`General.md` §12,
    `/composer:update` §9 deploy-target step); a deployment-trigger branch (e.g. `production`)
@@ -150,10 +150,10 @@ Two analyses; neither mutates anything.
 **(a) Changeset & collision map.** Apply `/composer:update`'s mechanics — **read** its §4–§7, do not
 activate the skill (§reference list):
 
-- **Dry-run delta** (`composer update <selectors> --dry-run -W`) → the authoritative per-package
+- **Dry-run delta** (`composer update {selectors} --dry-run -W`) → the authoritative per-package
   `current→target` set. Split direct vs transitive; flag security and floating-`@dev` transitions.
 - **Collision scan** of project-owned customizations against the breaking-change set, via the
-  ecosystem catalog (`../update/references/catalogs/<eco>.md`); classify each per `Batch.md` §9.
+  ecosystem catalog (`../update/references/catalogs/{eco}.md`); classify each per `Batch.md` §9.
 - **Change-map scope (do not over-build).** The per-package upstream change-map (`/composer:update`
   §6) is best-effort and scales poorly across a major delta — the rbk v12→v13 run resolved 75 package
   transitions via dry-run and drove migration from the deprecation scan + framework scanner, **not**
@@ -298,7 +298,7 @@ Two durable, **separate** artifacts (`Meta.md` §2.2):
 ## 12. Phase 8 — Commits (MUST)
 
 Commit per `/core:commits` on the working branch under the resolved ticket, grouped by concern
-(version bump / boot fix / remediation / schema / docs). The `release/<target>` branch reaches
+(version bump / boot fix / remediation / schema / docs). The `release/{target}` branch reaches
 mainline via PR (`General.md` §12). Confirm the deploy target before assuming the merge deploys
 (`/composer:update` §9 deploy-target step).
 

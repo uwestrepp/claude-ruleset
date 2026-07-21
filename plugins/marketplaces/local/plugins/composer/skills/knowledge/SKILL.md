@@ -24,7 +24,7 @@ Composer resolves a package's version from one of these sources, in order of pre
 
 1. A top-level `version` field in the package's `composer.json`.
 2. A reachable git tag on the local checkout (for path repositories) or on the upstream repo (for registry repositories whose builder derives dist artifacts from tags).
-3. A derived `dev-<branch>` identifier inferred from the current git branch (path repositories) or a dev-constraint alias on the consumer side (registry repositories).
+3. A derived `dev-{branch}` identifier inferred from the current git branch (path repositories) or a dev-constraint alias on the consumer side (registry repositories).
 
 ### 1.2 Tag-driven release flow (MUST NOT conflate with dev-override)
 
@@ -48,7 +48,7 @@ mechanism:
   over global reordering (§3.2) because it is scoped, self-documenting, and
   revertible.
 - **Alternative (MAY):** Use a consumer-side dev constraint such as
-  `"dev-feature/TICKET-XYZ as 13.1.0"` or `"dev-feature/TICKET#<sha>"`. Zero
+  `"dev-feature/TICKET-XYZ as 13.1.0"` or `"dev-feature/TICKET#{sha}"`. Zero
   changes to the clone's `composer.json`, but the consumer constraint must be
   reverted before merge.
 - **Hygiene (MUST):** Distinguish release-destined edits from dev-local
@@ -57,7 +57,7 @@ mechanism:
   carry the same convention. If the release convention includes a top-level
   `version`, aligning with it is preferable to creating inconsistency.
 - **Parent repo subrepo gating (SHOULD):** When the path package is a
-  separately-versioned upstream repository, exclude `packages/<name>/` from the
+  separately-versioned upstream repository, exclude `packages/{name}/` from the
   parent's git tracking (via `.gitignore`). Otherwise the parent records a
   submodule gitlink or embeds the subtree. Parent commits only the wiring.
 
@@ -95,6 +95,6 @@ Only after these should the agent consider `composer clear-cache` or `composer u
 
 ## 4. Lock File Discipline (MUST)
 
-When asked to "update one composer package", the agent MUST use `composer update <vendor>/<name> [--with-all-dependencies]` rather than blanket `composer update`, to keep the lock-file change set minimally scoped. The lock-file diff MUST be reviewable as part of the change.
+When asked to "update one composer package", the agent MUST use `composer update {vendor}/{name} [--with-all-dependencies]` rather than blanket `composer update`, to keep the lock-file change set minimally scoped. The lock-file diff MUST be reviewable as part of the change.
 
 If `composer update` shows substantial unrelated upgrades (symfony patches etc.), pause and ask before proceeding — the user may want a tighter scope.

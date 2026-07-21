@@ -7,7 +7,7 @@ allowed-tools: [Read, Grep, Glob, Agent]
 
 # /core:brainstorm — Verbalized-Sampling Brainstorming
 
-*Input (`$ARGUMENTS`): the question or topic to explore, optionally prefixed `n=<count>`.*
+*Input (`$ARGUMENTS`): the question or topic to explore, optionally prefixed `n={count}`.*
 
 ## 1. Purpose
 
@@ -104,12 +104,12 @@ Context: {CONTEXT}
 For each approach, output a YAML record in this shape:
 
 - id: approach-N
-  name: <short label, 2-5 words>
-  summary: <one sentence>
+  name: {short label, 2-5 words}
+  summary: {one sentence}
   rationale: <2-3 sentences — why this approach, what problem it actually solves>
-  confidence: <low | medium | high>
-  main_tradeoff: <the single sharpest cost or risk>
-  distinct_from_others: <one sentence: what makes this NOT a variant of approach-1..N-1>
+  confidence: {low | medium | high}
+  main_tradeoff: {the single sharpest cost or risk}
+  distinct_from_others: {one sentence: what makes this NOT a variant of approach-1..N-1}
 
 Return ONLY the YAML list. No preamble, no commentary.
 ```
@@ -143,17 +143,17 @@ Final user-facing output, compact:
 ```
 Brainstorm (N={N}, judged):
 
-#1 <name> — score X/12
-   <one-line rationale>
-   Tradeoff: <decisive cost>
+#1 {name} — score X/12
+   {one-line rationale}
+   Tradeoff: {decisive cost}
 
-#2 <name> — score Y/12
-   <one-line rationale>
-   Tradeoff: <decisive cost>
+#2 {name} — score Y/12
+   {one-line rationale}
+   Tradeoff: {decisive cost}
 
-#3 <name> — score Z/12 (contrarian)
-   <one-line rationale>
-   Tradeoff: <decisive cost>
+#3 {name} — score Z/12 (contrarian)
+   {one-line rationale}
+   Tradeoff: {decisive cost}
 
 Next: proceed with #1, discuss #2/#3, or regenerate?
 ```
