@@ -25,7 +25,7 @@ Format exactly:
 
 Validation regex (use as hard check):
 
-    ^\[(FEAT|FIX|BUILD|CHORE|CI|DOCS|STYLE|REFACTOR|PERF|TEST)\] [A-Z]+-[0-9]+ \([a-z0-9._/-]+\) .+
+    ^\[(FEAT|FIX|BUILD|CHORE|CI|DOCS|STYLE|REFACTOR|PERF|TEST)\] [A-Z][A-Z0-9]+-[0-9]+ \([a-z0-9._/-]+\) .+
 
 ### `{TYPE}`
 
