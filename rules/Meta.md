@@ -138,6 +138,8 @@ The agent MUST:
 
 For the legacy `.aiassistant/state/workflow-triage/` location: keep only durable final packets and evidence summaries there; transient working artifacts MUST move to `.aiassistant/scratch/`.
 
+Spent-artifact archival: at the task-end meta-checkpoint (§1.1), a durable `state/` artifact with an unambiguous completion signal — chiefly a handoff consumed by the session that finished the work it describes — MUST be moved into a `done/` subfolder of its kind directory (`.aiassistant/state/handoffs/done/`), still committed, to keep the active set scannable. Archive, never delete. When completion is only inferred, offer the move rather than archiving silently.
+
 Projects SHOULD add `.aiassistant/scratch/**` to `.gitignore`.
 
 If retention value is unclear, ask the user before committing artifact files.

@@ -16,6 +16,10 @@ This skill produces the continuation-doc component of the `General.md` §10.3 ha
 - One handover = one file. Write a NEW file every time; never overwrite or edit an existing handoff, unless the user explicitly names an existing handoff file to update.
 - Use a unique, descriptive filename: `handoff-{YYYYMMDD-HHMMSS}-{short-slug}.md`, where the timestamp comes from `date +%Y%m%d-%H%M%S` and the slug is derived from the handoff topic (or the passed arguments). If the chosen name already exists, pick a different one — do not replace it.
 
+## Lifecycle
+
+A handoff is a continuation doc for *unfinished* work; it becomes spent once a successor session completes the work it describes. At that session's task-end meta-checkpoint, move the consumed handoff into `.aiassistant/state/handoffs/done/` (still committed) so the active `handoffs/` view shows only live handoffs (per `Meta.md` §2.4). Archive, don't delete.
+
 ## Content
 
 Include a "suggested skills" section in the document, which suggests skills that the agent should invoke.
