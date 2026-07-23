@@ -17,9 +17,8 @@ exclude = [
 # Deliberate deviations we own (see the AskUserQuestion decisions 2026-07-21):
 #   XP-SK-001  argument-hint is a "client-specific field" — we use it on purpose
 #              (Claude Code surfaces it); pure noise here (21x, info).
-#   CC-MEM-012 apply:/instructions: in rules/*.md flagged as unknown keys — kept
-#              deliberately for PhpStorm AiRulesEditor; Claude Code ignores them
-#              and gates on paths:. Revisit if JetBrains AiRules use is ruled out.
+# CC-MEM-012 re-enabled 2026-07-23: apply:/instructions: removed from all rule files
+# (JetBrains AiRulesEditor no longer used); rule frontmatter now carries only paths:.
 # Everything else stays ON. Best-practice warnings (CC-SK-007 unrestricted Bash,
 # AS-012 >500 lines, AS-013 ref depth) remain visible but non-blocking (non-strict).
-disabled_rules = ["XP-SK-001", "CC-MEM-012"]
+disabled_rules = ["XP-SK-001"]

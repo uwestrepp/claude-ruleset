@@ -1,6 +1,4 @@
 ---
-apply: by model decision
-instructions: Apply only for Shopware 6 projects/tasks (custom plugins, ThumbnailService/media, storefront Twig/theme overrides, plugin migrations, deployment-helper).
 paths:
   - "**/custom/plugins/**"
   - "**/custom/static-plugins/**"

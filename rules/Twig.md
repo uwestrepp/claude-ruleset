@@ -1,6 +1,4 @@
 ---
-apply: by model decision
-instructions: Apply only when creating/editing/reviewing Twig templates.
 paths:
    - "**/*.twig"
 ---

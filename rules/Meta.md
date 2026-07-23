@@ -1,8 +1,3 @@
----
-apply: always
-instructions: Apply for meta-checkpoints, knowledge persistence, durable agent memory, and rule-set governance across all tasks.
----
-
 # Meta Rules
 
 This document defines always-on meta-rules for:

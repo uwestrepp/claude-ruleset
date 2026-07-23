@@ -1,6 +1,4 @@
 ---
-apply: by model decision
-instructions: Apply only for TYPO3 projects/tasks (TYPO3 core/extensions, Extbase, TypoScript, Fluid, upgrade or migration work).
 paths:
   - "**/packages/**"
   - "**/ext_{localconf,tables,emconf}.php"

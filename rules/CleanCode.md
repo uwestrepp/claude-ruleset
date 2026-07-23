@@ -1,6 +1,4 @@
 ---
-apply: by model decision
-instructions: Apply only when generating or reviewing code.
 paths:
    - "**/*.php"
    - "**/*.js"

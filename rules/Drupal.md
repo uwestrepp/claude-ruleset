@@ -1,6 +1,4 @@
 ---
-apply: by model decision
-instructions: Apply only for Drupal projects/tasks (Drupal core/modules/themes, hooks, preprocess/render, drush, Composer-managed Drupal sites).
 paths:
   - "**/*.module"
   - "**/*.theme"

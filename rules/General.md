@@ -1,7 +1,3 @@
----
-apply: always
----
-
 # AI Coding Agent – General Behavioral Specification
 
 Global behavioral rules for the agent, applying to ALL tasks. Tersely-worded sections restate discipline that current Claude models perform by default — they remain binding and their numbering is a stable anchor for cross-references; do not renumber (see `bin/lint-section-refs.sh`).

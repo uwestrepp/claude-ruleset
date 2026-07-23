@@ -78,7 +78,7 @@ Subordinate to the five vectors, but deliberate:
   content (General §8.2); typography policy (§8.5); Atlassian MCP conventions in `CLAUDE.md`.
 - **Composability, single spine**: `/core:batch` is the foundation; `/composer:major-upgrade`
   and `/typo3:*` are faithful specializations that must not restate or weaken parent gates.
-- **Portability**: minimal rule frontmatter for IDE compatibility (PhpStorm AiRulesEditor);
+- **Portability**: minimal rule frontmatter (only `paths:` for path-gated rules);
   `exports/` adaptations for external harnesses, synced in the same change-set as `rules/`.
 - **Deterministic environment handling**: exec-context routing (host vs container,
   General §2.3), git workflow and branch protection (§12).
