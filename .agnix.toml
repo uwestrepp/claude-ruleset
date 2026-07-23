@@ -1,5 +1,5 @@
 # agnix config — SKILL.md / rule / memory validation (agent-sh/agnix).
-# Run: npx agnix@<pinned> validate <paths>   (see .githooks/pre-commit)
+# Run: npx agnix@$(cat .agnix-version) validate <paths>   (pin in .agnix-version; see .githooks/pre-commit)
 # Docs: https://agent-sh.github.io/agnix/docs/rules/
 
 # This project targets Claude Code (the "target" field is deprecated in favor of "tools").

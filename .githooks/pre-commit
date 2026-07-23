@@ -4,21 +4,54 @@
 #   2. agnix validate           — SKILL.md / rule / memory validation (config in
 #                                 .agnix.toml). The real agent-sh/agnix linter,
 #                                 non-strict: blocks on errors, warnings are shown
-#                                 but do not block.
+#                                 but do not block. Pinned version in .agnix-version.
 # Bypass a single commit: SKIP_REF_LINT=1 and/or SKIP_AGNIX=1 git commit ...
 set -uo pipefail
 root="$(git rev-parse --show-toplevel)"
 rc=0
+
+# Non-blocking: flag a strictly-newer agnix release at most once/day. The pin in
+# .agnix-version stays authoritative — this only makes an update a conscious choice.
+# Never affects the commit exit status (always returns 0; failures are swallowed).
+agnix_update_notice() {
+    local pinned="$1"
+    command -v npm >/dev/null 2>&1 || return 0
+    local stamp; stamp="$(git rev-parse --git-path agnix-update-check.stamp 2>/dev/null)" || return 0
+    local now; now="$(date +%s 2>/dev/null)" || return 0
+    if [ -f "$stamp" ]; then
+        local last; last="$(cat "$stamp" 2>/dev/null || echo 0)"
+        case "$last" in ''|*[!0-9]*) last=0;; esac
+        [ $(( now - last )) -lt 86400 ] && return 0   # checked within 24h → skip
+    fi
+    local latest
+    latest="$(timeout 10 npm view agnix version 2>/dev/null)" || return 0
+    [ -n "$latest" ] || return 0                       # offline / npm error → retry next commit
+    echo "$now" > "$stamp" 2>/dev/null || true         # record only a successful fetch
+    if [ "$latest" != "$pinned" ] && \
+       [ "$(printf '%s\n%s\n' "$pinned" "$latest" | sort -V | tail -n1)" = "$latest" ]; then
+        echo "agnix: newer release available — $latest (pinned $pinned in .agnix-version)." >&2
+        echo "       Review changelog + baseline (currently 0 errors, 17 warnings) before bumping;" >&2
+        echo "       the pin is authoritative and .agnix.toml disabled_rules are keyed to it." >&2
+    fi
+    return 0
+}
 
 if [ "${SKIP_REF_LINT:-}" != "1" ]; then
     "$root/bin/lint-section-refs.sh" || rc=1
 fi
 
 if [ "${SKIP_AGNIX:-}" != "1" ]; then
-    if command -v npx >/dev/null 2>&1; then
+    agnix_ver="$(cat "$root/.agnix-version" 2>/dev/null || true)"
+    agnix_ver="${agnix_ver//[[:space:]]/}"
+    if [ -z "$agnix_ver" ]; then
+        # our own config integrity → fail closed: a missing pin must not pass silently.
+        echo "agnix: .agnix-version missing or empty — cannot resolve pinned version" >&2
+        rc=1
+    elif command -v npx >/dev/null 2>&1; then
         # pinned version → reproducible; npx caches after first download.
-        ( cd "$root" && npx --yes agnix@0.40.0 validate \
+        ( cd "$root" && npx --yes "agnix@${agnix_ver}" validate \
             plugins/marketplaces/local/plugins rules ) || rc=1
+        agnix_update_notice "$agnix_ver"
     else
         # deliberate fail-open: don't block commits just because Node/npx is absent.
         echo "agnix: npx not found — skipped (set SKIP_AGNIX=1 to silence)" >&2
