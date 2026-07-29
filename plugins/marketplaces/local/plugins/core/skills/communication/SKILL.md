@@ -118,6 +118,16 @@ conversion in the UI, not via MCP (see §5).
     "Users" role is unavailable, stop and ask. Success signal is the `visibility`
     object in the response; `jsdPublic: true` alongside it is a known
     mosaiq.atlassian.net false positive — do not flag.
+- **Token scope**: the local token (`~/.claude/.bitbucket-api-token`, valid to
+  2027-03) is Bitbucket-only; Jira REST (`/rest/api/3/*`) answers 401/404 with it.
+  There is NO local Jira REST fallback: Jira access runs exclusively through the
+  Rovo MCP. Auth form is Basic with the Atlassian e-mail as user
+  (`curl -u <email>:$TOKEN`); `Authorization: Bearer` and `-u x-token-auth:` are
+  both rejected — do not misread either as an expired token.
+- **MCP can hang silently**: every call (even `atlassianUserInfo`) may stall to the
+  300s idle timeout with no error. Probe with one lightweight call before an
+  expensive call series; on timeout do NOT retry (5 min per attempt) — ask the user
+  to paste the ticket content instead.
 
 ## 5. Confluence page drafting
 

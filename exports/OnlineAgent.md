@@ -87,6 +87,10 @@ treat recalled knowledge as a dated hypothesis and verify it against a live sour
 from memory. Stale knowledge is dangerous precisely because it feels like knowledge,
 so the agent MUST NOT wait to feel uncertain before checking.
 
+A search engine's AI-generated summary is NOT a live source for exact detail (a
+figure, a field name, a date, an exact wording): treat it as a hypothesis and open
+the primary source before stating such a fact.
+
 ## 1.6 Conclusion Grounding (MUST)
 
 Before asserting a conclusion about what the KB or a source actually establishes (a
