@@ -14,13 +14,14 @@
   * rules/Shopware.md (path-gated: `**/custom/plugins/**`, `**/custom/static-plugins/**`, `**/config/packages/shopware.yaml`, `**/src/Resources/app/{storefront,administration}/**`) — Shopware 6 operating policy: media/thumbnail, storefront-image (`sw_thumbnails`/`<picture>`), and plugin-migration/deploy facts. Composer via `/composer:*`, commits via `/core:commits`.
 * **Exports** — `./exports/` holds condensed or adapted versions of this repo's rule-set for use in external agents or harnesses. Files under `./exports/` are NOT loaded by this harness. When editing files under `./rules/`, check `./exports/` for any condensed version that needs corresponding sync in the same change-set. See `./exports/README.md`.
 * **Skill ledger** — skills live at `~/.claude/plugins/marketplaces/local/plugins/<plugin>/skills/<skill>/`; full trigger patterns are in each skill's own description (loaded into every session). Entries below record activation policy + a one-line boundary only.
-* **Core skills** — auto-activate on prompt relevance, or invoke explicitly:
+* **Core skills** — auto-activate on prompt relevance unless the entry states otherwise:
   * `/core:commits` — commit schema `[TYPE] JIRA (scope) summary`, ticket traceability, body gate, pre-commit checklist.
   * `/core:githooks-install` — native git-hook scaffold install/`--update`; auto-suggested by `/core:commits`.
   * `/core:git-knowledge` — git depth beyond `General.md` §12: deploy-mapping detection, remote/worktree/baseline disambiguation, rebase/merge hygiene, reflog recovery. NOT commit drafting, NOT hook install.
   * `/core:brainstorm` — N distinct candidates → ranked shortlist; genuine exploration only, NOT converged work.
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
   * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material); no interview, no alternatives, NOT code-diff review. vs grill-me (which interviews).
+  * `/core:blueprint` — explicit activation required. Structural cut of a change before code exists (units, dependency direction, boundaries, state, error contract) → blueprint record separating decided from convention-dictated. Offered by the `CleanCode.md` Architectural Cut Gate. Runs standalone; NOT one module's interface (`/pocock:design-an-interface`), NOT existing-code improvement (`/pocock:improve-codebase-architecture`).
   * `/core:effort-estimation` — agent-session-wall-clock effort estimates (AWS = Aufwandsschätzung): scope boundary, task-type bands, calibration factors. NOT PM scheduling.
   * `/core:communication` — colleague-facing output profile (Jira/Confluence/Bitbucket): German + typography + paste format, Atlassian MCP mechanics, Bitbucket PR conventions, MOSAIQ house-style. NOT agent-to-user chat, NOT commit messages (`/core:commits`).
   * `/core:comm-calibrate` — auto-suggest gate; inbound counterpart to `/core:communication`: mine a real artifact → derive register/routing/glossary facts. Self-fetch only on user request or agent-offer+confirm. NOT producing output.

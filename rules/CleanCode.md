@@ -27,6 +27,25 @@ Per `General.md` §4.6 (generation / legacy-review / uncertainty). Clean-code sp
 - **Legacy review:** identify deviations from this spec and suggest minimal, safe refactorings (do not auto-modify — `General.md` §4.6).
 - **Uncertainty:** avoid assumptions about business intent; do not introduce new architectural patterns without confirmation (`General.md` §3.3).
 
+# Architectural Cut Gate (MUST)
+
+Before applying a change that
+
+- introduces more than one new unit (class/module/service), OR
+- relocates a responsibility boundary between existing units, OR
+- touches the data schema (migration, entity, TCA, config schema),
+
+the agent MUST name the intended cut and offer `/core:blueprint`. Auto-suggest gate per the
+`General.md` §3.5 pattern: propose, never silently activate. When the cut is fully determined
+by an existing codebase convention, state that instead and proceed without the offer.
+
+The trigger is established structural scope, not task phrasing. It fires after grounding
+(`General.md` §3.1), not on the wording of the request.
+
+Before offering, check for an existing blueprint record covering the affected area
+(`docs/adr/`, `.aiassistant/state/blueprint-*.md`). If one exists, read it and follow it
+rather than re-deriving the cut; offer the skill only for what it does not cover.
+
 # Project-Opinion Rules
 
 ## Use Searchable Names — replace magic numbers with constants (MUST)

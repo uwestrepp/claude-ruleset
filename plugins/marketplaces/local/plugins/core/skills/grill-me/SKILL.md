@@ -17,6 +17,8 @@ Complementary to the other thinking primitives — not a substitute:
 - `advisor` — ONE strong opinion on the direction you already have.
 - `/core:brainstorm` — N divergent candidate approaches when diversity is the goal.
 - `/core:grill-me` — convergence on ONE plan by interrogating its decision points.
+- `/core:blueprint` — the *structural cut* of a change once WHAT to build is settled (units, dependency direction, boundaries, state, error contract). Runs after this skill, or standalone; it presents a cut for review instead of interviewing.
+- `/pocock:design-an-interface` — the interface shape of exactly ONE module, by comparing several designs.
 
 Use this when the plan exists but is soft, and the risk is building the wrong thing because an assumption went unexamined.
 
