@@ -89,7 +89,7 @@ Loading layers, innermost always-on to outermost on-demand:
 
 | Layer | Content | When loaded |
 |---|---|---|
-| `CLAUDE.md` (+ `CLAUDE.local.md`) | Index, skill ledger, MCP conventions, local secrets | Always |
+| `CLAUDE.md` (+ imported `~/.claude/CLAUDE.local.md`) | Index, skill ledger, MCP conventions, machine-local account facts and credential-file pointers | Always, in every project (the import makes the local file machine-wide; a project's own `CLAUDE.local.md` is loaded natively on top) |
 | `[CRITICAL]` rules: `Meta.md`, `General.md`, `Persona.md` | Meta-governance, baseline behavior, stance | Always; re-read on revalidation (General §3.4) |
 | Path-gated rules: `CleanCode.md`, `PER.md`, `Twig.md`, `TYPO3.md` | Language/platform opinions | Only when matching file paths are in scope |
 | Skills (`core`, `composer`, `typo3`, `pocock` plugins) | Workflow and reference content | On prompt relevance or explicit invocation |

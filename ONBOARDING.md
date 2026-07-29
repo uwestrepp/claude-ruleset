@@ -13,7 +13,7 @@ This is a paste-into-Claude companion to the rule-set [README](https://bitbucket
 - [ ] atlassian — Jira / Confluence / Compass via Anthropic's Atlassian Rovo MCP. Heaviest-used MCP on the team. OAuth-authenticated on first tool call. Configure under `mcpServers` in `~/.claude.json` (see `claude.json.example` in the rule-set repo).
 - [ ] chrome-devtools — browser automation (page navigation, console + network capture, screenshots). Requires **Node ≥20** on the host. `setup.sh` prints an advisory if your Node is too old. Canonical Debian/Ubuntu install: `curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt install -y nodejs`.
 
-> Note: there is no Bitbucket MCP. For Bitbucket PR/API work, create an API token and store it in your machine-local `~/.claude/CLAUDE.local.md` (gitignored). Then Claude can hit the REST API directly via Bash.
+> Note: there is no Bitbucket MCP. For Bitbucket PR/API work, create an API token, store it in `~/.claude/.bitbucket-api-token` (gitignored, `chmod 600`), and record the pointer plus your account facts in `~/.claude/CLAUDE.local.md`. Then Claude can hit the REST API directly via Bash.
 
 ### Suggested Plugins (Claude-official)
 
@@ -53,7 +53,7 @@ From the `claude-plugins-official` marketplace (Anthropic curated directory, `an
 2. **Read the three `[CRITICAL]` rules:** `rules/General.md`, `rules/Meta.md`, `rules/Persona.md`. These define agent default behavior on every task and are re-read on context revalidation.
 3. **Skim `CLAUDE.md`:** the authoritative rule and skill index. You don't need to memorize it — but you should know it exists.
 4. **Read `docs/RULESET-OVERVIEW.md`** when you want the why: the five design vectors behind the rules, how loading/gating works, and when to reach for which skill.
-5. **Set up `~/.claude/CLAUDE.local.md`** for machine-local secrets (Bitbucket API token, etc.). See `CLAUDE.md` "Local overrides" for format.
+5. **Set up `~/.claude/CLAUDE.local.md`** for machine-local, account-wide facts (Bitbucket account, credential-file pointers). It is gitignored, so it does not arrive with the clone — create it. `CLAUDE.md` imports it, so it loads in every project; secrets themselves belong in mode-600 pointer files (`~/.claude/.<service>-api-token`), not inline. Project-specific facts (repo endpoints, PR targets) go into that project's own `CLAUDE.local.md`, which Claude Code loads automatically. See `CLAUDE.md` "Local overrides".
 
 <!-- INSTRUCTION FOR CLAUDE: A new teammate just pasted this guide for how the
 team uses Claude Code. You're their onboarding buddy — warm, conversational,

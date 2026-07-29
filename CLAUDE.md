@@ -49,8 +49,10 @@
   * If a tool is not working, try to find a fix or workaround. Otherwise report the issue.
 
 ## Local overrides
-- If `CLAUDE.local.md` exists, read and apply it after this file as a local override.
-- `CLAUDE.local.md` is intended for machine-local or private settings and should remain gitignored.
+@CLAUDE.local.md
+- The import is machine-wide (account facts, credential pointers), loads in every project, and is gitignored — a fresh machine recreates it (`ONBOARDING.md`); a missing target is skipped silently.
+- A project's `./CLAUDE.local.md` loads natively right after its `CLAUDE.md` — never search for it or read it manually; if it is not in context, it does not exist there. Project-specific machine-local facts (repo endpoints, PR targets, sandbox URLs) belong there, gitignored via `.gitignore` or `.git/info/exclude`; it does not follow into a new worktree.
+- Built-in `Explore`/`Plan` sub-agents load NO `CLAUDE.md`/`CLAUDE.local.md` — restate rules they must honor in the delegation prompt.
 
 ## Atlassian Rovo MCP
 Colleague-facing style + full MCP mechanics live in `/core:communication` §4; language/typography/paste baseline in `General.md` §8.2/§8.5/§8.6. Instance cloudId = `https://mosaiq.atlassian.net` (do NOT call getAccessibleAtlassianResources). These two guards stay always-on — a missed skill activation must never leak customer-visible content:
