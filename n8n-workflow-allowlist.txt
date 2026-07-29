@@ -20,3 +20,9 @@ hh7uR9LSgbo7oJQc
 
 # KAVO-1047 AI-Readiness (W3 alt-text generator) — https://n8n.mosaiq.com
 gdYEmSkz1GN24n7G
+
+# KAVO-1047 Qdrant Keep-Alive (verhindert Suspend des KaVo-Clusters 8c5c3fdd) — https://n8n.mosaiq.com
+jCmYFboPf71nsfVG
+
+# OW-47 GA Tracking Monitoring JS (BadResult-Fix, Alarmpfad) — https://n8n.mosaiq.com
+tdMeTcRRBz89OXJy
