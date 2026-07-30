@@ -93,6 +93,12 @@ inside a fenced code block**, never as chat-rendered markup:
   Confluence at minimum), write the payload AS Markdown (headings, bold, lists,
   inline code) so it renders on paste. Fall back to plain text only for a target
   without Markdown support (e.g. plain-text e-mail).
+- **No hard wrapping.** Do NOT break payload prose at a column limit: one paragraph
+  or list item = one line, newlines only between blocks. Hard wraps survive the
+  paste as real newlines and force manual cleanup, which is easily missed (observed
+  SSBSITE-1258 2026-07-30: a wrap landed mid-sentence in the posted Jira comment).
+  The target wraps by itself. For a long payload, additionally offer the file path
+  (`SendUserFile`) so the user can copy from the file instead of the terminal.
 
 Offer-first (`General.md` §10.5): for token-heavy MCP writes (long Confluence
 bodies, long Jira descriptions/comments) offer the paste path and wait, rather than

@@ -217,6 +217,10 @@ If security or privacy implications are unclear → ask.
   target that renders Markdown input (Jira, Bitbucket, Confluence at minimum),
   write the payload AS Markdown so it renders on paste; fall back to plain text
   only for targets without Markdown support.
+- Such a payload MUST NOT be hard-wrapped at a column limit: one paragraph or
+  list item is one line, newlines only between blocks. Hard wraps survive the
+  paste as real newlines and force manual cleanup that is easily missed; the
+  target wraps by itself.
 
 # Meta Rule
 
