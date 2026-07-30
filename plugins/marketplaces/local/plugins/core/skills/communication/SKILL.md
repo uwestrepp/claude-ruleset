@@ -199,6 +199,11 @@ verify, not a fact.
 | PM / interne Nicht-Tech | DE | *beobachten* | sachlich, ergebnisorientiert | mittel; Jargon reduzieren oder erklären | Zusammenfassung zuerst, dann Details |
 | Kunde / extern | DE (sofern nicht anders vereinbart) | `Sie` als konservativer Default — **pro Kunde verifizieren** | professionell, freundlich, verbindlich | outcome-fokussiert; kein internes Jargon, kein Debug-Detail | klar, geführt; Routing beachten (Kunden oft über PM, nicht direkt) |
 
+**Sister company (see `rules/Organisation.md`):** Funntastic people are the *internal*
+tiers (dev-internal or PM/non-tech-internal), never the "Kunde / extern" row — the
+separate Atlassian instance does not make them external. FT's own agency clients do
+belong in the external row.
+
 The `du`/`Sie` register, customer-specific tone, PM-vs-direct routing, and any
 terminology/glossary are **unknowns until grounded** (§9). The table's non-verified
 cells (`beobachten`, "konservativer Default") are placeholders, not house-style

@@ -42,7 +42,7 @@ PLUGIN_ROOT="plugins/marketplaces/local/plugins"
 resolve_target() {
     case "$1" in
         Batch) echo "$PLUGIN_ROOT/core/skills/batch/SKILL.md" ;;
-        General|Meta|Persona|CleanCode|PER|Twig|TYPO3) echo "rules/$1.md" ;;
+        General|Meta|Persona|Organisation|CleanCode|PER|Twig|TYPO3) echo "rules/$1.md" ;;
         *) echo "" ;;
     esac
 }
@@ -64,7 +64,7 @@ extract_headings() { # stdin = markdown; emits "<number>\t<title>" for numbered 
 FAIL=0
 report() { echo "REF-LINT: $1"; FAIL=1; }
 
-RE_FILE='(General|Meta|Persona|CleanCode|PER|Twig|TYPO3|Batch)\.md`?[[:space:]]*(§|sections?)[[:space:]]*`?[0-9]+(\.[0-9]+)*'
+RE_FILE='(General|Meta|Persona|Organisation|CleanCode|PER|Twig|TYPO3|Batch)\.md`?[[:space:]]*(§|sections?)[[:space:]]*`?[0-9]+(\.[0-9]+)*'
 RE_SKILL='/(core|typo3|composer|pocock):[a-z0-9-]+`?[[:space:]]+(skill[[:space:]]+)?§[[:space:]]*[0-9]+(\.[0-9]+)*'
 
 while IFS= read -r f; do
@@ -128,7 +128,8 @@ declare -A BUDGETS=(
     [rules/General.md]=10500
     [rules/Meta.md]=4500
     [rules/Persona.md]=1000
-    [CLAUDE.md]=3000
+    [rules/Organisation.md]=600
+    [CLAUDE.md]=3100
 )
 for f in "${!BUDGETS[@]}"; do
     if [[ ! -f "$f" ]]; then
