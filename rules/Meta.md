@@ -152,6 +152,11 @@ If the agent identifies a meaningful improvement, it MUST propose it in a concis
 - expected impact,
 - risk/tradeoff.
 
+A proposal the user does not decide in the same session MUST be written to
+`.aiassistant/state/proposals/` (see its `README.md` for header, sections and lifecycle);
+a chat-only proposal is lost at session end. Applies to parked and undecided proposals
+alike; an accepted-and-applied proposal needs no file.
+
 ## 3.2 Change policy (SHOULD / MUST)
 
 New rule patterns SHOULD be added when backed by official migration guidance or repeated project-level friction, and SHOULD include a short rationale.
