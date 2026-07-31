@@ -9,14 +9,20 @@
 # `&&` indicates command substitution, i.e. the §5.6-recommended form
 # `test "$(... | wc -l)" -gt 0 && echo ...` where a real test gates the echo.
 #
+# Payload gate (narrows the shape match to what §5.6 actually binds): the rule
+# governs echoes that ASSERT A BINARY FACT. A section separator or progress
+# label ("=== post-commit ===", "--- files ---", bare `echo`, "Diff gegen X:")
+# claims nothing, so it cannot be false evidence — those are allowed. Only a
+# payload that reads as an assertion keeps the ASK verdict.
+#
 # Verdict: PermissionDecision "ask" (soft-block; false positives cost one
 # user click, never a hard stop).
 #
 # Known false-positive classes (accepted, probe-confirmed 2026-07-16):
 #   - the pattern inside quoted text: the hook sees only the raw command
-#     string, so e.g. a heredoc commit body *citing* a §5.6 example triggers,
-#   - progress narration (`... | sort > f && echo done`) where the echo is
-#     not used as evidence.
+#     string, so e.g. a heredoc commit body *citing* a §5.6 example triggers.
+# Accepted false NEGATIVE of the payload gate: an assertion dressed as a
+# separator (`echo "=== TRACKED ==="`) passes. Judged the cheaper error.
 #
 # Fail-open by design: if jq is missing or the input JSON is unparseable,
 # COMMAND resolves empty and the hook exits 0 (allow). This is a deliberate
@@ -35,12 +41,35 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // .command // empty' 2>/de
 
 # Pipe into an empty-input-tolerant filter, then `&&` with echo/printf, with
 # no closing paren between filter and `&&` (paren = command substitution =
-# the conformant test-gated form).
-PATTERN='\|[[:space:]]*(head|tail|cat|sort|wc)([[:space:]][^|&;)]*)?&&[[:space:]]*(echo|printf)'
+# the conformant test-gated form). Trailing `[^&|;]*` captures the echo
+# payload so the label gate below can inspect it.
+PATTERN='\|[[:space:]]*(head|tail|cat|sort|wc)([[:space:]][^|&;)]*)?&&[[:space:]]*(echo|printf)[^&|;]*'
 
-if ! printf '%s' "$COMMAND" | grep -qE "$PATTERN"; then
-    exit 0
-fi
+mapfile -t MATCHES < <(printf '%s' "$COMMAND" | grep -oE "$PATTERN" || true)
+[[ ${#MATCHES[@]} -eq 0 ]] && exit 0
+
+# A payload is a separator/label — and thus outside §5.6 — when it is empty,
+# opens with a run of decoration characters, or ends in a colon.
+is_label() {
+    local p="$1"
+    [[ -z "$p" ]] && return 0
+    [[ "$p" =~ ^[-=#*\>+~_]{2,} ]] && return 0
+    [[ "$p" == *: ]] && return 0
+    return 1
+}
+
+asserts_fact=0
+for match in "${MATCHES[@]}"; do
+    payload=${match#*&&}
+    payload=$(printf '%s' "$payload" \
+        | sed -E 's/^[[:space:]]*(echo|printf)([[:space:]]+-[a-zA-Z]+)*[[:space:]]*//; s/[[:space:]]*$//; s/^"(.*)"$/\1/; s/^'\''(.*)'\''$/\1/; s/^[[:space:]]*//; s/[[:space:]]*$//')
+    if ! is_label "$payload"; then
+        asserts_fact=1
+        break
+    fi
+done
+
+[[ $asserts_fact -eq 0 ]] && exit 0
 
 cat <<'JSON'
 {

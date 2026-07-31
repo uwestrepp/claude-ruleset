@@ -10,6 +10,45 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/validate-commit-message.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-forbidden-stages.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-destructive-commands.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-base-branch.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-n8n-api.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/warn-evidence-pipelines.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-pipefail-gates.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/session-start-effort-nudge.sh"
           }
         ]
       }
