@@ -92,6 +92,31 @@ probe ASK        "operands after -- still checked"       'rm -rf -- /etc/foo'
 probe ASK        "chained reboot after /tmp cleanup"     'rm -rf /tmp/claude-1/scratch/x; reboot'
 probe ASK        "chained git reset --hard"              'rm -rf /tmp/claude-1/scratch/x; git reset --hard'
 
+# --- Same defect class in the non-rm rules ----------------------------------
+# Flags must come from the guarded verb's OWN segment, never harvested from
+# anywhere on the line.
+probe ALLOW      "git clean dry-run"                     'git clean -n'
+probe ALLOW      "git clean dry-run, -d"                 'git clean -nd'
+probe ALLOW      "git clean -nfd is still a dry run"     'git clean -nfd'
+probe ALLOW      "git clean -nd; grep -rf … (-f on grep)"    'git clean -nd; grep -rf pattern .'
+probe ALLOW      "git clean --dry-run; tar -xzf (-f on tar)" 'git clean --dry-run; tar -xzf a.tgz'
+probe ASK        "real git clean -fd"                    'git clean -fd'
+probe ASK        "real git clean --force --directory"    'git clean --force --directory'
+
+probe ALLOW      "git push plain"                        'git push origin main'
+probe ALLOW      "git push; tar -xzf (-f on tar)"        'git push origin main; tar -xzf a.tgz'
+probe ALLOW      "git push --force-with-lease"           'git push --force-with-lease origin main'
+probe ALLOW      "git push --force-with-lease=origin/x"  'git push --force-with-lease=origin/main main'
+probe ASK        "real git push -f"                      'git push -f origin main'
+probe ASK        "real git push --force"                 'git push --force origin main'
+
+probe ALLOW      "chown non-recursive"                   'chown www-data:www-data /var/www/html/f.txt'
+probe ALLOW      "chown …; ls -R … (-R on ls)"           'chown www-data /var/www/f.txt; ls -R /var/www'
+probe ALLOW      "chmod a-rwx (mode is not a flag)"      'chmod a-rwx /var/www/f.txt'
+probe ASK        "real chown -R"                         'chown -R www-data /var/www'
+probe ASK        "real chmod -R"                         'chmod -R 755 /var/www'
+probe ASK        "real chmod 755 -R (flag after mode)"   'chmod 755 -R /var/www'
+
 echo
 if [[ $fail -eq 0 ]]; then echo "ALL PASS"; else echo "SOME FAILED"; fi
 exit $fail

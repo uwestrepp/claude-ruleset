@@ -50,11 +50,11 @@ SCAN=$(printf '%s' "$SCAN" | sed -E "s/(--?(m|message|F|file))[[:space:]]*('[^']
 # path patterns below. Done AFTER message-arg stripping, which needs the quotes.
 SCAN=$(printf '%s' "$SCAN" | tr -d "\"'")
 
-# Variant used ONLY for the rm segment analysis: fold fd-duplication redirects
-# (`2>&1`) away first, because their `&` would otherwise split an rm segment in
-# two and hide its operands. Other redirects stay intact — tmp_scratch_only
-# vets their targets.
-RMSCAN=$(printf '%s' "$SCAN" | sed -E 's/[0-9]*[<>]+&[0-9]*-?//g')
+# Variant used for the segment analysis: fold fd-duplication redirects (`2>&1`)
+# away first, because their `&` would otherwise split a segment in two and hide
+# its operands. Other redirects stay intact — tmp_scratch_only vets their
+# targets.
+SEGSCAN=$(printf '%s' "$SCAN" | sed -E 's/[0-9]*[<>]+&[0-9]*-?//g')
 
 # grep wrapper: matches against the normalized command; -- guards patterns
 # beginning with '-'.
@@ -79,53 +79,79 @@ hard_block() {
     exit 2
 }
 
-# --- rm -rf detection -------------------------------------------------------
-# Recursive AND force rm. Detection is scoped twice over:
-#   1. to each rm command SEGMENT — the run of tokens from an `rm` at a segment
-#      boundary up to the next shell operator — so a `-r`/`-f` flag on an
-#      unrelated chained command (`cp -r … && rm -f …`) cannot leak in;
-#   2. to the segment's OPTION TOKENS only, so a path ARGUMENT can never be
-#      read as flags.
+# --- command segmentation ---------------------------------------------------
+# Flag detection for every verb guarded below is scoped twice over:
+#   1. to a command SEGMENT — the run of tokens from a verb at a segment
+#      boundary up to the next shell operator — so a flag on an unrelated
+#      chained command cannot leak in (`cp -r … && rm -f …` is not a recursive
+#      rm; `git clean --dry-run; tar -xzf a.tgz` is not a forced clean);
+#   2. to the segment's OPTION TOKENS only, so an ARGUMENT can never be read
+#      as flags.
 # (2) is not hypothetical: the scratchpad root carries the project slug, e.g.
 # /tmp/claude-1000/-home-uwestrepp-work-projects-gmp/…, and a substring match
 # for `-[a-z]*r` happily found the `r` in `-uwestrepp`. Every plain `rm -f` of a
 # scratch file under such a path was therefore classified recursive-force.
 
-# A token is an rm OPTION only if it is a pure short cluster (-rf, -Rfv) or a
-# long option (--force). Anything with an internal dash after a single leading
-# dash, or anything starting with `/` or `.`, is an operand.
+# A token is an OPTION only if it is a pure short cluster (-rf, -Rfv) or a long
+# option (--force, --force-with-lease=origin/main). Anything with an internal
+# dash after a single leading dash, and anything starting with `/` or `.`, is an
+# operand — which is what keeps a path from being mistaken for flags.
 is_option_token() {
-    [[ "$1" =~ ^-[A-Za-z]+$ || "$1" =~ ^--[A-Za-z][A-Za-z-]*$ ]]
+    [[ "$1" =~ ^-[A-Za-z]+$ || "$1" =~ ^--[A-Za-z][A-Za-z0-9-]*(=.*)?$ ]]
 }
 
 # Split a segment into its whitespace tokens WITHOUT glob expansion or further
-# word-splitting surprises. Sets the caller-visible array RM_TOKENS.
-rm_tokenize() {
-    RM_TOKENS=()
-    read -ra RM_TOKENS <<< "$1"
+# word-splitting surprises. Sets the caller-visible array TOKENS.
+tokenize() {
+    TOKENS=()
+    read -ra TOKENS <<< "$1"
 }
 
-# Emit each recursive-force rm segment (one per line). A segment is an `rm`
-# command body delimited by shell operators ; | & ( ) ` or newlines; a leading
-# sudo/doas is stripped. The caller inspects targets against these segments
-# only — never the whole (possibly chained) command line.
-rm_rf_segments() {
-    local ops=';|&()`'
-    printf '%s' "$RMSCAN" | tr "$ops" '\n\n\n\n\n\n' | while IFS= read -r seg || [[ -n "$seg" ]]; do
+# Emit each command segment whose verb matches the ERE $1 (anchored at the
+# segment start, e.g. 'rm' or 'git[[:space:]]+clean'), one per line. Segments
+# are delimited by the shell operators ; | & ( ) ` or newlines; a leading
+# sudo/doas is stripped. Callers inspect flags and targets against these
+# segments only — never the whole (possibly chained) command line.
+command_segments() {
+    local verb="$1" ops=';|&()`'
+    printf '%s' "$SEGSCAN" | tr "$ops" '\n\n\n\n\n\n' | while IFS= read -r seg || [[ -n "$seg" ]]; do
         seg="${seg#"${seg%%[![:space:]]*}"}"                 # ltrim
         seg=$(printf '%s' "$seg" | sed -E 's/^(sudo|doas)[[:space:]]+//')
-        [[ "$seg" =~ ^rm([[:space:]]|$) ]] || continue
-        rm_tokenize "$seg"
-        local has_r=0 has_f=0 i
-        for ((i = 1; i < ${#RM_TOKENS[@]}; i++)); do
-            local tok="${RM_TOKENS[i]}"
-            [[ "$tok" == "--" ]] && break        # end of options; rest are operands
-            is_option_token "$tok" || continue
-            [[ "$tok" =~ ^-[A-Za-z]*[rR] || "$tok" == "--recursive" ]] && has_r=1
-            [[ "$tok" =~ ^-[A-Za-z]*f    || "$tok" == "--force"     ]] && has_f=1
-        done
-        [[ $has_r -eq 1 && $has_f -eq 1 ]] && printf '%s\n' "$seg"
+        [[ "$seg" =~ ^${verb}([[:space:]]|$) ]] || continue
+        printf '%s\n' "$seg"
     done
+}
+
+# True iff any OPTION TOKEN of segment $1 matches the bash ERE $2 (short-cluster
+# form; pass '' to skip) or equals one of the whitespace-separated long options
+# in $3 (compared without any `=value` suffix). Scanning stops at `--`.
+segment_has_option() {
+    local seg="$1" short_re="$2" longs="${3:-}" tok name l i
+    tokenize "$seg"
+    for ((i = 1; i < ${#TOKENS[@]}; i++)); do
+        tok="${TOKENS[i]}"
+        [[ "$tok" == "--" ]] && break        # end of options; rest are operands
+        is_option_token "$tok" || continue
+        [[ -n "$short_re" && "$tok" =~ $short_re ]] && return 0
+        name="${tok%%=*}"
+        for l in $longs; do [[ "$name" == "$l" ]] && return 0; done
+    done
+    return 1
+}
+
+# Skip the blank lines a segment list can carry.
+is_blank() { [[ -z "${1//[[:space:]]/}" ]]; }
+
+# --- rm -rf detection -------------------------------------------------------
+# Emit each recursive-force rm segment (one per line).
+rm_rf_segments() {
+    local seg
+    while IFS= read -r seg; do
+        is_blank "$seg" && continue
+        segment_has_option "$seg" '^-[A-Za-z]*[rR]' '--recursive' || continue
+        segment_has_option "$seg" '^-[A-Za-z]*f'    '--force'     || continue
+        printf '%s\n' "$seg"
+    done < <(command_segments 'rm')
 }
 
 # True iff every OPERAND of one recursive-force rm segment is a scoped subpath
@@ -173,10 +199,10 @@ tmp_scratch_only() {
     seg=$(printf '%s' "$seg" | sed -E 's|[0-9]*[<>]+[[:space:]]*/dev/null||g')
     [[ "$seg" == *'<'* || "$seg" == *'>'* ]] && return 1
 
-    rm_tokenize "$seg"
+    tokenize "$seg"
     local endopts=0 operands=0 i tok
-    for ((i = 1; i < ${#RM_TOKENS[@]}; i++)); do
-        tok="${RM_TOKENS[i]}"
+    for ((i = 1; i < ${#TOKENS[@]}; i++)); do
+        tok="${TOKENS[i]}"
         if [[ $endopts -eq 0 ]]; then
             [[ "$tok" == "--" ]] && { endopts=1; continue; }
             is_option_token "$tok" && continue
@@ -196,7 +222,7 @@ tmp_scratch_only() {
 all_segments_tmp_scratch() {
     local seg
     while IFS= read -r seg; do
-        [[ -z "${seg//[[:space:]]/}" ]] && continue
+        is_blank "$seg" && continue
         tmp_scratch_only "$seg" || return 1
     done <<< "$RF_SEGMENTS"
     return 0
@@ -229,28 +255,38 @@ if [[ -n "$RF_SEGMENTS" ]]; then
 fi
 
 # --- git push --force (bare) ------------------------------------------------
-if matches 'git[[:space:]]+push'; then
-    if matches '(--force-with-lease|--force-if-includes)'; then
-        :   # safer form — allow silently
-    elif matches '(--force([[:space:]=]|$)|[[:space:]]-[a-zA-Z]*f([[:space:]]|$))'; then
+# NOTE: the loops below read from a process substitution, NOT a pipe, so `ask`
+# (which exits) fires in this shell instead of a subshell that would be
+# discarded.
+while IFS= read -r seg; do
+    is_blank "$seg" && continue
+    # Safer forms reject if the remote moved → allow silently.
+    segment_has_option "$seg" '' '--force-with-lease --force-if-includes' && continue
+    if segment_has_option "$seg" '^-[A-Za-z]*f' '--force'; then
         ask "Force-push detected. Confirm the branch is correct and prefer --force-with-lease (rejects if the remote moved):
   $COMMAND"
     fi
-fi
+done < <(command_segments 'git[[:space:]]+push')
 
 # --- git reset --hard -------------------------------------------------------
-if matches 'git[[:space:]]+reset[[:space:]].*--hard'; then
-    ask "git reset --hard discards uncommitted working-tree and index changes irreversibly. Confirm:
+while IFS= read -r seg; do
+    is_blank "$seg" && continue
+    if segment_has_option "$seg" '' '--hard'; then
+        ask "git reset --hard discards uncommitted working-tree and index changes irreversibly. Confirm:
   $COMMAND"
-fi
+    fi
+done < <(command_segments 'git[[:space:]]+reset')
 
 # --- git clean -f[dx] -------------------------------------------------------
-if matches 'git[[:space:]]+clean[[:space:]]' \
-   && matches '(-[a-zA-Z]*f|--force)' \
-   && matches '(-[a-zA-Z]*[dx]|--directory)'; then
+while IFS= read -r seg; do
+    is_blank "$seg" && continue
+    # -n/--dry-run deletes nothing, whatever else is set.
+    segment_has_option "$seg" '^-[A-Za-z]*n' '--dry-run' && continue
+    segment_has_option "$seg" '^-[A-Za-z]*f' '--force'     || continue
+    segment_has_option "$seg" '^-[A-Za-z]*[dx]' '--directory' || continue
     ask "git clean -f deletes untracked files (and -d/-x untracked dirs/ignored files) irreversibly. Confirm:
   $COMMAND"
-fi
+done < <(command_segments 'git[[:space:]]+clean')
 
 # Command-position prefix: start, or after a pipe/and/or/semicolon/paren, with an
 # optional sudo/doas. Prevents matching a verb that is merely a plain argument
@@ -267,10 +303,13 @@ if matches "${CP}find[[:space:]].*-delete([[:space:]]|$)" \
 fi
 
 # --- recursive permission / ownership changes -------------------------------
-if matches "${CP}(chmod|chown|chgrp)[[:space:]].*(-[A-Za-z]*R|--recursive)"; then
-    ask "Recursive chmod/chown/chgrp. Original per-file modes/owners are not stored anywhere — this is effectively irreversible. Confirm the starting path:
+while IFS= read -r seg; do
+    is_blank "$seg" && continue
+    if segment_has_option "$seg" '^-[A-Za-z]*R' '--recursive'; then
+        ask "Recursive chmod/chown/chgrp. Original per-file modes/owners are not stored anywhere — this is effectively irreversible. Confirm the starting path:
   $COMMAND"
-fi
+    fi
+done < <(command_segments '(chmod|chown|chgrp)')
 
 # --- block-device / in-place destructive writes + system halt ---------------
 if matches "${CP}dd[[:space:]].*of=" \
