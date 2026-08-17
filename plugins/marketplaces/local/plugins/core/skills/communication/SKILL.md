@@ -1,6 +1,6 @@
 ---
 name: communication
-description: "Activate via /core:communication or let Claude auto-activate when producing colleague-facing output (directed at other people, not the user's chat): Jira issues/comments, Confluence pages/comments, Bitbucket PR titles/descriptions, the wording/register of git commit messages, or content the user will paste into those. Owns the authoritative language mapping (German for Jira/Confluence/Bitbucket, English for commit messages), prose typography, copy-paste raw-fence format, Atlassian MCP mechanics, Bitbucket PR conventions, and the MOSAIQ house-style / Sprechweise directory (how we communicate per audience: devs, PMs, customers), plus where project-scoped comm-facts live and how to sharpen them. Triggers: \"schreib ein Jira-Ticket / einen Kommentar\", \"Confluence-Seite anlegen/aktualisieren\", \"PR-Beschreibung\", \"formulier das für den Kunden / fürs Team\", \"wie schreiben wir das intern/an den Kunden\". NOT the commit schema/ticket resolution (/core:commits), NOT agent-to-user chat, NOT in-repo README/code comments."
+description: "Activate via /core:communication or let Claude auto-activate when producing colleague-facing output (directed at other people, not the user's chat): Jira issues/comments, Confluence pages/comments, Bitbucket PR titles/descriptions, the wording/register of git commit messages, or content the user will paste into those. Owns the authoritative language mapping (German for Jira/Confluence/Bitbucket, English for commit messages), prose typography, copy-paste raw-fence format, Atlassian MCP mechanics, Bitbucket PR conventions, and the MOSAIQ house-style / Sprechweise directory (how we communicate per audience: devs, OM, PMs, customers), plus where project-scoped comm-facts live and how to sharpen them. Triggers: \"schreib ein Jira-Ticket / einen Kommentar\", \"Confluence-Seite anlegen/aktualisieren\", \"PR-Beschreibung\", \"formulier das für den Kunden / fürs Team\", \"wie schreiben wir das intern/an den Kunden\". NOT the commit schema/ticket resolution (/core:commits), NOT agent-to-user chat, NOT in-repo README/code comments."
 argument-hint: "[topic]"
 ---
 
@@ -190,23 +190,36 @@ verify, not a fact.
 - Concise and structured: state the point first, then detail; lists over prose
   where they aid reading; no filler.
 
-**Two tiers of audience:**
+**Three tiers of audience:**
 
 - **Technical / internal (dev-to-dev)** — commit messages, PR descriptions, code
   review, technical Jira tickets/comments, technical Confluence (architecture,
   runbooks).
-- **Top-line / outward** — PMs and internal non-technical stakeholders; customers.
+- **Fachseite / internal non-dev** — OM (Online Marketing) and PMs. Internal, but
+  the subject matter is theirs, not the implementation.
+- **Outward** — customers, and any text a PM forwards to them.
 
 **Register directory (seed — sharpen per project, do NOT invent specifics):**
 
 | Audience | Sprache | Anrede / Register | Ton | Detailtiefe & Jargon | Format |
 |----------|---------|-------------------|-----|----------------------|--------|
 | Dev (intern) | DE (Jira/Confluence/PR), EN (Commit/Code) | *beobachten* (intern oft `du`) | sachlich, direkt, knapp | hoch; Fachjargon zulässig | strukturiert: Listen, Codeblöcke, Akzeptanzkriterien |
-| PM / interne Nicht-Tech | DE | *beobachten* | sachlich, ergebnisorientiert | mittel; Jargon reduzieren oder erklären | Zusammenfassung zuerst, dann Details |
+| OM (Online Marketing, intern) | DE | `du` (verifiziert, s. u.) | sachlich, knapp, kein Rechtfertigungston | Ergebnis + Status + nächster Schritt; **keine** Ursachenanalyse, keine technischen Hintergründe, keine Begründungsketten | kurze Nachricht statt Report; höchstens eine Zwischenüberschrift, und nur für einen eigenen Handlungspunkt |
+| PM (intern) | DE | *beobachten* | sachlich, ergebnisorientiert | wie OM im Grundsatz; mittel, Jargon reduzieren oder erklären | Zusammenfassung zuerst, dann Details |
+| PM (zur Weitergabe an Kunden) | DE | wie Kunde/extern | wie Kunde/extern | **erbt die Kunde/extern-Zeile**: der Text verlässt den internen Raum | kundenfertig; keine internen Verweise, keine Infrastruktur-Interna, keine Namen interner Systeme oder Personen |
 | Kunde / extern | DE (sofern nicht anders vereinbart) | `Sie` als konservativer Default — **pro Kunde verifizieren** | professionell, freundlich, verbindlich | outcome-fokussiert; kein internes Jargon, kein Debug-Detail | klar, geführt; Routing beachten (Kunden oft über PM, nicht direkt) |
 
+**OM vs PM is not interchangeable.** OM owns the marketing subject matter (campaigns,
+accounts, dashboards, reporting); a coordinating tone (assigning tasks, chasing
+status) does NOT make someone a PM. Misfiling an OM contact as PM was a real
+2026-08-17 error. Per project, record who is which (§9).
+
+**Before writing for PM, resolve the fork:** internal, or meant for onward delivery
+to a customer? The second case is outward communication with a PM as courier, so it
+follows the Kunde/extern row. If it is unclear which one, ask (§1).
+
 **Sister company (see `rules/Organisation.md`):** Funntastic people are the *internal*
-tiers (dev-internal or PM/non-tech-internal), never the "Kunde / extern" row — the
+tiers (dev-internal, OM or PM-internal), never the "Kunde / extern" row — the
 separate Atlassian instance does not make them external. FT's own agency clients do
 belong in the external row.
 
@@ -215,19 +228,59 @@ terminology/glossary are **unknowns until grounded** (§9). The table's non-veri
 cells (`beobachten`, "konservativer Default") are placeholders, not house-style
 facts; do not present them to a colleague or customer as settled MOSAIQ policy.
 
-**PM detail-tightening (observed pattern, anchors: GMP 2026-07 + OW-47/OP-45 2026-07 via /core:comm-calibrate).**
-When condensing a technical draft for a PM / non-tech-internal reader, the draft→sent delta
-consistently showed these moves; apply them pre-emptively rather than leaving them for the human:
-- drop over-precise single-run metrics ("Score 77/83" → "Score Home / Listing"), internal-process labels ("Daily-Zweig", "Punkt 2 des Splits") and API/tooling mechanics ("GA4 Data API", "eventName-Filter");
+**What a non-dev reader's text contains (convention, stated by the user 2026-08-17).**
+Three points, in this order, and nothing else:
+
+1. **Konkretes Ergebnis** — what is different or usable now.
+2. **Aktueller Status** — what holds right now, including the deliberately open points.
+3. **Nächste Schritte mit konkreter Zuständigkeit** — who does what, and what it waits on.
+
+Cause analysis, background reasoning and derivations are out. They explain the author,
+not the reader's next step. Verification evidence is not lost, it moves: repo docs, the
+commit body, the PR description.
+
+**But "non-technical" is the wrong cut. The criterion is recipient autonomy**
+(verbatim user statement, 2026-07-30): *"was muss sie wissen, um ohne mein
+Zutun/Beisein mit dem Thema weiterarbeiten zu können; Rückfragen stellt sie im
+Zweifelsfall ohnehin direkt"*. Technical detail the recipient operates herself stays,
+however technical it looks. Only detail she cannot act on goes.
+
+**The numbers test.** A metric belongs in the text when the metric *is* the subject
+(a Pagespeed score in a Pagespeed optimisation, reach in a reach report). It does not
+belong there as proof of work: row counts, table coverage, test pass rates, job
+durations. Anchor (MQDEV-189, 2026-08-17): an agent draft carrying 303.229/250.831
+synced rows, 35/36 refreshed tables, 14/14 green dbt tests and a six-row before/after
+table was cut to a status sentence, a next step with an owner, and the one hint that
+needed the reader's decision. Every number went.
+
+**Detail-tightening for non-dev readers (observed pattern, anchors: OW-47/OP-45/OW-107 2026-07 + GMP 2026-07 via /core:comm-calibrate).**
+The OW/OP anchors are OM (Natalie Pasedach, FT-OM); the GMP tier was never verified.
+The moves hold for both non-dev rows. When condensing a technical draft for such a
+reader, the draft→sent delta consistently showed these moves; apply them pre-emptively
+rather than leaving them for the human:
+- **keep, even when technical, because the recipient operates it:** configured values with their unit ("12 Stunden (= 720 Minuten)"), the field / sheet / column she edits, the tool name, the mechanism in one sentence, self-service statements ("weitere Einträge nimmt der Workflow automatisch auf");
+- **drop the evidence chain:** measured numbers, volume forecasts, derivations, the reference back to an earlier promise, rhetorical deadline pressure — plus over-precise single-run metrics ("Score 77/83" → "Score Home / Listing"), internal-process labels ("Daily-Zweig", "Punkt 2 des Splits") and API/tooling detail the recipient cannot operate ("eventName-Filter");
+- **expectation management stays, but qualitative** ("erst mal Fehlalarme möglich") instead of quantified;
+- **asks stay.** That OM/PM ask back directly licenses omitting the evidence chain, NOT omitting concrete questions, open points, or coordination. Drop an ask only when the recipient can check and decide it alone (OW-107: the calibration date);
 - collapse internal breakdowns and repo paths into one pointer ("... im Repository dokumentiert");
 - keep the honesty calibration explicit: Konjunktiv for hypotheticals ("wäre reine Verbesserung"),
   attribute measurement limits to their source ("vom Agent nicht messbar"), prefer precise terms
   ("nicht beobachtet" statt "ungenutzt"), spell out technical qualifiers ("mit brotli Kompression").
-This concretises the PM row's "mittel; Jargon reduzieren"; observed pattern (2 tickets), hardening toward convention.
+This concretises the non-dev rows' "mittel; Jargon reduzieren"; observed pattern (2 tickets), hardening toward convention.
+
+**Grounded `du` for OM (anchors, mosaiq.atlassian.net, MQDEV-188/189/190).** Mutual and
+repeated, so the OM row's register is settled, not a placeholder: "damit ihr zum
+Validieren aktuelle Daten habt", "Sag Bescheid, dann räume ich das auf" (dev → OM);
+"Magst du nochmal schauen wegen den Berechtigungen", "Kannst du die Frage hier noch
+beantworten?" (OM → dev). Greeting frame is NOT settled: one closing comment used
+"Hi @Vorname" plus "Viele Grüße", three earlier thread comments by the same author used
+a bare mention and no sign-off. Observed 1x each, do not generalise.
 
 **To sharpen per project (do NOT fabricate):**
+- who is OM, who is PM, who is dev (the tier itself, before any register question),
 - salutation and register per audience (`du`/`Sie`, internal vs external tone),
-- PM-mediated vs direct-to-customer routing (who the audience actually is),
+- PM-mediated vs direct-to-customer routing (who the audience actually is), and for
+  PM whether a given text is internal or meant for onward delivery,
 - ticket-description structure conventions (acceptance-criteria format, labels),
 - domain terminology / glossary (product names, house terms).
 
