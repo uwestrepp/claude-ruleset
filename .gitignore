@@ -1,7 +1,8 @@
 # Sensitive / private Claude Code runtime files
 .bitbucket-api-token
-.n8n-api-token
 .matomo-api-token
+.n8n-api-token
+.neon-api-token
 .credentials.json
 history.jsonl
 settings.json
