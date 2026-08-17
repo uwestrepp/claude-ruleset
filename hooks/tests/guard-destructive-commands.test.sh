@@ -57,6 +57,41 @@ probe ALLOW      "rm -rf multiple /tmp globs"            'rm -rf /tmp/claude-123
 probe ASK        "rm -rf bare /tmp glob"                 'rm -rf /tmp/*'
 probe ASK        "rm -rf glob on first /tmp segment"     'rm -rf /tmp/foo*'
 
+# --- Reported false positives: scratchpad cleanup ---------------------------
+# The session scratchpad root carries the project slug, so its path holds
+# dash-prefixed segments (…/-home-uwestrepp-work-projects-gmp/…). Flag detection
+# must read OPTION TOKENS only — a substring scan finds an `r` in `-uwestrepp`
+# and turns every plain `rm -f` there into a "recursive-force" verdict.
+SP=/tmp/claude-1000/-home-uwestrepp-work-projects-gmp/70f2bc5d-6130-49c2/scratchpad
+probe ALLOW      "rm -f scratchpad file (dash-slug path)"  "rm -f $SP/commit-msg.txt"
+probe ALLOW      "rm -f scratchpad glob + chained echo"    "rm -f $SP/bs-full.* 2>/dev/null; echo cleaned"
+probe ALLOW      "rm -rf scratchpad + chained git"         "rm -rf $SP/verify-*.php $SP/twiglint; git status --porcelain"
+probe ALLOW      "rm -f scratchpad on its own line"        "git status -sb
+rm -f $SP/commit-msg.txt"
+probe ALLOW      "ssh-wrapped /tmp cleanup, chained"       "ssh rom 'rm -rf /tmp/gmp342-body /tmp/gmp342-proxy; ls /tmp' | tail -3"
+# The same path with the dash segment removed must behave identically —
+# the verdict must not depend on the username in the path.
+probe ALLOW      "control: same shape, no dash segment"    'rm -f /tmp/claude-1000/abc/scratchpad/bs-full.*; echo cleaned'
+
+# --- Chaining and redirects no longer suppress the /tmp allowance -----------
+probe ALLOW      "rm -rf /tmp scratch, 2>/dev/null"      'rm -rf /tmp/claude-1/scratch/x 2>/dev/null'
+probe ALLOW      "rm -rf /tmp scratch, >/dev/null 2>&1"  'rm -rf /tmp/claude-1/scratch/x >/dev/null 2>&1'
+probe ALLOW      "rm -rf /tmp scratch, -- end of opts"   'rm -rf -- /tmp/claude-1/scratch/x'
+
+# --- …but the operands themselves are still fully vetted --------------------
+probe ASK        "brace expansion escaping /tmp"         'rm -rf /tmp/{x,/etc}'
+probe ASK        "variable in the /tmp target"           'rm -rf /tmp/claude-1/$FOO'
+probe ASK        "parent traversal out of /tmp"          'rm -rf /tmp/x/../../etc'
+probe ASK        "redirect to a non-/dev/null target"    'rm -rf /tmp/claude-1/x > /etc/passwd'
+probe ASK        "second rm segment leaves /tmp"         'rm -rf /tmp/claude-1/x; rm -rf /srv/data'
+probe HARD-BLOCK "second rm segment targets /"           'rm -rf /tmp/claude-1/x; rm -rf /'
+probe ASK        "long-form --recursive --force"         'rm --recursive --force /etc/foo'
+probe ASK        "operands after -- still checked"       'rm -rf -- /etc/foo'
+# A chained command that is dangerous in its OWN right still raises its own
+# prompt — the rm allowance never suppresses another rule.
+probe ASK        "chained reboot after /tmp cleanup"     'rm -rf /tmp/claude-1/scratch/x; reboot'
+probe ASK        "chained git reset --hard"              'rm -rf /tmp/claude-1/scratch/x; git reset --hard'
+
 echo
 if [[ $fail -eq 0 ]]; then echo "ALL PASS"; else echo "SOME FAILED"; fi
 exit $fail

