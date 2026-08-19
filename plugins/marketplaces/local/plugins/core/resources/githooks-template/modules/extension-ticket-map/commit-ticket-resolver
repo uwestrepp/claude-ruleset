@@ -114,7 +114,7 @@ resolve_branch_override_ticket() {
         in_branches {
             line = $0
             sub(/^[[:space:]]+/, "", line)
-            if (line ~ /^[^:#]+:[[:space:]]*[A-Z]+-[0-9]+[[:space:]]*$/) {
+            if (line ~ /^[^:#]+:[[:space:]]*[A-Z][A-Z0-9]+-[0-9]+[[:space:]]*$/) {
                 key = line
                 sub(/:.*/, "", key)
                 gsub(/[[:space:]]+$/, "", key)
@@ -164,7 +164,7 @@ resolve_ticket_for_extension() {
     local extension="$1"
     awk -v ext="$extension" '
         /^[[:space:]]*#/ {next}
-        /^[[:space:]]*[a-zA-Z0-9_.-]+[[:space:]]*:[[:space:]]*[A-Z]+-[0-9]+[[:space:]]*$/ {
+        /^[[:space:]]*[a-zA-Z0-9_.-]+[[:space:]]*:[[:space:]]*[A-Z][A-Z0-9]+-[0-9]+[[:space:]]*$/ {
             line = $0
             gsub(/[[:space:]]/, "", line)
             split(line, parts, ":")

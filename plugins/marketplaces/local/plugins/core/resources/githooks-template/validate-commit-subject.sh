@@ -12,7 +12,7 @@ set -euo pipefail
 
 # -------- defaults (overridable via config.sh) --------
 HOOK_COMMIT_TYPES="FEAT|FIX|BUILD|CHORE|CI|DOCS|STYLE|REFACTOR|PERF|TEST"
-HOOK_TICKET_REGEX="[A-Z]+-[0-9]+"
+HOOK_TICKET_REGEX="[A-Z][A-Z0-9]+-[0-9]+"
 HOOK_SCOPE_REGEX="[a-z0-9._/-]+"
 HOOK_REQUIRE_TICKET=1
 HOOK_EXTENSION_TICKET_MAP=0

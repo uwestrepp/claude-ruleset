@@ -47,7 +47,7 @@ unambiguously from the project (for example, if branch naming matches the
 default regex, don't re-ask).
 
 1. **Ticket prefix regex** (`HOOK_TICKET_REGEX`)
-   - Default: `[A-Z]+-[0-9]+`
+   - Default: `[A-Z][A-Z0-9]+-[0-9]+` (mirrors the `/core:commits` regex; matches keys with a digit such as `KSW5-894`)
    - Narrow it if the project uses a single key, e.g. `FEINSITE-[0-9]+`.
 2. **Require ticket?** (`HOOK_REQUIRE_TICKET`)
    - Default: `1`. Set to `0` only for repos with no ticket convention.
