@@ -97,6 +97,9 @@ inside a fenced code block**, never as chat-rendered markup:
   KAVO-1049 2026-08-20): `*x*` renders italic, bold is `**x**`; a leading `#` renders
   an H1, a numbered list item is `1.`; use `-` for bullets. Reaching for the legacy
   wiki syntax breaks exactly the emphasis and list levels the structure depends on.
+  **GFM pipe tables convert cleanly too** (observed MO-101 2026-08-20): a `| a | b |`
+  row plus a `|---|---|` separator arrives as a real Jira table, so tabular content
+  need not be flattened into lists. Keep cells short, the rendered column is narrow.
 - **Backtick bare domains and URLs** unless the link must be clickable: Jira autolinks
   bare hostnames, leaving `http://www.kavo.com` artefacts in running prose. A code span
   suppresses it. Same anchor.
