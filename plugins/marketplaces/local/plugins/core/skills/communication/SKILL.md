@@ -93,6 +93,13 @@ inside a fenced code block**, never as chat-rendered markup:
   Confluence at minimum), write the payload AS Markdown (headings, bold, lists,
   inline code) so it renders on paste. Fall back to plain text only for a target
   without Markdown support (e.g. plain-text e-mail).
+- **Jira Cloud parses pasted text as Markdown, not as Jira wiki markup** (observed
+  KAVO-1049 2026-08-20): `*x*` renders italic, bold is `**x**`; a leading `#` renders
+  an H1, a numbered list item is `1.`; use `-` for bullets. Reaching for the legacy
+  wiki syntax breaks exactly the emphasis and list levels the structure depends on.
+- **Backtick bare domains and URLs** unless the link must be clickable: Jira autolinks
+  bare hostnames, leaving `http://www.kavo.com` artefacts in running prose. A code span
+  suppresses it. Same anchor.
 - **No hard wrapping.** Do NOT break payload prose at a column limit: one paragraph
   or list item = one line, newlines only between blocks. Hard wraps survive the
   paste as real newlines and force manual cleanup, which is easily missed (observed
@@ -189,6 +196,17 @@ verify, not a fact.
 - Typography per §2 (no em-dash / connector en-dash).
 - Concise and structured: state the point first, then detail; lists over prose
   where they aid reading; no filler.
+- **Stance: propose, do not adjudicate** (KAVO-1049 2026-08-20, draft-vs-sent). Holds for
+  every audience and every kind of text:
+  - sub-headings name the subject, they do not deliver a verdict ("Loader und Datenziel sind
+    zwei getrennte Wege", not "Der Publish allein macht nichts kaputt");
+  - keep the fact, strike the dramatisation ("wäre ein rechtliches Thema, nicht nur ein
+    Datenloch" → "das würden wir gern vermeiden");
+  - frame the own recommendation as a proposal ("Vorschlag für den Ablauf") and close with a
+    question ("Passt das so für euch?") rather than with an instruction;
+  - reserve numbering for sequences and steps; a numbered chain of reasons reads as an
+    indictment, so put reasoning in paragraphs.
+  Apply these while drafting, not after someone asks for a friendlier version.
 
 **Three tiers of audience:**
 
@@ -244,6 +262,19 @@ commit body, the PR description.
 Zutun/Beisein mit dem Thema weiterarbeiten zu können; Rückfragen stellt sie im
 Zweifelsfall ohnehin direkt"*. Technical detail the recipient operates herself stays,
 however technical it looks. Only detail she cannot act on goes.
+
+**Dissent is not a status update (user-confirmed 2026-08-20).** The non-dev rows' "keine
+Begründungsketten" governs result and status messages. When DEV contradicts something the
+Fachseite proposed, the reasoning IS the subject: the recipient has to be able to carry the
+recommendation herself and defend it internally, and without the reasoning only an appeal to
+authority remains. Report form and several sub-headings are legitimate here, and the reasoning
+chain stays.
+
+The one move on top of the baseline stance: **confirm the part of their argument that holds
+FIRST, then derive the recommendation from it**, so the text reads as a shared conclusion
+rather than a rebuttal ("Dein Punkt, dass ohne laufenden Server kein Tracking läuft, trifft
+genau zu. Daraus ergibt sich aus unserer Sicht aber eher eine Reihenfolge als ein gemeinsamer
+Zeitpunkt."). Anchor: KAVO-1049 2026-08-20, draft-vs-sent.
 
 **The numbers test.** A metric belongs in the text when the metric *is* the subject
 (a Pagespeed score in a Pagespeed optimisation, reach in a reach report). It does not
