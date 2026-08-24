@@ -134,6 +134,20 @@ conversion in the UI, not via MCP (see §5).
     "Users" role is unavailable, stop and ask. Success signal is the `visibility`
     object in the response; `jsdPublic: true` alongside it is a known
     mosaiq.atlassian.net false positive — do not flag.
+- **`contentFormat: "markdown"` mangles two things on a Jira comment write** (observed
+  SSBSITE-1261 2026-08-24, `addCommentToJiraIssue`):
+  - **@-mentions do not survive it.** `[~accountid:<id>]` comes back escaped as
+    `\[\~accountid:...\]` and renders as literal text, so nobody is notified. Post a
+    mention with `contentFormat: "adf"` and real nodes:
+    `{"type":"mention","attrs":{"id":"<accountId>","text":"@Display Name"}}`. Resolve the
+    id with `lookupJiraAccountId` first. For a long Markdown body, keep the body as
+    markdown and put the mention in a short separate ADF comment rather than
+    hand-authoring the whole document as ADF. Verify afterwards: re-read the comment with
+    `responseContentFormat: "adf"` and check the `mention` node carries the right `id`;
+    the create response only echoes a placeholder `data-id`, which is not evidence.
+  - **Bold breaks across an inline code span.** ``**Text `code`.**`` arrives as
+    ``**Text** `code`.``, silently dropping the emphasis on the rest. Keep the code span
+    out of the bolded run.
 - **Token scope**: the local token (`~/.claude/.bitbucket-api-token`, valid to
   2027-03) is Bitbucket-only; Jira REST (`/rest/api/3/*`) answers 401/404 with it.
   There is NO local Jira REST fallback: Jira access runs exclusively through the
