@@ -134,8 +134,8 @@ conversion in the UI, not via MCP (see §5).
     "Users" role is unavailable, stop and ask. Success signal is the `visibility`
     object in the response; `jsdPublic: true` alongside it is a known
     mosaiq.atlassian.net false positive — do not flag.
-- **`contentFormat: "markdown"` mangles two things on a Jira comment write** (observed
-  SSBSITE-1261 2026-08-24, `addCommentToJiraIssue`):
+- **`contentFormat: "markdown"` mangles three things on a Jira comment write** (observed
+  SSBSITE-1261 2026-08-24 and MO-108 2026-08-26, `addCommentToJiraIssue`):
   - **@-mentions do not survive it.** `[~accountid:<id>]` comes back escaped as
     `\[\~accountid:...\]` and renders as literal text, so nobody is notified. Post a
     mention with `contentFormat: "adf"` and real nodes:
@@ -145,6 +145,16 @@ conversion in the UI, not via MCP (see §5).
     hand-authoring the whole document as ADF. Verify afterwards: re-read the comment with
     `responseContentFormat: "adf"` and check the `mention` node carries the right `id`;
     the create response only echoes a placeholder `data-id`, which is not evidence.
+    The `<custom data-type="mention" data-id="...">@Name</custom>` form that a markdown
+    READ returns does not round-trip either, not even with the placeholder `id-0` replaced
+    by the real accountId: it lands as a plain text node carrying that literal markup,
+    visible in the ticket (MO-108 comment 249756, 2026-08-26).
+  - **Editing an existing comment DESTROYS the mentions it carries.** The update replaces
+    the whole body, so a markdown edit flattens every mention in it, and there is no
+    partial-body update to fall back on. Check the comment's opening for mentions BEFORE
+    editing, and decide deliberately: accept plain-text names and tell the user, or re-send
+    the entire body as ADF (for a long comment that means transcribing the whole document
+    inline). A fresh follow-up comment is the cheap way to notify people again.
   - **Bold breaks across an inline code span.** ``**Text `code`.**`` arrives as
     ``**Text** `code`.``, silently dropping the emphasis on the rest. Keep the code span
     out of the bolded run.
