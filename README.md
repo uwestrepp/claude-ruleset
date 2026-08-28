@@ -1,82 +1,81 @@
 # mq.agent-ruleset
 
-MOSAIQ Claude Code agent ruleset: global rules, custom agents, hooks, plugins, and configuration templates.
+MOSAIQ Claude Code ruleset: global behavioral rules, path-gated framework
+guidance, reusable workflow skills, guard hooks, onboarding material, and
+external rule exports.
 
----
+`CLAUDE.md` is the authoritative index for the rules and skills that Claude
+Code loads. For the design rationale and skill-routing guide, see
+[`docs/RULESET-OVERVIEW.md`](docs/RULESET-OVERVIEW.md). For a teammate-facing
+setup checklist and practical first steps, see [`ONBOARDING.md`](ONBOARDING.md).
 
 ## Contents
 
 ```
-CLAUDE.md                     Rule index (entry point for all projects)
+CLAUDE.md                       Authoritative rule and skill index
 rules/
-  General.md                  Global baseline behavior [CRITICAL]
-  Meta.md                     Knowledge persistence and rule governance [CRITICAL]
-  Persona.md                  Verification-first behavioral framing [CRITICAL]
-  CleanCode.md                Clean code principles
-  PER.md                      PHP PER-CS 3.0 coding style + application policy (path-gated: **/*.php)
-  TYPO3.md                    TYPO3 operating policy + extension version layering (path-gated)
-  Twig.md                     Twig authoring rules (path-gated: **/*.twig)
-agents/
-  checkpoint.md               Knowledge persistence agent
-  contract-researcher.md      Upstream contract verification agent
-  test-runner.md              Test execution agent
-hooks/                        Claude-side PreToolUse guards
-  validate-commit-message.sh  Enforces /core:commits subject format (~/work repos)
-  block-forbidden-stages.sh   Soft-blocks commits touching denylisted paths
-  guard-destructive-commands.sh  Tiered guard for destructive shell/git commands
-  guard-base-branch.sh        Catches comparisons against the wrong base branch
-bin/
-  lint-section-refs.sh        Cross-reference + skill-ledger linter (this repo)
-  rule-friction-report.sh     Usage-data facet aggregation for /core:rule-friction
-.githooks/
-  pre-commit                  Runs the section-ref linter (activate: git config core.hooksPath .githooks)
-plugins/
-  known_marketplaces.json     Marketplace registry (managed by CLI)
-  marketplaces/
-    local/                    Local MOSAIQ marketplace
-      plugins/
-        core/                 Generic workflow skills (batch, commits, composer, composer-update,
-                              githooks-install, brainstorm, grill-me, rule-friction)
-        typo3/                TYPO3 workflow skills (upgrade, scanner, static-tests, upgrade-full)
-exports/                      Condensed rule-set variants for external agents/harnesses
-settings.json.example         Template for ~/.claude/settings.json
-claude.json.example           Template for MCP server entries in ~/.claude.json
-setup.sh                      Automated install/update script (shows rule-set changelog on update)
+  Meta.md, General.md, Persona.md  Always-on governance and baseline behavior
+  Organisation.md                  MOSAIQ and Funntastic organisation context
+  CleanCode.md, PER.md, Twig.md    Path-gated language and authoring rules
+  TYPO3.md, Drupal.md, Shopware.md Path-gated platform rules
+agents/                         Reusable specialist agents
+  checkpoint.md                 Durable-knowledge persistence
+  contract-researcher.md        Upstream contract verification
+  migration-pattern-researcher.md  Migration research
+  payload-replay-verifier.md    Payload verification
+  rule-index-auditor.md         Rule-index consistency audit
+  test-runner.md                Test execution
+hooks/                          Claude Code PreToolUse and SessionStart guards
+bin/                            Rule-reference linting and friction reporting
+.githooks/pre-commit           Runs the rule-reference and skill-ledger linter
+plugins/marketplaces/local/    Local marketplace: core, composer, typo3, pocock
+exports/                        Condensed variants for external agent harnesses
+settings.json.example          Claude Code settings and hook template
+claude.json.example            MCP server template for ~/.claude.json
+ONBOARDING.md                  Team onboarding guide
+setup.sh                       Non-destructive install and update helper
 ```
-
----
 
 ## Installation
 
-### Quick setup
+The setup script is the supported route. It preserves existing runtime files,
+merges new settings and MCP server entries without overwriting custom values,
+and updates the `typo3` plugin when the Claude CLI is available.
 
 ```bash
 git clone git@bitbucket.org:mosaiq-gmbh/mq.agent-ruleset.git ~/.claude
 ~/.claude/setup.sh
 ```
 
-The setup script auto-detects install vs update mode. It handles settings, MCP servers, hooks, and plugin registration in one step.
-
-> If `~/.claude` already exists as a Claude Code runtime directory (no git repo), the script overlays the repo without touching existing runtime files (credentials, sessions, etc.).
-
-### Setup options
+If `~/.claude` already exists as a Claude Code runtime directory but is not a
+Git repository, the script overlays the ruleset while backing up affected
+runtime files. It requires `git` and `jq`; the Claude CLI is optional, but
+needed for the plugin steps. `chrome-devtools-mcp` in the MCP template needs
+Node.js 20 or newer.
 
 ```
 setup.sh [OPTIONS]
 
   -d, --dir DIR        Target directory (default: ~/.claude)
   -m, --mode MODE      install | update | auto (default: auto)
-      --no-plugins     Skip plugin marketplace registration and install/update
-      --no-mcp         Skip MCP server merge into ~/.claude.json
-      --force          Overwrite settings.json from template (backs up first)
-      --dry-run        Show what would be done, change nothing
+      --no-plugins     Skip marketplace registration and plugin work
+      --no-mcp         Skip merging MCP servers into ~/.claude.json
+      --force          Overwrite settings.json from the template (backs up first)
+      --dry-run        Show intended changes without modifying files
   -v, --verbose        Show detailed output
-  -h, --help           Show this help
+  -h, --help           Show help
 ```
 
-Prerequisites: `git`, `jq`, and optionally the `claude` CLI (plugin steps are skipped gracefully if it is not installed yet).
+`setup.sh` currently registers the local marketplace and installs or updates
+`typo3@local`. Install the other bundled plugins when their workflows are
+useful to you:
 
----
+```bash
+claude plugins marketplace add ~/.claude/plugins/marketplaces/local
+claude plugins install core@local
+claude plugins install composer@local
+claude plugins install pocock@local
+```
 
 ## Updating
 
@@ -84,16 +83,15 @@ Prerequisites: `git`, `jq`, and optionally the `claude` CLI (plugin steps are sk
 ~/.claude/setup.sh
 ```
 
-The script auto-detects update mode when the target directory already contains the repo. It pulls the latest changes, merges new settings keys (without overwriting your customizations), and updates plugins.
+Update mode pulls the configured `origin`, deep-merges newly introduced keys
+from `settings.json.example`, merges only the `mcpServers` key into
+`~/.claude.json`, refreshes executable hook permissions, updates `typo3@local`,
+and prints rule-relevant commits since the previous revision.
 
----
+## Manual Setup
 
-## Manual alternative
-
-If you prefer not to use the setup script, or need to debug a specific step:
-
-<details>
-<summary>Show manual installation steps</summary>
+Use this only when diagnosing a setup step or intentionally managing the files
+yourself.
 
 ### 1. Clone into `~/.claude`
 
@@ -109,63 +107,42 @@ cp ~/.claude/settings.json.example ~/.claude/settings.json
 
 ### 3. Merge MCP servers into `~/.claude.json`
 
-> **Important:** `~/.claude.json` is a live file owned and continuously updated by Claude Code.
-> **Never replace it.** Only merge the `mcpServers` key into your existing file.
-
-`claude.json.example` contains only the `mcpServers` block. Merge it manually:
-
-1. Open `~/.claude.json` in an editor.
-2. Locate (or add) the top-level `"mcpServers"` key.
-3. Copy the server entries from `claude.json.example` into that key.
-
-The Atlassian MCP server requires an active Atlassian OAuth session. See [Atlassian MCP documentation](https://mcp.atlassian.com) for authentication setup.
+Merge the `mcpServers` object from `claude.json.example` into the existing
+`~/.claude.json`; do not replace that live Claude Code file.
 
 ### 4. Make the hook executable
 
 ```bash
-chmod +x ~/.claude/hooks/validate-commit-message.sh
+chmod +x ~/.claude/hooks/*.sh
+git -C ~/.claude config core.hooksPath .githooks
 ```
 
 ### 5. Register and install the local plugin marketplace
 
-```bash
-claude plugins marketplace add ~/.claude/plugins/marketplaces/local
-claude plugins install typo3@local
-claude plugins list  # verify: typo3@local should be enabled
-```
+Register the local marketplace and install the plugins required by your work
+as shown above.
 
-### Manual update
+Keep machine-local account facts in `~/.claude/CLAUDE.local.md`, which is
+imported by the rule index and ignored by Git. Store secrets only in separate,
+mode-600 pointer files such as `~/.claude/.service-api-token`, never inline in
+`CLAUDE.local.md`.
 
-```bash
-cd ~/.claude && git pull
-claude plugins update typo3@local
-```
+## Included Workflows
 
-</details>
+| Plugin | Scope |
+|---|---|
+| `core` | Commit discipline, git knowledge and hooks, batch governance, communication, estimates, brainstorming, adversarial review, and ruleset feedback |
+| `composer` | Composer resolution and lock-file knowledge, gated updates, and generic major-version upgrades |
+| `typo3` | TYPO3 upgrades, ExtensionScanner, static tests, and the complete upgrade chain |
+| `pocock` | Vendored and adapted engineering aids for prototyping, interface design, architecture improvement, diagnosis, handoff, and concise output |
 
----
+Skill activation varies deliberately. `CLAUDE.md` is the source of truth for
+each skill's trigger and whether it is automatic, auto-suggested, or requires
+an explicit slash command.
 
-## TYPO3 Workflow Skills
+## Exports
 
-The `typo3` plugin provides four skills for structured TYPO3 upgrade work. Skills require **explicit activation** — the agent will not start a workflow until you invoke the skill. See each skill's description for full trigger patterns.
-
-| Skill | Invoke with | Use when |
-|---|---|---|
-| TYPO3 Upgrade Workflow | `/typo3:upgrade` | Running an upgrade, fixing deprecations or breaking changes |
-| TYPO3 ExtensionScanner | `/typo3:scanner` | Running ExtensionScanner, triaging scanner findings |
-| TYPO3 Static Code Tests | `/typo3:static-tests` | Running phpstan, rector, fractor, php-cs-fixer, TypoScript lint |
-| TYPO3 Full Upgrade Chain | `/typo3:upgrade-full` | Running all three workflows in one chained session |
-
-For the full chain, a single invocation drives all three component workflows in sequence:
-
-```
-/typo3:upgrade-full
-```
-
-The orchestrator invokes `/typo3:upgrade`, `/typo3:scanner`, and `/typo3:static-tests` in order via the Skill tool — do NOT pre-activate them manually.
-
----
-
-## Project-level configuration
-
-For project-specific agent state, extension ticket maps, triage artifacts, and `.aiassistant/` conventions, see the project's own `CLAUDE.md` and `.aiassistant/` directory.
+[`exports/`](exports/README.md) contains condensed or adapted rule variants
+for external agents and harnesses. These files are not loaded by Claude Code.
+When changing a source under `rules/`, update any corresponding export in the
+same change set.
