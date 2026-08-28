@@ -3,6 +3,7 @@
 .matomo-api-token
 .n8n-api-token
 .neon-api-token
+.tideways-api-token
 .credentials.json
 history.jsonl
 settings.json
