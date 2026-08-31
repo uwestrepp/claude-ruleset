@@ -1,6 +1,6 @@
 ---
 name: commits
-description: "Activate via /core:commits or let Claude auto-activate when the task involves creating, amending, or rewriting git commits — including commit-message drafting, Jira ticket resolution, and splitting mixed changes across tickets. Triggers: 'commit these changes', 'create a commit', 'commit the fix', 'amend commit', 'git commit', 'write a commit message', preparing PR-worthy commits, any request mentioning commits/committing/amending."
+description: "Use when the task involves creating, amending, or rewriting git commits — including commit-message drafting, Jira ticket resolution, and splitting mixed changes across tickets. Triggers: 'commit these changes', 'create a commit', 'commit the fix', 'amend commit', 'git commit', 'write a commit message', preparing PR-worthy commits, any request mentioning commits/committing/amending."
 argument-hint: "[scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---

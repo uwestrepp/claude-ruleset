@@ -1,6 +1,6 @@
 ---
 name: githooks-install
-description: "Activate via /core:githooks-install to install or update (--update) the native git-hook scaffold enforcing the /core:commits schema in the current project. Auto-suggested by /core:commits when a project has no .githooks/ and no core.hooksPath set. Triggers: 'install git hooks', 'set up commit hooks', 'add commit validation', '/core:githooks-install', referrals from /core:commits precheck."
+description: "Install or update (--update) the native git-hook scaffold enforcing the /core:commits schema in the current project. Auto-suggested by /core:commits when a project has no .githooks/ and no core.hooksPath set. Triggers: 'install git hooks', 'set up commit hooks', 'add commit validation', referrals from the /core:commits precheck."
 argument-hint: "[--update]"
 allowed-tools: [Read, Write, Edit, Bash, Glob, Grep]
 ---

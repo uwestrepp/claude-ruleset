@@ -1,6 +1,6 @@
 ---
 name: static-tests
-description: "Activate with /typo3:static-tests before starting any TYPO3 static code analyzer or fixer run (php-cs-fixer, Rector, Fractor, TypoScript lint, PHPStan). Required before structured static-test cycles begin."
+description: "Use before any TYPO3 static code analyzer or fixer run (php-cs-fixer, Rector, Fractor, TypoScript lint, PHPStan)."
 argument-hint: "[scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---

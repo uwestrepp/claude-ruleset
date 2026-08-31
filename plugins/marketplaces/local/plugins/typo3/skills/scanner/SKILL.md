@@ -1,6 +1,6 @@
 ---
 name: scanner
-description: "Activate with /typo3:scanner before starting any TYPO3 ExtensionScanner triage, scanner-driven migration, or scanner pass within an upgrade workflow. Required before structured ExtensionScanner work begins."
+description: "Use before any TYPO3 ExtensionScanner triage, scanner-driven migration, or scanner pass within an upgrade workflow."
 argument-hint: "[extKey...]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash]
 ---

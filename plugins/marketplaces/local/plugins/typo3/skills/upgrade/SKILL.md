@@ -1,6 +1,6 @@
 ---
 name: upgrade
-description: "Activate with /typo3:upgrade before starting any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. The TYPO3 specialization of /composer:major-upgrade. Required before any structured TYPO3 version upgrade work begins. NOT a patch/minor/security bump (use /composer:update)."
+description: "Use before any TYPO3 upgrade, migration execution, or deprecation/breaking-change remediation task. The TYPO3 specialization of /composer:major-upgrade. NOT a patch/minor/security bump (use /composer:update)."
 argument-hint: "[scope]"
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Agent]
 ---
