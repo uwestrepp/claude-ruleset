@@ -18,31 +18,31 @@
 * **Core skills** — auto-activate on prompt relevance unless the entry states otherwise:
   * `/core:commits` — commit schema `[TYPE] JIRA (scope) summary`, ticket traceability, body gate, pre-commit checklist.
   * `/core:githooks-install` — native git-hook scaffold install/`--update`; auto-suggested by `/core:commits`.
-  * `/core:git-knowledge` — git depth beyond `General.md` §12: deploy-mapping detection, remote/worktree/baseline disambiguation, rebase/merge hygiene, reflog recovery. NOT commit drafting, NOT hook install.
+  * `/core:git-knowledge` — git depth beyond `General.md` §12: deploy mapping, remote/worktree/baseline disambiguation, rebase hygiene, reflog recovery. NOT commit drafting, NOT hook install.
   * `/core:brainstorm` — N distinct candidates → ranked shortlist; genuine exploration only, NOT converged work.
   * `/core:grill-me` — adversarial plan elicitation → decision record; plan-pressure-test intent only, NOT routine task start.
-  * `/core:poke-holes` — adversarial critique of a *given* artifact → severity-ranked findings (Blocking/Material); no interview, no alternatives, NOT code-diff review. vs grill-me (which interviews).
-  * `/core:blueprint` — explicit activation required. Structural cut of a change before code exists (units, dependency direction, boundaries, state, error contract) → blueprint record separating decided from convention-dictated. Offered by the `CleanCode.md` Architectural Cut Gate. Runs standalone; NOT one module's interface (`/pocock:design-an-interface`), NOT existing-code improvement (`/pocock:improve-codebase-architecture`).
-  * `/core:effort-estimation` — agent-session-wall-clock effort estimates (AWS = Aufwandsschätzung): scope boundary, task-type bands, calibration factors. NOT PM scheduling.
-  * `/core:communication` — colleague-facing output profile (Jira/Confluence/Bitbucket): German + typography + paste format, Atlassian MCP mechanics, Bitbucket PR conventions, MOSAIQ house-style per audience (dev / OM / PM intern vs. PM-zur-Kundenweitergabe / Kunde). NOT agent-to-user chat, NOT commit messages (`/core:commits`).
-  * `/core:comm-calibrate` — auto-suggest gate; inbound counterpart to `/core:communication`: mine a real artifact → derive register/routing/glossary facts. Self-fetch only on user request or agent-offer+confirm. NOT producing output.
+  * `/core:poke-holes` — critique of a *given* artifact → ranked findings; no interview, no alternatives, NOT code-diff review. vs `/core:grill-me` (interviews).
+  * `/core:blueprint` — explicit activation required. Cross-module structural cut before code exists; offered by the `CleanCode.md` Architectural Cut Gate. NOT one module's interface (`/pocock:design-an-interface`).
+  * `/core:effort-estimation` — agent-session-wall-clock estimates (AWS = Aufwandsschätzung); scope boundary + calibration. NOT PM scheduling.
+  * `/core:communication` — colleague-facing output profile (Jira/Confluence/Bitbucket): language, typography, paste format, MCP mechanics, house-style per audience. NOT agent-to-user chat, NOT the commit schema (`/core:commits`).
+  * `/core:comm-calibrate` — auto-suggest gate; inbound counterpart to `/core:communication`: mine a real artifact → house-style facts. Self-fetch only on request or confirmed offer.
 * **Core workflow skills** — activation policy per entry:
-  * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Foundation for the typo3 workflow skills.
+  * `/core:batch` — auto-suggest gate: propose on trigger match (incl. `General.md` §3.5 scope growth), never silently run. Foundation for the typo3 skills.
   * `/core:rule-friction` — explicit activation required. Rule-set feedback loop (`bin/rule-friction-report.sh` → `Meta.md` §3.1 proposals).
 * **Composer skills** (`composer` plugin) — system-agnostic Composer workflow, activation policy per entry:
   * `/composer:knowledge` — auto-activate on prompt relevance. Composer resolution order, dev-overrides, canonical-priority trap, lock-file discipline.
-  * `/composer:update` — explicit activation required. Informed, gated minor/security Composer updates for *customized* projects; NOT trivial adds in vanilla projects (`/composer:knowledge`), NOT major-version migrations (`/composer:major-upgrade`).
-  * `/composer:major-upgrade` — explicit activation required. System-agnostic spine for major-version upgrades; layers on `/core:batch`; `/typo3:upgrade` is the TYPO3 specialization. NOT patch/minor (`/composer:update`).
+  * `/composer:update` — explicit activation required. Gated minor/security updates for *customized* projects. NOT vanilla adds (`/composer:knowledge`), NOT majors (`/composer:major-upgrade`).
+  * `/composer:major-upgrade` — explicit activation required. System-agnostic spine for majors; layers on `/core:batch`, specialized by `/typo3:upgrade`. NOT patch/minor (`/composer:update`).
 * **TYPO3 projects** — the following rules apply when working on TYPO3-based projects:
   * rules/TYPO3.md (path-gated: `**/packages/**`, `**/ext_{localconf,tables,emconf}.php`, `**/typo3conf/**`, `**/config/sites/**`, `**/*.typoscript`, `**/*.tsconfig`) — TYPO3 operating policy + upgrade-impact behavior; Composer via `/composer:*`, commits via `/core:commits`, workflow-activation via `General.md` §9.
 * **TYPO3 workflow skills** — explicit activation required:
-  * `/typo3:upgrade` — Upgrade Workflow (execution + DoD); the TYPO3 specialization of `/composer:major-upgrade`; v10–v14 changelog + migration patterns in `references/`.
+  * `/typo3:upgrade` — Upgrade Workflow (execution + DoD); TYPO3 specialization of `/composer:major-upgrade`; v10–v14 patterns in `references/`.
   * `/typo3:scanner` — ExtensionScanner workflow: command standard, pass model, false-positive handling.
   * `/typo3:static-tests` — ordered static analyzer/fixer run, triage, ledgers.
   * `/typo3:upgrade-full` — orchestrates the three component skills in sequence; do NOT pre-activate the components.
 * **Pocock skills** — vendored/adapted subset of `mattpocock/skills` (provenance + upstream-refresh path in `plugins/marketplaces/local/plugins/pocock/UPDATING.md`):
-  * `/pocock:prototype`, `/pocock:design-an-interface`, `/pocock:improve-codebase-architecture`, `/pocock:handoff` — auto-activate on prompt relevance; stack-agnostic engineering/prototyping aids.
-  * `/pocock:zoom-out`, `/pocock:diagnose`, `/pocock:grill-with-docs` — explicit activation required (`disable-model-invocation`); zoom-out upstream-gated, diagnose a manual heavyweight loop (`General.md` §1.5), grill-with-docs depends on CONTEXT.md/ADR conventions.
+  * `/pocock:prototype`, `/pocock:design-an-interface`, `/pocock:improve-codebase-architecture`, `/pocock:handoff` — auto-activate; stack-agnostic engineering aids.
+  * `/pocock:zoom-out`, `/pocock:diagnose`, `/pocock:grill-with-docs` — explicit activation required (`disable-model-invocation`): upstream-gated, heavyweight, or convention-dependent.
   * `/pocock:caveman` — brevity mode; subordinate to General.md §10.4 / §8.2 (which already govern output brevity and language).
 * Global MCP servers are configured in `~/.claude.json` under the `mcpServers` key (canonical location).
   * If MCP resources/templates are empty, treat this as a non-blocking beta behavior.
