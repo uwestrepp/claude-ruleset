@@ -4,6 +4,45 @@ Status: designed, NOT applied. Blocked on two design repairs (below).
 Origin: consolidation session 2026-08-31. Supersedes 7 proposals (see Paket 2).
 Prerequisite for: nothing. Paket 2 can run independently.
 
+## State as of 2026-08-31, after Paket 5
+
+Paket 5 is applied (commits `d1f3fed` … `2e000be`). It freed **nothing in
+`rules/General.md`**, so the budget block below is unchanged and still exact: the file is
+still 39036 chars = 10272, the budget is still 10500, and the drafted change still lands at
+reserve 4. Do not re-measure it hoping Paket 5 helped; it did not, by design (a tightening
+pass never raises a budget, and General.md was already the tightest file).
+
+What DID change, and what it means for this package:
+
+- **Every always-on surface is now budgeted and the check fails closed.** `Check 6` in
+  `bin/lint-section-refs.sh` enumerates surface members mechanically (`@` imports in
+  `CLAUDE.md`, tracked `SKILL.md`, tracked `agents/*.md`). If this package creates a new
+  always-on rule file and imports it, the lint fails until a `FILE_BUDGETS` entry exists in
+  the same change-set. That is a new obligation, not a warning.
+- **Budgets sit at actual + ~5 %.** Reserves: `General.md` 228, `Meta.md` 214, `CLAUDE.md`
+  148, skill descriptions 163, `Persona.md` 24, `Organisation.md` 27. The small files are one
+  sentence from tripping — that is deliberate.
+- **Option (c) below got cheaper in one direction only.** Demoting always-on text into a
+  skill BODY is still free: skill bodies are not budgeted and never should be, they load on
+  activation. Skill DESCRIPTIONS are now budgeted in aggregate (3197 / 3360). So a demotion
+  that adds a paragraph to a skill body costs nothing; one that lengthens a description to
+  make the skill fire draws on 163 shared tokens.
+- **`CLAUDE.md` has room now** (2872 / 3020, was 3055 / 3100). A ledger line for a demoted
+  rule is affordable where it was not.
+- **`Meta.md`'s 214 is spoken for.** Carried open item 8 in the consolidation record was
+  cleared by Paket 5 to spend it. If this package also wants `Meta.md` space, it is competing.
+- **Carried open item 4 competes with §1.6 for `General.md`'s 228 and this package decides
+  it.** Paket 5 measured the envelope and explicitly did not choose: item 4 (one sentence on
+  guard-pattern precision in §5.6) fits only if §1.6 lands under budget. Decide it here,
+  either way, and record the verdict in the consolidation record.
+- **New: skill activation has no test** (carried open item 11). Relevant the moment this
+  package demotes anything into a skill: the record already states that a skill which does
+  not activate cannot bind, and Paket 5 confirmed there is no way to verify activation today.
+  Treat any demotion-to-skill as an untested change, not a free optimisation.
+
+Unchanged and still binding: the reference-form constraint at the bottom of this file, the
+validation commands, and both BLOCKING repairs. Paket 5 touched none of that.
+
 ## What this package delivers
 
 One new always-on section replacing seven near-duplicate proposals, plus the three
