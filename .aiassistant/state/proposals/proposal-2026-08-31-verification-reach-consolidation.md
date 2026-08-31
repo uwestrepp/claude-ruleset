@@ -367,6 +367,18 @@ Two further open items come from `unsorted.md` (see below):
     at all. Widening the hook scope therefore does not fix it. Fix: correct the ledger
     sentence, or add an explicit manual validation step for memory files and say so.
 
+11. **Skill activation has no test, and the harness may already offer one.** Package 5 had to
+    change twelve activation triggers with no executable validation path: `General.md` §5.2
+    asks for a behavioural check, and for a skill description there is none — the "test" was
+    re-reading the text. The mitigation used (one commit per description, revert as repair)
+    limits the blast radius but proves nothing. Hypothesis to verify before proposing
+    anything concrete: `claude plugin eval` (referenced by the `claude-code-guide` agent as
+    covering plugin eval suites and `/skill-doctor`) can assert that a given prompt activates
+    a given skill. If it can, a fixture of the phrases each description claims as triggers
+    turns the whole surface testable and this is the single highest-value addition to the
+    rule-set's own tooling. If it cannot, say so here and the risk stays accepted-and-named.
+    Not decided in-session; no always-on cost either way.
+
 ## Dissolved: `unsorted.md`
 
 Seven raw notes, each with its disposition. The file is removed; git history keeps the
