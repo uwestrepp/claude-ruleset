@@ -189,10 +189,10 @@ When adding, removing, renaming, or materially changing files in the applicable 
 
 Always-on context is a budget: every always-on token dilutes attention on every other rule, so additions without a removal path are a ratchet. This section is the counterweight.
 
-At each `/core:rule-friction` cycle (at minimum quarterly), a demotion review MUST be run over the always-on surface ([CRITICAL] rule files, the `CLAUDE.md` index, skill descriptions):
+At each `/core:rule-friction` cycle (at minimum quarterly), a demotion review MUST be run over the always-on surfaces — the always-on rule files, the `CLAUDE.md` index, skill descriptions, agent descriptions:
 
 - each always-on section MUST either name an incident from the archived friction windows that it prevented or answered, or carry an explicit justification for staying always-on (for example: safety-critical with low-frequency/high-cost failure, structural index entry, load-bearing literal phrase),
 - sections with neither become demotion candidates: propose per §3.1 moving them to a path-gated rule file, a skill, or reference documentation — demotion is proposal-only, never auto-applied,
 - salience-protected rules (§3.2) are exempt from demotion, NOT from justification.
 
-Per-file token budgets are the trip-wire, enforced mechanically by `bin/lint-section-refs.sh` (the budget table lives there). When an always-on file exceeds its budget, further always-on additions to it are blocked until a demotion review has freed space or the user has explicitly raised the budget.
+Token budgets are the trip-wire, enforced mechanically by `bin/lint-section-refs.sh` (the budget tables live there; per file for rule files and `CLAUDE.md`, in aggregate for the description surfaces). Every member of every surface above MUST carry a budget entry or an explicit unbudgeted-by-decision marker — the check fails closed on an uncovered member, so the surface list here and the one in the script are maintained in one change-set. When a surface exceeds its budget, further always-on additions to it are blocked until a demotion review has freed space or the user has explicitly raised the budget.
