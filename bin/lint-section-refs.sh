@@ -142,16 +142,21 @@ done < <(git ls-files '*.md')
 #
 # Coverage rule: every enumerated member must map to a FILE_BUDGETS key, an
 # AGG_BUDGETS bucket, or an UNBUDGETED marker. An unmapped member fails.
+# Budgets are the measured actual plus ~5 %, set 2026-08-31 after the demotion
+# pass. The headroom is the whole point: it is one edit wide, so growth has to
+# pass a decision instead of drifting in. General.md keeps its recorded 10500
+# (actual + 5 % would have RAISED it — a budget is never raised as a side
+# effect of a tightening pass).
 declare -A FILE_BUDGETS=(
     [rules/General.md]=10500
-    [rules/Meta.md]=4500
-    [rules/Persona.md]=1000
-    [rules/Organisation.md]=600
-    [CLAUDE.md]=3100
+    [rules/Meta.md]=4490
+    [rules/Persona.md]=500
+    [rules/Organisation.md]=505
+    [CLAUDE.md]=3020
 )
 declare -A AGG_BUDGETS=(
-    [skill-descriptions]=3700
-    [agent-descriptions]=470
+    [skill-descriptions]=3360
+    [agent-descriptions]=467
 )
 # Always-on members deliberately left unbudgeted, with the reason.
 declare -A UNBUDGETED=(
