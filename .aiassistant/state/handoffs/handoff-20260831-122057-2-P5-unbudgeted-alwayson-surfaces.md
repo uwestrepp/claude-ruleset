@@ -3,6 +3,28 @@
 Status: designed, NOT applied. The single largest finding of the 2026-08-31 session.
 Independent of Pakete 1-4, but do it BEFORE the freed budget invites refilling.
 
+## State as of 2026-08-31, after Paket 2
+
+Paket 2 is applied (commit `7743a40`) and freed no budget, so every measurement below is
+unchanged and still current. Two things changed for this package:
+
+- The active proposal store is now the consolidation record
+  (`.aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md`)
+  plus the guided-gui proposal. That record is the entry point for everything under
+  `proposals/done/`, and it is where any finding of this package belongs that is not applied
+  in the same session. `proposals/README.md` now carries the `superseded` status and its
+  mandatory `Superseded by:` pointer.
+- The record's carried open item 4 (guard pattern precision) is an always-on addition to
+  `General.md` §5.6 waiting for budget, and its carried open item 8 wants one sentence in
+  `Meta.md` §2.2. Both compete with §1.6 for the same reserve, so this package decides
+  whether they are affordable, not Paket 1.
+
+Adjacent finding, made while executing Paket 2 and explicitly NOT part of this package:
+`CLAUDE.md` states that agnix validates memory files in the pre-commit hook. It cannot.
+`projects/` is gitignored (`.gitignore:32`), so memory files are untracked, and the hook's
+scope is `plugins/marketplaces/local/plugins rules`. Widening the scope does not fix it.
+Carried as open item 10 in the record.
+
 ## The finding
 
 Meta.md §3.3 names three always-on surfaces: "[CRITICAL] rule files, the CLAUDE.md index,
