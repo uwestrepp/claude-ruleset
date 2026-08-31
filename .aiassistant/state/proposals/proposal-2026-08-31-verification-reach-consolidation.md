@@ -188,6 +188,38 @@ the class (Check 6 verifies budget *coverage*, failing closed on an unbudgeted a
 surface) rather than the instance (adding one budget line for skill descriptions, which
 would have left the agent descriptions undetected a second time).
 
+**Paket 5 is applied** (2026-08-31, commits `d1f3fed` … `f87be0a`). Check 6 now enumerates
+each surface's members mechanically — the `@` imports in `CLAUDE.md`, tracked `SKILL.md`,
+tracked `agents/*.md` — and fails closed on a member that maps to neither a budget nor an
+explicit `UNBUDGETED` marker, so a *fifth* surface added by hand still has to be declared but
+a new member of an existing one can no longer slip in. `Meta.md` §3.3 names the fourth
+surface and the coverage requirement; the script's surface list is maintained by hand with
+§3.3 as its stated source and is deliberately not parsed from that prose. After the demotion
+pass over skill descriptions and the `CLAUDE.md` ledger:
+
+```
+rules/General.md        10272 / 10500   unchanged (budget kept, not raised)
+rules/Meta.md            4276 /  4490   +88, the §3.3 coverage sentence
+skill descriptions (27)  3197 /  3360   -386
+CLAUDE.md                2872 /  3020   -183, twelve ledger entries
+Persona + Organisation    954 /  1005   unchanged
+agent descriptions (6)    445 /   467   unchanged, now budgeted
+------------------------------------------------
+total                   22016           0 % ungoverned
+```
+
+Budgets are actual + ~5 %: the headroom is one edit wide by design. Two things were left
+undone on purpose. Agent descriptions were budgeted but not shortened — they carry the same
+untested activation risk as skill descriptions and the package had no reason to spend it.
+And `pocock/` descriptions were not touched: they are vendored, and editing them creates
+upstream-refresh drift (`plugins/marketplaces/local/plugins/pocock/UPDATING.md`).
+
+**The risk that still has no test.** A description IS its activation trigger, and nothing in
+the repo tests activation. Every tightening was reviewed one description at a time against
+the phrases a user would plausibly type, and the nine entries whose only removal was the
+`Activate via /plugin:skill …` boilerplate were grouped in one commit on that ground. If a
+skill stops firing, `git revert` of its single commit is the intended repair.
+
 **Binding probability.** Moving always-on text into a skill body is not a free optimisation:
 a skill that is not activated cannot bind. Every demotion trades tokens against binding
 probability, and that trade is per atom, never a policy. This is why revision 1 of the triage
@@ -284,6 +316,10 @@ reach clause. Each is still open, and this list is now their active form.
    scratchpad as recursive-force). Proposed: one sentence requiring a structural match to be
    anchored to the structural unit it claims to describe. **Always-on cost, so it competes
    with §1.6 for the same reserve** — sequence it after Paket 1 and Paket 5.
+   *Envelope after Paket 5:* `rules/General.md` has 228 estimated tokens of reserve, which one
+   sentence fits — but §1.6 (Paket 1) is drawing on the same 228 and is the larger claim. This
+   item is affordable only if Paket 1 lands under budget; it is not affordable alongside a
+   §1.6 that consumes the reserve. Paket 1 decides, this package does not.
 5. **Em-dash gate** (`proposal-2026-08-17-em-dash-gate.md`). `General.md` §8.5 is enforced by
    attention alone and attention failed three times in one session. Proposed: extend
    `hooks/validate-commit-message.sh` (already a `PreToolUse` gate scoped to `~/work`) to
@@ -314,6 +350,9 @@ Two further open items come from `unsorted.md` (see below):
    Proposed: one sentence in §2.2 — when a finding implies an action, the document that
    triggers the action (runbook, deploy plan, checklist) is checked as a second target, and
    the checkpoint is complete only with both. Always-on cost: one sentence.
+   *Envelope after Paket 5:* `rules/Meta.md` has 214 estimated tokens of reserve and nothing
+   else is queued against it, so this one is affordable now. It is the only carried item this
+   package clears for spending.
 9. **A single run cannot show a transition-state bug.** Distinct from axis 7 (reachability):
    there the branch was never entered, here the run entered it but only end states were
    observed, while the defect sat in the state carried between runs. It reached production.
