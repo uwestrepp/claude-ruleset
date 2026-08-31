@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-31
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — KSW5-893 in krannich/pim, two false diagnoses from
               runtime observations within one session
 Revisit when: a second instance of "observed the wrong object or stale code, concluded

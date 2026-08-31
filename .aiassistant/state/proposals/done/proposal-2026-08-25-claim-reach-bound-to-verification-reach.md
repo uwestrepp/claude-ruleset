@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-25
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — SSBSITE-1261, two commit bodies generalised past their
               own test rig, both caught later by an adversarial review
 Revisit when: a third instance of a claim exceeding its evidence in any project, or the

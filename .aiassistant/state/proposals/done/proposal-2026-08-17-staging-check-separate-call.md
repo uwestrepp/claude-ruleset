@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-17
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — /core:commits step 12 was executed and still
               failed to prevent the thing it exists to prevent
 Revisit when: a second instance of a verify-then-act pair collapsed into one tool

@@ -1,8 +1,10 @@
 # Proposal: Implementation Visibility (pairing mode vs. architecture grill)
 
 Date: 2026-07-29.
-Status: **Part A (architecture pre-flight) DECIDED AND BUILT as `/core:blueprint`, see §9.
-Part B (always-on pairing mode) remains proposal only, nothing built.**
+Status: superseded. Part A (architecture pre-flight) was DECIDED AND BUILT as
+`/core:blueprint`, see §9. Part B (always-on pairing mode) remains proposal only, nothing
+built, and is carried forward as an open item in the record named under `Superseded by`.
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin: user observation that the plan-then-implement default makes the *genesis* of
 implementation decisions opaque, and that being "closer to" those decisions is
 sometimes wanted (accompanying them, or merely seeing them).
@@ -44,9 +46,12 @@ Note the two distinct modes hidden in (3): **accompany** (blocking) and **just s
 | `/core:batch` §5.3 / §9.3 | during | Pass-3 items inside a batch cycle | per-item approval, mandatory |
 | `advisor` (referenced) | before | direction already held | one strong opinion |
 
-Referenced-but-absent: `advisor` is cited as a sibling primitive by `/core:brainstorm`,
-`/core:grill-me`, `/core:poke-holes` and the composer skills, but exists neither as a
-skill nor as an agent in this repo. Separate rule-set finding, out of scope here.
+Corrected 2026-08-31 (the original text claimed `advisor` does not exist; that was wrong
+twice over): `advisor` is cited as a sibling primitive by THREE skills, `/core:brainstorm`,
+`/core:grill-me` and `/core:poke-holes`. The composer hits counted here originally are
+`advisory`/`advisories`, a substring false positive. There is no skill and no sub-agent
+definition for it under `agents/` (verified 2026-08-31), but `/advisor <model>` was observed
+the same day as a harness command, via its own error output. Claim nothing beyond that.
 
 ### 2.1 Two genuine gaps
 
@@ -485,4 +490,6 @@ accepts the gate offer.
 - Empirical check of Part A: does the gate fire at the right moments, and does the lens set hold
   in real use? First two or three uses decide whether L1/L7 should merge (§ user review) and
   whether Part B is still needed at all.
-- Unrelated finding: `advisor` is referenced by four skills but does not exist (§2).
+- Unrelated finding, corrected 2026-08-31: `advisor` is referenced by three skills, not four,
+  and it does exist — as the harness command `/advisor <model>`, observed via its own error
+  output. What does not exist is a skill or a sub-agent definition for it (§2).

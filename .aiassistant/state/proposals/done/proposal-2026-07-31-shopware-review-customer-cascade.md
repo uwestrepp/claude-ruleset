@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-07-31
-Status:       parked
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       GMP-340 go-live session — test-data cleanup after the GMP-343 cross-user check
 Revisit when: a second wrong-cascade assumption shows up in any Shopware entity cleanup,
               or rules/Shopware.md §1 is being edited anyway

@@ -17,7 +17,8 @@ record progress in `Status` instead.
 
 ```
 Date:         <YYYY-MM-DD>
-Status:       parked | open | accepted | rejected | shipped
+Status:       parked | open | accepted | rejected | shipped | superseded
+Superseded by: <repo-relative path of the record that absorbed it> (required for `superseded`)
 Origin:       where it came from — session observation, friction window, user remark
 Revisit when: the concrete trigger that reopens it (required for `parked`)
 ```
@@ -25,6 +26,10 @@ Revisit when: the concrete trigger that reopens it (required for `parked`)
 `Revisit when` is what keeps a parked proposal from becoming litter. It must name an
 observable event ("a second instance of this failure", "next `/core:rule-friction` cycle",
 "when the affected rule file is touched anyway"), never "later".
+
+`Superseded by` is what keeps an archived proposal reachable. It names the absorbing record
+by repo-relative path, so the pointer survives a move of either file. Without it the status
+is a deletion in disguise.
 
 ## Required sections
 
@@ -48,6 +53,17 @@ the existing implementation-visibility record is an outlier, not the target.
 `parked` or `open` → applied, then `shipped`; or dropped, then `rejected`. In both cases
 move the file to `done/` per `Meta.md` §2.4, still committed. Archive, never delete: a
 rejected proposal is the record that stops the same idea being re-derived from scratch.
+
+A third path: `parked` or `open` → absorbed into a consolidation record, then `superseded`,
+and to `done/` like the other terminal states. It is the only status that is not a decision
+about the idea. The archived file stays the full-text source; the record carries the
+substance forward and becomes the active form. That makes it honest only when it is true —
+a proposal whose proposed change is not represented in the absorbing record is not
+superseded, it is dropped, and `rejected` with a stated reason is the correct status.
+
+Consolidate when one error has been recorded on n axes as n files: that is cheaper in
+always-on tokens and stronger evidence under `Meta.md` §3.3 than n competing additions.
+`proposal-2026-08-31-verification-reach-consolidation.md` is the worked case.
 
 Promotion out of `parked` needs the same discipline as any rule change (`Meta.md` §3.2):
 check overlap, prefer the narrowest matching file, and update the `CLAUDE.md` rule index in

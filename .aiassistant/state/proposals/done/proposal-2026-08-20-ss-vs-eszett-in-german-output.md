@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-20
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       user correction — an entire German documentation set was written in the
               Swiss ss spelling without any rule, gate or spellchecker objecting
 Revisit when: the next German-language project starts, or the next

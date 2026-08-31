@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-25
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — SSBSITE-1261, three correction passes over the same
               handoff set, every one caused by an embedded state snapshot
 Revisit when: a second project needs a staleness pass over its handoffs, or the next

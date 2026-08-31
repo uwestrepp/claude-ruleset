@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-19
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — three failures while seeding the Shopify store schema
               in the MO project
 Revisit when: a decision on this proposal. The "third instance" trigger has already

@@ -67,8 +67,14 @@ hands, which is exactly where that rule currently has no concrete procedure.
   the overlap turns out to dominate, the honest outcome is a section inside `/core:batch`
   rather than a new skill, and that should be checked before shipping.
 - **Skill inflation.** One more explicit-activation skill in an already long ledger. It
-  costs a ledger line always-on; the body only loads on invocation, so the `Meta.md` §3.3
-  budget impact is one line, not the pattern.
+  costs a ledger line always-on **and its description**: a skill's description is its
+  activation trigger and is therefore loaded in every session, at ~150-270 tokens for one of
+  this shape (measured 2026-08-31: the 27 skill descriptions total ~3589 tokens). The body
+  only loads on invocation, so the `Meta.md` §3.3 budget impact is a ledger line plus a
+  description, not the pattern — roughly three to five times what this section originally
+  claimed. Note that skill descriptions carry no budget in `bin/lint-section-refs.sh`
+  (Check 6 budgets five files), so the cost is invisible to the trip-wire until Paket 5
+  closes that gap.
 - **Single incident so far.** One project, one session. The pattern is not yet proven to
   generalise beyond a store admin, which is why this is `open` and not applied.
 

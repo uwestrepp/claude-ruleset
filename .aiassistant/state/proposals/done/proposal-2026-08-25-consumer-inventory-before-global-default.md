@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-25
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — SSBSITE-1261, two of three rework commits traced to
               the same missing step
 Revisit when: a second project shows rework caused by a global default whose consumers

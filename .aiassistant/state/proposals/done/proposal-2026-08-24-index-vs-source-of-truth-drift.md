@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-24
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — MO project, MO-111, producing a customer-facing
               version of the requirements catalogue
 Revisit when: a decision on this proposal, or a second instance in any project that

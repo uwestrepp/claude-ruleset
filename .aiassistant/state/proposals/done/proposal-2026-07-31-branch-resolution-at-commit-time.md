@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-07-31
-Status:       parked
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       GMP-340 go-live session — nearly committed to the protected branch `staging`
 Revisit when: a second near-miss or actual commit on a protected branch, or the next
               /core:rule-friction cycle, whichever comes first

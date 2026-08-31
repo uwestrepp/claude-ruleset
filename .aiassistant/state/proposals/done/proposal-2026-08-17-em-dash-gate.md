@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-17
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — three §8.5 violations in one session, each caught
               only by a self-initiated grep, none by a gate
 Revisit when: a fourth em-dash violation reaches a commit, or the next

@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-26
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — three wrong "not possible" claims in one session in
               the MO project, two of them already committed as documentation
 Revisit when: a decision on this proposal, together with

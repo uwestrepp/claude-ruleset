@@ -54,10 +54,13 @@ was deliberately not done in that session (out of scope: the session added
    changes). The version string is also stated as a fact outside the pin, verified
    2026-07-30 by `grep -rn '0\.40\.0'`: memory
    `ref_skill_frontmatter_argument_hint.md` (3×, incl. "currently `0.40.0`") and its
-   `MEMORY.md` index line, plus
-   `.aiassistant/state/proposal-2026-07-29-implementation-visibility.md:473`. Update
-   those in the same change-set. `.agnix.toml` and `CLAUDE.md` do NOT hardcode it
-   (they point at `.agnix-version`), so they need no edit.
+   `MEMORY.md` index line. Update those in the same change-set. One further occurrence
+   sits in §9.2 of
+   `.aiassistant/state/proposals/done/proposal-2026-07-29-implementation-visibility.md`
+   (path corrected 2026-08-31: the file was archived, and the old pointer also named the
+   wrong directory). That sentence records which command was run when that change-set
+   shipped, so it is history and MUST NOT be bumped. `.agnix.toml` and `CLAUDE.md` do NOT
+   hardcode it (they point at `.agnix-version`), so they need no edit.
 6. Validation for the commit itself: run the pre-commit path (a real commit
    exercises it) and record the new baseline counts in the commit body.
 

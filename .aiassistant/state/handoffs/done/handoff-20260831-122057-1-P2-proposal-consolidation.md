@@ -1,6 +1,9 @@
 # Paket 2: consolidate the proposal store
 
-Status: designed, NOT applied. Independent of Paket 1; can run first.
+Status: DONE, executed 2026-08-31. Result:
+`.aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md`.
+The "Run order for the whole set" section at the end of this file remains the index for the
+six open packages; the leading number in each handoff filename carries the same order.
 User decision 2026-08-31: the consolidation record REPLACES the individual files.
 
 ## Deliverables

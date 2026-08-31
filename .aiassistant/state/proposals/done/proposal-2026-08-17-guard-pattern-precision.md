@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-17
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — third false-positive fix in the same guard file
 Revisit when: a fourth pattern-precision false positive lands in any authored gate,
               or the next /core:rule-friction cycle, whichever comes first

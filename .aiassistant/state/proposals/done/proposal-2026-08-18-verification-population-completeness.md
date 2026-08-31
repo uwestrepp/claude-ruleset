@@ -2,7 +2,8 @@
 
 ```
 Date:         2026-08-18
-Status:       open
+Status:       superseded
+Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin:       session observation — false all-clear in the MQDEV-195 migration rehearsal
 Revisit when: a second instance of "verified the reported subset, concluded about the
               whole" lands in any project, or the next /core:rule-friction cycle
