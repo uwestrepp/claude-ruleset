@@ -290,8 +290,28 @@ pointer, not as a number.
 
 ## Carried open items (not covered by `General.md` §1.6)
 
-These seven proposals were archived under this record, but their substance is **not** in the
-reach clause. Each is still open, and this list is now their active form.
+Items 1-7 are the archived proposals whose substance is **not** in the reach clause; 8-10
+come from `unsorted.md`; 11 and 12 were appended by Pakete 5 and 1. Each is still open.
+
+**Scheduling, verified 2026-09-02.** Until that date this list was a backlog, not a plan: no
+handoff scheduled any of the twelve. That is now fixed, and the owning handoff is named per
+item below. `Ownerless` marks the three that need a user decision rather than
+implementation — they stay here on purpose.
+
+| # | Item | Owning handoff |
+|---|---|---|
+| 1 | Pairing mode, part B | none — user decision on hooks first (`Ownerless`) |
+| 2 | Branch resolution at commit time | Paket 8 §1 |
+| 3 | Pre-action check as its own call | Paket 8, parked with an unpark trigger |
+| 4 | Guard-pattern precision | Paket 4, follow-up step 1 |
+| 5 | Em-dash gate | Paket 8 §2 |
+| 6 | ß versus ss | Paket 8 §3 |
+| 7 | Shopware review cascade | Paket 7, "Addition, not hygiene" |
+| 8 | Two target documents for actionable findings | Paket 3, second clause |
+| 9 | Transition-state bug needs two runs | Paket 8 §4 |
+| 10 | agnix ledger claim wrong for memory files | none — user decision which fix (`Ownerless`) |
+| 11 | Skill activation has no test | none — verify `claude plugin eval` first (`Ownerless`) |
+| 12 | §5.6 completeness bullet, repair half | Paket 4, follow-up step 2 |
 
 1. **Pairing mode** (`proposal-2026-07-29-implementation-visibility.md`). Part A of that
    document was decided and built as `/core:blueprint`. Part B, an always-on pairing mode
@@ -352,7 +372,7 @@ reach clause. Each is still open, and this list is now their active form.
    Paket 7, which proposes moving project specifics *out* of that file: this is a behaviour
    fact, not a project specific, so it stays a legitimate addition.
 
-Two further open items come from `unsorted.md` (see below):
+Three further open items come from `unsorted.md` (see below):
 
 8. **A finding with an action consequence has two target documents.** `Meta.md` §2.2 requires
    the narrowest durable scope but says nothing about findings whose consequence is an
@@ -377,6 +397,8 @@ Two further open items come from `unsorted.md` (see below):
     `.gitignore:32`, so memory files are untracked and no pre-commit hook can validate them
     at all. Widening the hook scope therefore does not fix it. Fix: correct the ledger
     sentence, or add an explicit manual validation step for memory files and say so.
+
+Two items were appended later by the packages that discovered them:
 
 11. **Skill activation has no test, and the harness may already offer one.** Package 5 had to
     change twelve activation triggers with no executable validation path: `General.md` §5.2

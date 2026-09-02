@@ -25,6 +25,31 @@ An agent writing a handoff does not consult §2.4. Decide before applying:
   (c) split: the pointer duty into §2.2, the reboot-safe-path duty into §2.4.
 This was NOT decided in the originating session.
 
+## Second clause: a finding with an action consequence has two targets (record item 8)
+
+Added 2026-09-02. Verified that no handoff scheduled this, and this is the Meta.md package,
+so it belongs here. Full evidence in the consolidation record, carried open item 8 — do not
+re-derive it.
+
+Incident: findings were written to a review document and reported as persisted, while the
+resulting steps were missing from the operational document that would have triggered them.
+`Meta.md` §2.2 requires the narrowest durable scope and says nothing about findings whose
+consequence is an action.
+
+Change: one sentence in §2.2 — when a finding implies an action, the document that triggers
+the action (runbook, deploy plan, checklist) is checked as a SECOND target, and the
+checkpoint is complete only with both.
+
+Why it rides along here: it is one sentence in the same file this package already opens, and
+`rules/Meta.md` is the only always-on surface with real reserve (214 estimated tokens, and
+nothing else is queued against it). The record calls it "the only carried item this package
+clears for spending". Measure both clauses together against the 4490 budget before applying;
+`bin/lint-section-refs.sh` check 6 fails closed if the pair overruns.
+
+Note the same open design question applies as for the pointer clause: §2.2 is the writing
+moment, §2.4 is retention. This clause targets §2.2 explicitly, which is one input to
+deciding (a)/(b)/(c) above.
+
 ## The three removals (target texts must be fixed BEFORE editing)
 
 - B4 · header purpose list, lines 3-8. Remove the four-item list TOGETHER WITH its colon

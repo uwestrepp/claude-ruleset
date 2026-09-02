@@ -39,6 +39,25 @@ no token budget). Value is readability: a rule file that becomes a fact list sto
   the criterion. Risk: it is the seed of a growing list. Move to a skill reference at about
   five entries.
 
+## Addition, not hygiene: the Shopware review cascade (record item 7)
+
+Added 2026-09-02. Verified that no handoff scheduled this, and this package is the one that
+opens `rules/Shopware.md`, so it belongs here. Note the direction is OPPOSITE to the rest of
+this package: everything above REMOVES from that file, this ADDS one line.
+
+Fact: deleting a customer does not cascade to `product_review`. `customer_id` goes `NULL`
+and the row survives with `external_user` and its status — invisible in the storefront at
+`status = 0` and indistinguishable from a genuine pending review in the administration.
+
+Change: one line in `rules/Shopware.md` §1. Path-gated, no always-on cost.
+
+The cross-check the record demands is already done and holds: this package proposes moving
+project SPECIFICS out of `Shopware.md` (thumbnail size tables, `media_translation`
+custom fields, AVIF CPU load). A cascade behaviour of the data model is a behaviour fact,
+not a project specific, and it meets the same criterion as the facts this package keeps
+(the wrong state does not look wrong while you are looking at it). Apply the removals and
+this addition in the SAME change-set so the file is judged once, in its final shape.
+
 ## Exemplary, do not touch
 
 - Twig.md §1 is the criterion in pure form: the `#`-commented line is still evaluated, and

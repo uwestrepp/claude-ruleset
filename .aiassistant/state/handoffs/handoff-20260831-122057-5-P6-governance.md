@@ -16,6 +16,14 @@ cheaper in always-on tokens and better evidence under §3.3.
 
 ## 2. General.md §11.2 — a delegation briefing must name the claim
 
+**STATUS: DONE by Paket 1, 2026-09-02 — no work left in this item.** It ends below by
+suggesting "Consider folding it into §1.6 (Paket 1) instead of §11.2, to keep it at one
+site", and that is what happened. `General.md` §1.6's final paragraph carries it:
+"Delegated checks inherit the reach of their briefing, and a sub-agent's clean negative
+reads exactly like a wide one. The delegating agent MUST state the claim the check is meant
+to support, and MUST treat the result as bounded by what was actually asked." §11.2 itself
+was NOT touched. Everything below is kept as evidence, not as a pending change.
+
 Incident, in this session: a sub-agent was briefed to look for `advisor` under `agents/`
 and in plugin directories. It searched exactly there, correctly found nothing, and reported
 "does not exist". The reach narrowing was produced BY THE BRIEFING, and the delegating

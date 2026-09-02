@@ -62,3 +62,28 @@ atoms taken are the two this note names as cleanest, and the alternative was rai
 budget or shortening a blocking repair out of the clause. `rules/General.md` closed at
 reserve 16 estimated tokens, so this package is now the only source of space for the two
 queued always-on additions (carried open items 4 and 12 in the consolidation record).
+
+## Follow-up step this package owns (added 2026-09-02)
+
+Freeing space is not the deliverable; spending it is. Verified 2026-09-02 that no handoff
+scheduled the two additions that are waiting on this package, so they are named here as an
+explicit final step rather than left as a backlog entry:
+
+1. **Record item 4 — guard-pattern precision.** One sentence in `General.md` §5.6 requiring
+   a structural match to be anchored to the structural unit it claims to describe. ~65
+   estimated tokens. Evidence: three incidents in `hooks/guard-destructive-commands.sh`,
+   most memorably a substring scan finding a phantom `-r` in the path segment `-uwestrepp`,
+   which classified every plain `rm -f` under a session scratchpad as recursive-force.
+2. **Record item 12 — the §5.6 completeness bullet, repair half.** ~500 bytes as an
+   additional §5.6 bullet after the "Instead assert on an explicit count" bullet. The text
+   is quoted VERBATIM in the consolidation record under "Proposed change" — do not
+   re-derive it. Its recognition half already shipped inside `General.md` §1.6.
+
+Both target §5.6. Apply them together and measure once: `rules/General.md` stood at 10484
+of 10500 after Paket 1, so this package must free at least ~200 estimated tokens before
+either lands, and `bin/lint-section-refs.sh` check 6 fails closed if it does not.
+
+If this package's atoms free less than that, the decision is the user's: raise the
+`General.md` budget by explicit decision, or leave items 4 and 12 queued. Do NOT shorten
+either addition to fit — item 12 in particular is a verbatim text whose value is its
+precision.
