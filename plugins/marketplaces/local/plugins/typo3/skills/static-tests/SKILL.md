@@ -114,6 +114,9 @@ At the end of each package/extension pass within a larger cycle, provide the `Ba
 ## 4. Triage Model (MUST)
 
 Apply `Batch.md` §1 Phase 4 and `Batch.md` §9 as the canonical pass/gate model.
+Those references bind per `General.md` §9.3: `Batch.md` §5.3 mandates per-item Pass 3
+approval and this body does not repeat it, so activate `/core:batch` alongside or load
+the referenced sections before applying any Pass 3 finding.
 
 Static-test pass specialization:
 - Pass 1 typically includes safe formatting/mechanical changes and confirmed false-positive handling.
