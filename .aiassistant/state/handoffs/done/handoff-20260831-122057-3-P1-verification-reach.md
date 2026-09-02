@@ -150,3 +150,64 @@ Until §1.6 exists in rules/General.md, no tracked file may write the literal
 ("does not exist"). These handoffs therefore use "§1.6 in General.md" instead. Once the
 section is applied, the normal form is available again and may be restored.
 This is also the proof that lint-section-refs.sh reads `.aiassistant/state/**`.
+
+---
+
+# Outcome — 2026-09-02, package delivered
+
+`rules/General.md` §1.6 (Verification Reach) is applied. Both BLOCKING repairs are in the
+shipped text, all four Material findings are resolved, and both gates are green
+(`REF-LINT: ok`; agnix 0 errors / 17 warnings — the recorded baseline).
+
+**Budget, measured not estimated.** The repaired clause came out at 1726 bytes against the
+1292-byte draft, so the three designed removals were not enough. Landed:
+
+    baseline                     39036 bytes = 10272 tokens
+    A5 radical (list dissolved,
+      sub-agent case refolded)    -366
+    A10 (§2.4 git commands)       -119
+    A12 (§2.1 enumerations)       -108
+    A8  (§9.3 example → skill)    -278   pulled forward from Paket 4
+    A11a (renumber note)           -50   pulled forward from Paket 4
+    §1.6                         +1726
+                                 -----------------------------------
+                                 39841 bytes = 10484 · budget 10500 · reserve 16
+
+Budget NOT raised. Option (d) was not used.
+
+**Decisions this package owed and made:**
+
+- *Carried open item 4* (guard-pattern precision, §5.6): **not affordable, still open.**
+  Reserve 16 tokens against a ~65-token sentence. Queued behind Paket 4.
+- *The §5.6 completeness bullet* (Material finding 4): only its recognition half landed, as
+  "a filter's hit list is not an event list" in §1.6's recurring limits. The repair half is
+  now carried open item 12 in the consolidation record, quoted verbatim there.
+- *Two Paket 4 atoms taken, not one* (A8, A11a). Both are the ones Paket 4's own note names
+  as cleanest; the alternatives were raising the budget or cutting a blocking repair.
+- *Recurring limits cut from five to three* — the cut target the triage packet designated.
+  Kept: tool-report vs population, filter hit list vs event list, declaration vs
+  admissibility. The delegation paragraph was kept whole, as instructed.
+
+**Consequence for the next session:** `rules/General.md` is effectively at its ceiling
+(16 tokens). The next always-on addition there is blocked until Paket 4 frees space —
+which is `Meta.md` §3.3 working as designed, not a defect.
+
+**The reference-form constraint is lifted.** §1.6 exists, so the literal
+"`General.md` §1.6" resolves in lint Check 1 and is restored in the consolidation record.
+
+**Reach of this package's own validation** (measured, §1.6 applied to itself). "Both gates
+green" covers: lint over tracked files in this repo, agnix over
+`plugins/marketplaces/local/plugins` and `rules`. Positive controls were run rather than
+assumed — a bogus `§5.99` in §1.6's fourth paragraph DID fail lint Check 4 (exit 1), a bogus
+`§1.99` in the third paragraph did NOT, because that line also carries `` `Persona.md` `` and
+Check 4 skips a bare `§N` sharing a line with a cross-file qualifier (a by-design limitation
+stated in the script header). So §1.6's `§5.6` reference is machine-guarded; its `§1.5` and
+`§10.4` references are NOT, and were verified by hand against the headings at
+`rules/General.md:52` and `:330`. Paragraphs in this file are single lines, so any paragraph
+carrying a file-qualified reference hides its bare ones; fixing that means splitting
+paragraphs (costs bytes on a file at its ceiling) or extending the lint, neither of which
+this package did.
+
+What is NOT covered by either gate: whether §1.6 actually binds agent behaviour. That is
+carried open item 11 — rule and skill activation has no executable test in this repo — and
+it is stated, not skipped.

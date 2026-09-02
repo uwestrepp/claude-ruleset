@@ -2,12 +2,12 @@
 
 ```
 Date:          2026-08-31
-Status:        open
+Status:        reach cluster shipped 2026-09-02 (Paket 1); carried open items still open
 Origin:        rule-set consolidation session 2026-08-31 (/core:batch cycle, triage packet
                revision 3); user decision the same day that one record replaces the
                individual proposal files
-Revisit when:  Paket 1 is applied — then the reach cluster below turns `shipped` — or the
-               next /core:rule-friction cycle, whichever comes first
+Revisit when:  the next /core:rule-friction cycle, or when a carried open item is
+               picked up. The reach cluster is closed; do not re-derive it.
 Supersedes:    15 proposal files plus `unsorted.md`; see "Register of superseded proposals"
 ```
 
@@ -73,11 +73,15 @@ or the modality, and it is carried here so that archiving its file loses nothing
 
 ## Proposed change
 
-One new always-on section, **§1.6 in `rules/General.md` (Verification Reach)**, replacing
+**SHIPPED 2026-09-02** as `rules/General.md` §1.6 (Verification Reach), replacing the
+seven reach proposals. What follows is the record of the design and its repairs; the
+applied text, its deltas against the draft, and the proof ledger are in the triage packet.
+
+One new always-on section, **`General.md` §1.6 (Verification Reach)**, replacing
 the seven reach proposals. The drafted text lives in the triage packet
 (`.aiassistant/state/workflow-triage/20260831-ruleset-consolidation-alwayson.md`, atom C1)
 and its delivery is Paket 1
-(`.aiassistant/state/handoffs/handoff-20260831-122057-3-P1-verification-reach.md`).
+(`.aiassistant/state/handoffs/done/handoff-20260831-122057-3-P1-verification-reach.md`).
 
 **Do not apply the drafted text as it stands.** An adversarial pass (`/core:poke-holes`,
 2026-08-31) found two blocking defects in it:
@@ -257,7 +261,7 @@ worthless; it is mis-sized. Carried as Paket 6 item 3.
 
 ## Register of superseded proposals
 
-Absorbed into §1.6 in `rules/General.md` (delivery: Paket 1):
+Absorbed into `General.md` §1.6 (delivery: Paket 1):
 
 | File (now under `done/`) | Axis |
 |---|---|
@@ -284,7 +288,7 @@ landed. That is the Paket 3 clause failing inside the rule-set's own artifact: a
 files another actor keeps writing is state the artifact does not own, and belongs in it as a
 pointer, not as a number.
 
-## Carried open items (not covered by §1.6 in `rules/General.md`)
+## Carried open items (not covered by `General.md` §1.6)
 
 These seven proposals were archived under this record, but their substance is **not** in the
 reach clause. Each is still open, and this list is now their active form.
@@ -320,6 +324,13 @@ reach clause. Each is still open, and this list is now their active form.
    sentence fits — but §1.6 (Paket 1) is drawing on the same 228 and is the larger claim. This
    item is affordable only if Paket 1 lands under budget; it is not affordable alongside a
    §1.6 that consumes the reserve. Paket 1 decides, this package does not.
+   **Verdict, Paket 1, 2026-09-02: NOT affordable, still open.** §1.6 landed at 10484
+   estimated tokens against budget 10500 — reserve 16, and the repaired clause needed two
+   Paket 4 atoms pulled forward to get there. One sentence on guard-pattern precision costs
+   ~65. It is not shortened away and not dropped: the next `rules/General.md` addition needs
+   a demotion first, so this item is queued behind Paket 4, whose atoms are the space it
+   would spend. Its evidence (three incidents in `hooks/guard-destructive-commands.sh`) is
+   unaffected by the delay.
 5. **Em-dash gate** (`proposal-2026-08-17-em-dash-gate.md`). `General.md` §8.5 is enforced by
    attention alone and attention failed three times in one session. Proposed: extend
    `hooks/validate-commit-message.sh` (already a `PreToolUse` gate scoped to `~/work`) to
@@ -378,6 +389,15 @@ Two further open items come from `unsorted.md` (see below):
     turns the whole surface testable and this is the single highest-value addition to the
     rule-set's own tooling. If it cannot, say so here and the risk stays accepted-and-named.
     Not decided in-session; no always-on cost either way.
+
+12. **The §5.6 completeness bullet did not land** (Paket 1, 2026-09-02). The verbatim cue
+    quoted under "Proposed change" — a filter's hit list is not an event list; assert on a
+    count against an independent source and confirm the counted lines are the command's only
+    output — costs ~500 bytes on a surface that closed at reserve 16 tokens. Its
+    **recognition** half is in `General.md` §1.6's recurring limits ("a filter's hit list is
+    not an event list"); its **repair** half is what is missing, and that half is the useful
+    one, drafted against two measured instances. Same queue as item 4: it needs a demotion
+    to pay for it. Do not re-derive the text — it is quoted verbatim above.
 
 ## Dissolved: `unsorted.md`
 

@@ -55,3 +55,10 @@ than it was.
 
 If Paket 1 needs more budget than options (a)-(c) there provide, pull ONE atom forward
 from here rather than raising the budget. A8 and A11's first half are the cleanest.
+
+**Paket 1 took both** (2026-09-02), not one: the repaired §1.6 measured 1726 bytes against
+the 1292-byte draft, and A5-radical + A10 + A12 alone left it ~490 bytes over budget. Both
+atoms taken are the two this note names as cleanest, and the alternative was raising the
+budget or shortening a blocking repair out of the clause. `rules/General.md` closed at
+reserve 16 estimated tokens, so this package is now the only source of space for the two
+queued always-on additions (carried open items 4 and 12 in the consolidation record).

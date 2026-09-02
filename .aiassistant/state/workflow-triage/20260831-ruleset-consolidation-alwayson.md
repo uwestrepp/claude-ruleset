@@ -77,8 +77,41 @@ A5, A10, A12 (General.md) and B4, B8, B10 (Meta.md) affect the budget arithmetic
 
 | Atom | Target/sweep verified at | Old → new | Check result |
 |---|---|---|---|
-| A5 | | 5 list items → 2, sub-agent item retained | |
+| A5 | 2026-09-02, `rules/General.md` §10.5; sweep over the 4 rule/skill-surface refs | list dissolved entirely (radical variant), sub-agent case folded into the criterion sentence verbatim ("whose intermediate reads need not enter context"); −420 +54 = −366 bytes | `comm-calibrate/SKILL.md:66` resolves on the folded clause; `communication:113`, `comm-calibrate:55`, `CLAUDE.md:60` cite the offer list, untouched. Both gates green. |
+| A10 | 2026-09-02, `rules/General.md` §2.4 | two parenthetical git commands removed, the WHAT-list verbatim; −119 bytes | Inbound §2.4 refs cite the naming duty, not the commands. Both gates green. |
+| A12 | 2026-09-02, `rules/General.md` §2.1 | two parenthetical enumerations removed; −108 bytes | Inbound §2.1 refs (TYPO3, Drupal, PER, Shopware:13, major-upgrade:35/110) cite the version-check duty. Both gates green. |
+| A8 (pulled forward from Paket 4) | 2026-09-02, `rules/General.md` §9.3 → `typo3/skills/static-tests/SKILL.md` §4 | example paragraph removed from always-on, reworded as a local obligation at the site it described; −278 bytes always-on, skill body unbudgeted | The relocation is stronger at the target: it now binds where the reader is instead of describing that site from elsewhere. Both gates green. |
+| A11a (pulled forward from Paket 4) | 2026-09-02, `rules/General.md` header note | "; do not renumber (see `bin/lint-section-refs.sh`)" removed; "they remain binding" and the stable-anchor clause kept; −50 bytes | Machine-enforced by lint Check 5, which still passes. Both gates green. |
+| C1 | 2026-09-02, `rules/General.md` §1.6 inserted after §1.5 | new section, +1726 bytes | Both blocking repairs applied (see below). File 39036 → 39841 bytes = 10484 est. tokens against budget 10500, reserve 16. |
 | B10 | | standalone sentence → folded | |
+
+## C1 as applied (rev-4, 2026-09-02) — supersedes the rev-3 draft below
+
+The rev-3 draft was NOT applied. Both `/core:poke-holes` blocking defects were repaired and
+the four Material findings resolved; the applied text is `rules/General.md` §1.6. What
+changed against the draft:
+
+- **Blocking 1 (trigger).** The primary trigger now sits at the inference step ("when a
+  check result becomes a statement about system state, it inherits the check's reach"), with
+  the grammatically-innocent sentence named as the typical defect and the grammar cues
+  demoted to "only a second, cheaper cue".
+- **Blocking 2 (asymmetry).** Extension is the default and cost-bounded; narrowing is
+  "the fallback, not an equal option — cheap and unfalsifiable" and carries the duty to name
+  what stays unverified.
+- **Material, trace.** Bound to the existing §1.5 label instead of a new output block: a
+  claim narrowed instead of extended "leaves a §1.5 hypothesis, not a diagnosis". No extra
+  always-on tokens.
+- **Material, §10.4 conflict.** Stated explicitly: "A reach qualifier is content, not
+  hedging: §10.4 and `Persona.md` bind performative caution, never a claim's scope."
+- **Material, §5.6.** Narrowed to "§5.6's *evidence clause* is this rule applied to command
+  construction".
+- **Material, repair cues.** Three repairs are named in the extension sentence (enumerate the
+  population from the system, check the second surface, force the branch). The verbatim
+  completeness bullet for §5.6 did NOT land — see the consolidation record's decision.
+- **Cut to fit** (the designated cut target per the rev-3 note): the "Recurring limits" list
+  went from five items to three, keeping the least inferable ones (tool-report vs population,
+  filter hit list vs event list, declaration vs admissibility). The delegation paragraph was
+  kept whole, as instructed.
 
 ## Full text of the manual atoms (rev-3 addition; the rev-2 audit could not price these)
 
