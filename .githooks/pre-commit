@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # pre-commit — mq.agent-ruleset integrity checks.
 #   1. bin/lint-section-refs.sh — cross-file §-references, skill-ledger, budgets.
-#   2. agnix validate           — SKILL.md / rule / memory validation (config in
-#                                 .agnix.toml). The real agent-sh/agnix linter,
-#                                 non-strict: blocks on errors, warnings are shown
-#                                 but do not block. Pinned version in .agnix-version.
+#   2. agnix validate           — SKILL.md + rule validation (config in .agnix.toml).
+#                                 Scope is `plugins/.../plugins rules`; memory files are
+#                                 NOT covered, since `projects/` is gitignored and a hook
+#                                 has nothing to gate on. They validate fine on demand.
+#                                 The real agent-sh/agnix linter, non-strict: blocks on
+#                                 errors, warnings are shown but do not block. Pinned
+#                                 version in .agnix-version.
 # Bypass a single commit: SKIP_REF_LINT=1 and/or SKIP_AGNIX=1 git commit ...
 set -uo pipefail
 root="$(git rev-parse --show-toplevel)"

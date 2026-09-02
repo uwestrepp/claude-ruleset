@@ -300,7 +300,7 @@ implementation — they stay here on purpose.
 
 | # | Item | Owning handoff |
 |---|---|---|
-| 1 | Pairing mode, part B | none — user decision on hooks first (`Ownerless`) |
+| 1 | Pairing mode, part B | none — scoped 2026-09-02 to a narrow `observe`-only core; build-or-drop is the user's call (`Ownerless`) |
 | 2 | Branch resolution at commit time | Paket 8 §1 |
 | 3 | Pre-action check as its own call | Paket 8, parked with an unpark trigger |
 | 4 | Guard-pattern precision | Paket 4, follow-up step 1 |
@@ -309,8 +309,8 @@ implementation — they stay here on purpose.
 | 7 | Shopware review cascade | Paket 7, "Addition, not hygiene" |
 | 8 | Two target documents for actionable findings | Paket 3, second clause |
 | 9 | Transition-state bug needs two runs | Paket 8 §4 |
-| 10 | agnix ledger claim wrong for memory files | none — user decision which fix (`Ownerless`) |
-| 11 | Skill activation has no test | none — verify `claude plugin eval` first (`Ownerless`) |
+| 10 | agnix ledger claim wrong for memory files | **DONE 2026-09-02** — sentence corrected in `CLAUDE.md` + hook header |
+| 11 | Skill activation has no test | blocked: `claude plugin eval` is the right mechanism but gated behind early access here (`Ownerless`) |
 | 12 | §5.6 completeness bullet, repair half | Paket 4, follow-up step 2 |
 
 1. **Pairing mode** (`proposal-2026-07-29-implementation-visibility.md`). Part A of that
@@ -320,6 +320,30 @@ implementation — they stay here on purpose.
    reach, and willingness to add hooks (the precondition for any credible always-on claim).
    Also open: whether the blueprint gate fires at the right moments in real use, which
    decides whether Part B is still needed at all.
+   **Corrected 2026-09-02 (user).** "Willingness to add hooks" is a stale framing: this repo
+   already runs eight registered hooks (seven `PreToolUse`, one `SessionStart`), so the
+   question was never *whether* but *what for* and at what cost. Verified the same day: no
+   `UserPromptSubmit` hook exists yet, and that is the event B1 names as the mechanism
+   (re-inject mode and level via `additionalContext` every turn, so the mode survives
+   compaction). Only the event is new; the shape is proven on this host.
+   **The decision, restated from the proposal's own findings:**
+   - `observe` (B3) never blocks, costs no round trip, and is fail-VISIBLE — if it stops,
+     the user notices. `gate` blocks once per decision and is where the cost explodes. B3
+     suspects `observe` covers most real cases.
+   - The level ladder (B2) is the wrong axis and would gate the wrong things. The right
+     trigger is "several defensible options / irreversible / not fixed by codebase
+     convention"; abstraction level is at most a scope filter.
+   - B4 forbids blanket forced verbalisation: "no real alternative weighed, standard pattern
+     from `<file>`" MUST count as a complete answer, else the mode manufactures post-hoc
+     rationalisations that the user then decides on — worse than the opacity it cures.
+   So the cost-benefit-positive core is narrow: `UserPromptSubmit` hook + state file,
+   `observe` only, trigger on genuine option sets, plus the §8.4 suspension (M1) and a
+   `CLAUDE.md` ledger line. `gate`, the level ladder and cross-session persistence are the
+   expensive parts, and none is required for the stated need ("just see it").
+   Still open and NOT answerable by the agent: whether even that narrow version is worth
+   building, given that M2 has no cheap resolution — sub-agents do not see the mode, so
+   delegated implementation bypasses it entirely while `General.md` §11.1 mandates
+   delegation for exactly that kind of bounded work.
 2. **Branch resolution at commit time** (`proposal-2026-07-31-branch-resolution-at-commit-time.md`).
    `General.md` §12 resolves the target branch once per *task*, and a task can be long; in
    the GMP-340 go-live session the working copy had moved onto `staging` hours later and a
@@ -390,7 +414,18 @@ Three further open items come from `unsorted.md` (see below):
    Proposed: where state is carried forward across runs, check at least two consecutive
    cycles plus the transition between the end states. The note itself argues `/core:batch`
    §3.3 is a better home than `General.md` §5.2, which is dense and always-on.
-10. **The agnix ledger claim is wrong for memory files.** `CLAUDE.md` states that
+10. **RESOLVED 2026-09-02 — the agnix ledger claim was wrong for memory files.**
+    User decision: correct the sentence, no manual step. Applied in `CLAUDE.md` and in the
+    `.githooks/pre-commit` header, which carried the same false claim — agnix covers
+    SKILL.md and rule files; memory files are not covered, and widening the hook scope does
+    not help.
+    One premise corrected in passing: a manual step would NOT have meant tracking the memory
+    files. `npx agnix@0.40.0 validate projects/-home-uwestrepp--claude/memory` runs fine on
+    the untracked, gitignored path (verified 2026-09-02: 0 errors, 21 warnings, all of them
+    portability complaints about hard-coded `~/.claude` paths). What a pre-commit hook cannot
+    do is gate on it — an untracked file gives the hook nothing to block. Original below.
+
+    `CLAUDE.md` states that
     "SKILL.md / rule / memory files are validated by `agnix` ... in the pre-commit hook".
     Verified 2026-08-31: the hook runs `agnix validate plugins/marketplaces/local/plugins
     rules`, and `projects/` (which holds every memory directory) is gitignored at
@@ -410,7 +445,37 @@ Two items were appended later by the packages that discovered them:
     a given skill. If it can, a fixture of the phrases each description claims as triggers
     turns the whole surface testable and this is the single highest-value addition to the
     rule-set's own tooling. If it cannot, say so here and the risk stays accepted-and-named.
-    Not decided in-session; no always-on cost either way.
+    **Hypothesis CONFIRMED in mechanism, BLOCKED in execution (2026-09-02).** User decision
+    was "if it is a feasible test, do it". It is the right test and it cannot be run here yet.
+    Two findings, with their reach kept separate:
+    - *Verified by running it on this host.* `claude plugin eval` exists and its `--help`
+      documents `--ablation <none|with-without>` plus, verbatim: "under with-without, graders
+      marked with-only, incl. `tool_used: Skill`, are a plugin-fired indicator rather than
+      part of the score". So skill activation is a first-class thing the harness scores. But
+      EVERY real invocation answers `` `plugin eval` is currently in early access `` and
+      exits 1 — `init --bare` included, so nothing can even be scaffolded. CLI is 2.1.258 and
+      `claude update` reports up to date, so a stale binary is not the cause.
+    - *Reported by a `claude-code-guide` sub-agent from an embedded offline reference, NOT
+      verified by running anything and NOT found in public docs.* Case layout is
+      `evals/<case>/prompt.md` + `graders/<name>.md` (+ optional `case.yaml`), and the
+      skill-fired grader idiom is `type: tool_used` / `tool: Skill` /
+      `input_match: '"skill"\s*:\s*"(?:[\w-]+:)?<skill>"'`. The `<skill>` placeholder and
+      the optional namespace group are what would make a PER-SKILL assertion possible rather
+      than a bare "some skill fired"; the sub-agent could not confirm the substitution, so
+      treat the syntax as a dated hypothesis until an actual run type-checks it.
+      Enablement per the same reference: automatic for first-party clients after
+      `claude update` plus a fresh session, and an enablement env var — name not in the
+      reference — for restricted clients (Bedrock/Vertex/Foundry, custom base URL, or
+      telemetry disabled).
+    **Next concrete step, and it is the user's, not the agent's:** retry a real
+    `claude plugin eval` invocation in a FRESH session — that is the one untested variable
+    left in the automatic-enablement path. If it is still gated, the enablement variable's
+    name has to come from the early-access contact; there is no public doc page for it. Only
+    then is the fixture worth authoring, and it should start with a handful of skills whose
+    triggers are unambiguous rather than all 27 descriptions at once.
+    Until then the risk stays accepted-and-named: Paket 5's twelve description changes and
+    Paket 1's own reliance on §1.6 firing are both untested, and `git revert` of a single
+    commit remains the only repair.
 
 12. **The §5.6 completeness bullet did not land** (Paket 1, 2026-09-02). The verbatim cue
     quoted under "Proposed change" — a filter's hit list is not an event list; assert on a
