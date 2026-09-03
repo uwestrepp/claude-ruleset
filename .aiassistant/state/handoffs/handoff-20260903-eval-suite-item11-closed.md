@@ -11,9 +11,9 @@ Five commits on `main`, oldest first:
     7b88f59  [TEST] (evals) disambiguation plus two restraint cases
     d357f5a  [DOCS] (state) item 11 closed, eval-case-duty proposal filed
 
-This supersedes `handoff-20260902-192049-session-close-p1-done.md`, whose step 1 is done.
-That file's package matrix and budget table are carried forward below; its step 2 was not
-executed, so it is spent but was left in the active set for the user to confirm archiving.
+This supersedes `handoffs/done/handoff-20260902-192049-session-close-p1-done.md`, whose step 1
+is done. That file's package matrix and budget table are carried forward below; its step 2 was
+not executed, and the user confirmed archiving it on 2026-09-03.
 
 ## 1. What shipped
 
