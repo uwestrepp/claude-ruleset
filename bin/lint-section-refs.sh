@@ -45,7 +45,7 @@ PLUGIN_ROOT="plugins/marketplaces/local/plugins"
 resolve_target() {
     case "$1" in
         Batch) echo "$PLUGIN_ROOT/core/skills/batch/SKILL.md" ;;
-        General|Meta|Persona|Organisation|CleanCode|PER|Twig|TYPO3) echo "rules/$1.md" ;;
+        General|Meta|Persona|Organisation|Skills|CleanCode|PER|Twig|TYPO3|Drupal|Shopware) echo "rules/$1.md" ;;
         *) echo "" ;;
     esac
 }
