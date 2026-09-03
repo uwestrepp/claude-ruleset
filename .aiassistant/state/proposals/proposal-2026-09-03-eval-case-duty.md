@@ -59,6 +59,27 @@ description was disproved rather than argued about.
 
 ## Evidence
 
+**A real defect, found and closed the same day (2026-09-03), which is what this proposal was
+missing when first filed.** Widening the suite across input shapes turned up that
+`core:brainstorm` did not fire on a German request for the range of options phrased without
+the keyword, and `core:poke-holes` did not fire on a hard paraphrase of "where would this fall
+apart" even with the artifact supplied. Both are squarely inside what those descriptions claim.
+Three things about the incident bear on the wording of the duty:
+
+- **Repetition would not have found it.** The existing `brainstorm` case passed three times in
+  a row. Only a second input SHAPE reached the defect, so a duty phrased as "run the suite"
+  is weaker than one phrased as "cover a second shape".
+- **The first hypothesis was wrong and the eval falsified it cheaply.** "Missing German
+  triggers" did not survive contact: `commits` fires on "einchecken" and `git-knowledge` on
+  German recovery questions, neither matching their trigger lists lexically. Two probes at
+  about $0.19 each replaced an argument with a measurement.
+- **The repair carried an over-trigger risk that only a whole-suite run could clear.** Wider
+  triggers can break the should-NOT-fire cases; the check was 20 cases, not the 2 repaired
+  ones. So the duty must scope the re-run to the affected case for cost reasons while still
+  requiring a full pass before a description change is called done.
+
+Recorded in `plugins/marketplaces/local/plugins/core/evals/README.md` under "Worked example".
+
 - Paket 5's nineteen changed `SKILL.md` files: `git diff d1f3fed~1..f87be0a --name-only`.
 - Carried open item 11 of `proposal-2026-08-31-verification-reach-consolidation.md`, which
   names this the single highest-value addition to the rule-set's own tooling and is closed
