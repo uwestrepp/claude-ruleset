@@ -47,3 +47,6 @@ CLAUDE.local.md
 
 # IDE
 .idea/
+
+# plugin eval run artifacts (transient per Meta.md §2.4)
+plugins/marketplaces/local/plugins/*/evals/results/
