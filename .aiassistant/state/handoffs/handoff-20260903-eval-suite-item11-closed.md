@@ -109,6 +109,26 @@ the twelve carried items, 1, 10 and 11 are now terminal.
 Still open and unchanged: item 7 (deployer->drupal move, resumes in `~/work/projects`) and the
 agnix 0.40.0 -> 0.41.1 pin bump (`handoff-20260730-110844-agnix-version-bump.md`).
 
+## Later on 2026-09-03: suites for composer and typo3, and a canonical home
+
+- Both remaining local plugins now have suites (commit `17ff51b`): composer 5 cases (mean
+  delta +0.10), typo3 5 cases (mean delta -0.30). **Four restraint defects, all with NEGATIVE
+  delta**, meaning the plugin scores worse than no plugin there: `composer:update`,
+  `typo3:scanner`, `typo3:static-tests`, `typo3:upgrade-full` all fire on their own topic.
+  NOT repaired, because the prior question is a decision: is the behaviour the defect, or is
+  the ledger's "explicit activation required" policy? If the policy stands, a proposal is
+  ready at `proposals/proposal-2026-09-03-mechanical-activation-gate.md` (frontmatter
+  `disable-model-invocation: true`, zero always-on cost, but it would break
+  `typo3:upgrade-full`'s orchestration of the other three unless the callee semantics are
+  checked first).
+- The activation findings now live in `rules/Skills.md`, path-gated on `**/SKILL.md` and
+  `**/agents/*.md` (commit `775059e`), so they load when a skill is being authored. Verified:
+  a Read of a `SKILL.md` injects it. Open, needs a FRESH session: whether Write-on-create and
+  whether a Bash-based read trigger it. Both were confounded once the rule was in context.
+- `CLAUDE.md` is now at ~2990 of 3020, roughly 30 estimated tokens left. The index is full.
+- The lint's ref resolver was taught `Skills` and, on the same line, the latent gap for
+  `Drupal` and `Shopware`; both resolved clean, so the gap hid no breakage.
+
 ## Validation for any follow-up work
 
     bash bin/lint-section-refs.sh
