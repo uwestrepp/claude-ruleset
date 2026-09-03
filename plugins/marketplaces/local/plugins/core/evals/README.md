@@ -65,4 +65,35 @@ enforced by the ledger phrase plus agent behavior, and only three pocock skills
 whether its *description* is self-restraining, which is a weaker and different
 claim than whether the gate holds in a real session.
 
+## One case is deliberately red
+
+`17-brainstorm-indirect` records an open defect and FAILS. The suite therefore exits
+non-zero under the default `--threshold 1.0`, and that is intentional: the case is the
+finding, not a broken test. Do not "fix" it by loosening its graders.
+
+Measured 2026-09-03, four data points:
+
+| Case | Language | Form | Literal trigger token | `brainstorm` |
+|---|---|---|---|---|
+| 07 | German | imperative | yes ("Brainstorm") | fires |
+| 17 | German | question | no | **0x** |
+| (probe, removed) | German | imperative | no | **0x** |
+| 18 | English | question | yes ("what are different angles for") | fires |
+
+`18-brainstorm-literal-control` exists only to keep 17 interpretable: same skill, same
+question form, a literal trigger phrase, and it fires. Without that control a red 17 could
+equally mean the skill is broken.
+
+What the data supports: `brainstorm` needs a literal trigger token, and a semantically
+equivalent request does not reach it. This is skill-specific rather than a general property
+of the harness or of German prompts: `commits` fires on "einchecken"/"Betreff" (case 10) and
+`git-knowledge` on German recovery and deploy questions (cases 03, 14), none of which match
+their trigger lists lexically.
+
+What the data does NOT support: a cause. The activation decision is not observable in the
+trace, only inputs and outcomes are. The standing hypothesis is the combination of
+`Use when the user explicitly asks` with the sharp `DOES NOT trigger on generic 'how do I
+solve X'` clause in that one description. Testing it means editing the description and
+re-measuring, which is a rule-set change and needs a decision.
+
 `results/` is gitignored: run artifacts are transient per `Meta.md` 2.4.
