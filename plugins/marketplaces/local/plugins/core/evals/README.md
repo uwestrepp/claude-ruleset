@@ -65,35 +65,45 @@ enforced by the ledger phrase plus agent behavior, and only three pocock skills
 whether its *description* is self-restraining, which is a weaker and different
 claim than whether the gate holds in a real session.
 
-## One case is deliberately red
+## Worked example: what this suite is for
 
-`17-brainstorm-indirect` records an open defect and FAILS. The suite therefore exits
-non-zero under the default `--threshold 1.0`, and that is intentional: the case is the
-finding, not a broken test. Do not "fix" it by loosening its graders.
+The suite has already found and closed one real defect, and the sequence is the argument for
+keeping it.
 
-Measured 2026-09-03, four data points:
+**Found.** `17-brainstorm-indirect` asks for the range of options in German without using the
+word "brainstorm". The skill did not fire. Repetition would never have found this: the
+existing `brainstorm` case passed three times in a row. Only a second input SHAPE reached it.
 
-| Case | Language | Form | Literal trigger token | `brainstorm` |
-|---|---|---|---|---|
-| 07 | German | imperative | yes ("Brainstorm") | fires |
-| 17 | German | question | no | **0x** |
-| (probe, removed) | German | imperative | no | **0x** |
-| 18 | English | question | yes ("what are different angles for") | fires |
+**Bounded.** Two probes isolated the boundary before any repair, because the first hypothesis
+(missing German triggers) was wrong: `commits` fires on "einchecken"/"Betreff" and
+`git-knowledge` on German recovery questions, none of which match their trigger lists
+lexically. Measured instead:
 
-`18-brainstorm-literal-control` exists only to keep 17 interpretable: same skill, same
-question form, a literal trigger phrase, and it fires. Without that control a red 17 could
-equally mean the skill is broken.
+| Skill | moderate paraphrase | hard paraphrase |
+|---|---|---|
+| `grill-me` | fires (06) | fires (20) |
+| `poke-holes` | fires (05) | did NOT fire (19) |
+| `brainstorm` | did NOT fire (17) | did NOT fire |
 
-What the data supports: `brainstorm` needs a literal trigger token, and a semantically
-equivalent request does not reach it. This is skill-specific rather than a general property
-of the harness or of German prompts: `commits` fires on "einchecken"/"Betreff" (case 10) and
-`git-knowledge` on German recovery and deploy questions (cases 03, 14), none of which match
-their trigger lists lexically.
+So it was a gradient, not a binary: every skill has a paraphrase margin and the margins
+differ. `brainstorm` had the narrowest, `grill-me` the widest.
 
-What the data does NOT support: a cause. The activation decision is not observable in the
-trace, only inputs and outcomes are. The standing hypothesis is the combination of
-`Use when the user explicitly asks` with the sharp `DOES NOT trigger on generic 'how do I
-solve X'` clause in that one description. Testing it means editing the description and
-re-measuring, which is a rule-set change and needs a decision.
+**Repaired.** Both descriptions gained semantic trigger variants including German ones, but
+the load-bearing part was sharpening the line against their own negative clause: a request
+for the RANGE of options counts even as a question and without the keyword, and asking where
+a supplied artifact breaks IS `poke-holes` however phrased. Cost about 112 estimated tokens
+against the skill-description surface, which the budget check accepted.
+
+**Verified, including the regression risk.** Widening a trigger can cause over-triggering, so
+the check was the whole suite rather than the two repaired cases: 20 cases, no negative
+assertion broke, `04` and `09` unchanged at delta 0.00, and the sibling negatives inside 05,
+06, 07 and 16 all held. Case 17 was then confirmed at `runs: 3` with the with-arm at 1.00 on
+every run.
+
+**What stayed a hypothesis.** Why the margins differ. The activation decision is not
+observable in the trace, only inputs and outcomes are, so the repair is evidence that wider
+wording widens the margin and NOT evidence about the mechanism. `18-brainstorm-literal-control`
+exists to keep 17 interpretable: same skill, same question form, a literal trigger phrase.
+Without it a red 17 could equally have meant the skill was broken.
 
 `results/` is gitignored: run artifacts are transient per `Meta.md` 2.4.
