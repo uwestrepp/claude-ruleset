@@ -79,7 +79,7 @@ as an index entry rather than a rule. **This is the user's call, not agent work.
 
 | Option | Content | Cost |
 |---|---|---|
-| Confirm 05-09 | run the five new cases at `runs: 3` | about $2.85, no token cost |
+| Confirm the whole suite | 20 cases at `runs: 3`; only 01-04, 17 and 19 have ever run at 3 | about $10, no token cost |
 | Extend coverage | cases for `composer` and `typo3` (each needs its own suite); three Paket 5 descriptions still uncovered | run budget only |
 | Paket 3 | `Meta.md` pointer clause + item 8 + three removals | 214 tokens free; carries ONE undecided design question, written up in its handoff |
 | Paket 4 | demotions, THEN spend the space on items 4 + 12 | unblocks three queued additions incl. the new proposal |
@@ -90,6 +90,16 @@ as an index entry rather than a rule. **This is the user's call, not agent work.
 Recommendation: **Paket 4**. It was already the higher-leverage option, and the new proposal
 is the third addition queued behind the space it frees, which strengthens the case. Paket 3
 remains next in the recorded run order if you prefer the order.
+
+**Update, later on 2026-09-03: the suite grew to 20 cases and found a real defect.**
+`core:brainstorm` and `core:poke-holes` both missed requests squarely inside what their
+descriptions claim. Both repaired, both verified at `runs: 3`, no over-triggering across the
+full suite (commits `d98deaf`, `2ccb10e`, `b7e8f9b`). The durable lesson, and it changes how to
+use this tool: **breadth finds defects, depth only validates numbers.** The existing
+`brainstorm` case had passed three runs in a row with the defect one phrasing away. Every
+description has a paraphrase margin, the margins differ per skill, and they are invisible
+until measured. Full worked example in `core/evals/README.md`; reusable form in auto-memory
+`ref_claude_plugin_eval.md`. The eval-case-duty proposal now carries this as its incident.
 
 Carried item 1 (pairing mode part B) was REJECTED by the user later on 2026-09-03 and needs
 nothing further: dropped on M2, since the narrow core would surface only main-agent decisions
