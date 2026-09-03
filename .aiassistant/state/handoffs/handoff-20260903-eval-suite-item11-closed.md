@@ -75,21 +75,38 @@ the target: `General.md` §9.2 is topically correct but unaffordable at reserve 
 queues behind Paket 4; the `CLAUDE.md` ledger preamble is affordable at reserve 115 but reads
 as an index entry rather than a rule. **This is the user's call, not agent work.**
 
-## Tomorrow — pick one, they are independent
+## Tomorrow
+
+**One decision gates two proposals, and it costs nothing to make.** Four restraint cases are
+red: `composer:update`, `typo3:scanner`, `typo3:static-tests` and `typo3:upgrade-full` all
+fire on their own topic although the ledger marks them "explicit activation required". Is the
+BEHAVIOUR the defect, or the POLICY? If the skills should fire on their topic, the ledger
+entry is what changes and the red cases get inverted. If the policy stands,
+`proposals/proposal-2026-09-03-mechanical-activation-gate.md` is ready to apply. Nothing
+about `eval-case-duty` or the activation gate should be built before this is answered.
 
 | Option | Content | Cost |
 |---|---|---|
-| Confirm the whole suite | 20 cases at `runs: 3`; only 01-04, 17 and 19 have ever run at 3 | about $10, no token cost |
-| Extend coverage | cases for `composer` and `typo3` (each needs its own suite); three Paket 5 descriptions still uncovered | run budget only |
+| **Decide policy vs behaviour** | the four red restraint cases; unblocks two proposals | free |
+| Confirm all three suites | 30 cases at `runs: 3`; only core 01-04, 17 and 19 have ever run at 3, and the four red cases are n=1 | about $14, no token cost |
+| Two gate questions | in a FRESH session: does Write-on-create, and does a Bash read (`cat`/`grep`), trigger the `**/SKILL.md` path gate? Both were confounded here | pennies |
+| Paket 4 | demotions, THEN spend the space on items 4 + 12 | unblocks the queued always-on additions |
 | Paket 3 | `Meta.md` pointer clause + item 8 + three removals | 214 tokens free; carries ONE undecided design question, written up in its handoff |
-| Paket 4 | demotions, THEN spend the space on items 4 + 12 | unblocks three queued additions incl. the new proposal |
 | Paket 8 | four skill/hook fixes | no always-on cost |
 | Paket 6 | governance fixes (item 2 already done) | |
 | Paket 7 | path-gated hygiene + item 7 | |
 
-Recommendation: **Paket 4**. It was already the higher-leverage option, and the new proposal
-is the third addition queued behind the space it frees, which strengthens the case. Paket 3
-remains next in the recorded run order if you prefer the order.
+Recommendation: **the decision first**, then **Paket 4**. `CLAUDE.md` is now at ~2990 of 3020
+and `rules/General.md` at its ceiling, so Paket 4 is what makes any further always-on
+addition possible at all, and three are queued behind it.
+
+Coverage note, so it is not re-derived: all three local plugins now have suites. Still
+uncovered are three of Paket 5's changed descriptions, and the `General.md` §9.1 gate is out
+of reach by construction.
+
+Not from this workstream but open, filed by another session today (commit `1d2045d`):
+`proposals/proposal-2026-09-03-branch-upstream-tracking.md`, a working branch's upstream must
+never be a protected ref. Not reviewed here.
 
 **Update, later on 2026-09-03: the suite grew to 20 cases and found a real defect.**
 `core:brainstorm` and `core:poke-holes` both missed requests squarely inside what their
