@@ -310,7 +310,7 @@ implementation — they stay here on purpose.
 | 8 | Two target documents for actionable findings | Paket 3, second clause |
 | 9 | Transition-state bug needs two runs | Paket 8 §4 |
 | 10 | agnix ledger claim wrong for memory files | **DONE 2026-09-02** — sentence corrected in `CLAUDE.md` + hook header |
-| 11 | Skill activation has no test | blocked: `claude plugin eval` is the right mechanism but gated behind early access here (`Ownerless`) |
+| 11 | Skill activation has no test | **UNBLOCKED 2026-09-03** — gate lifts with `CLAUDE_CODE_WALNUT_SPIRE=1`; fixture still to author (`Ownerless`) |
 | 12 | §5.6 completeness bullet, repair half | Paket 4, follow-up step 2 |
 
 1. **Pairing mode** (`proposal-2026-07-29-implementation-visibility.md`). Part A of that
@@ -467,15 +467,31 @@ Two items were appended later by the packages that discovered them:
       `claude update` plus a fresh session, and an enablement env var — name not in the
       reference — for restricted clients (Bedrock/Vertex/Foundry, custom base URL, or
       telemetry disabled).
-    **Next concrete step, and it is the user's, not the agent's:** retry a real
-    `claude plugin eval` invocation in a FRESH session — that is the one untested variable
-    left in the automatic-enablement path. If it is still gated, the enablement variable's
-    name has to come from the early-access contact; there is no public doc page for it. Only
-    then is the fixture worth authoring, and it should start with a handful of skills whose
-    triggers are unambiguous rather than all 27 descriptions at once.
-    Until then the risk stays accepted-and-named: Paket 5's twelve description changes and
-    Paket 1's own reliance on §1.6 firing are both untested, and `git revert` of a single
-    commit remains the only repair.
+    **UNBLOCKED 2026-09-03.** The fresh-session retry was run and the automatic path is
+    FALSIFIED, not merely untried: CLI had moved 2.1.258 -> 2.1.259 and the session was fresh
+    — both variables the offline reference named — and a real invocation still answered
+    `` `plugin eval` is currently in early access `` at exit 1. The per-organization rollout
+    has not reached this host.
+    The gate itself is not opaque. Grepping the resolved binary
+    (`~/.local/share/claude/versions/2.1.259`) for the refusal string resolves the predicate
+    to `L("tengu_walnut_spire",!1)||a.CLAUDE_CODE_WALNUT_SPIRE` — a per-org feature flag OR an
+    env variable — and the bundle carries its own enablement text naming
+    `CLAUDE_CODE_WALNUT_SPIRE=1`, valid in the shell, in `~/.claude/settings.json` under
+    `env`, or in managed settings, and explicitly NOT in a repository `.claude/settings.json`.
+    So the name did not have to come from the early-access contact after all.
+    *Verified by running it:* with that variable set as an ephemeral env prefix the command
+    passes the gate and proceeds into its normal behavior, reporting `No eval cases found
+    under <plugin>` for a plugin with no `evals/` directory. That exit 1 is the empty-target
+    path, not the gate. `~/.claude/settings.json` is gitignored here (`.gitignore:9`), so it
+    is the correct machine-local target if the flag is to be made permanent.
+    *Reach of that check:* it proves the gate opens and the command runs. It does NOT prove a
+    case scores, and the grader idiom quoted above is still un-type-checked — no case has been
+    run. Both remain dated hypotheses.
+    **Next concrete step:** author a fixture for a handful of skills whose triggers are
+    unambiguous — not all 27 descriptions — and let the first real run type-check the grader
+    idiom. Until a case has scored, the risk stays accepted-and-named: Paket 5's twelve
+    description changes and Paket 1's own reliance on §1.6 firing are both untested, and
+    `git revert` of a single commit remains the only repair.
 
 12. **The §5.6 completeness bullet did not land** (Paket 1, 2026-09-02). The verbatim cue
     quoted under "Proposed change" — a filter's hit list is not an event list; assert on a
