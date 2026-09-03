@@ -1,9 +1,14 @@
 # Proposal: Implementation Visibility (pairing mode vs. architecture grill)
 
 Date: 2026-07-29.
-Status: superseded. Part A (architecture pre-flight) was DECIDED AND BUILT as
-`/core:blueprint`, see §9. Part B (always-on pairing mode) remains proposal only, nothing
-built, and is carried forward as an open item in the record named under `Superseded by`.
+Status: superseded, and both parts are now decided. Part A (architecture pre-flight) was
+DECIDED AND BUILT as `/core:blueprint`, see §9. Part B (always-on pairing mode) was
+REJECTED by the user on 2026-09-03 and nothing was built: the narrow `observe`-only core
+that survived the findings below would make visible only the main-agent decisions the user
+already reads, while staying blind to delegated work (M2), which `General.md` §11.1 pushes
+bounded implementation toward. Findings B1 through B4 below remain correct; they are why no
+cheaper prompt-only variant exists. Gap 2 (§2.1) is NOT withdrawn and stays open and named.
+Full reasoning: carried open item 1 of the record under `Superseded by`.
 Superseded by: .aiassistant/state/proposals/proposal-2026-08-31-verification-reach-consolidation.md
 Origin: user observation that the plan-then-implement default makes the *genesis* of
 implementation decisions opaque, and that being "closer to" those decisions is

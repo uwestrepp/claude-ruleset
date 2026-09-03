@@ -91,10 +91,13 @@ Recommendation: **Paket 4**. It was already the higher-leverage option, and the 
 is the third addition queued behind the space it frees, which strengthens the case. Paket 3
 remains next in the recorded run order if you prefer the order.
 
-Also still open and unchanged from the previous handoff: carried item 1 (pairing mode,
-re-scoped to a narrow `observe`-only `UserPromptSubmit` hook — build or drop, user's call),
-item 7 (deployer->drupal move, resumes in `~/work/projects`), and the agnix 0.40.0 -> 0.41.1
-pin bump (`handoff-20260730-110844-agnix-version-bump.md`).
+Carried item 1 (pairing mode part B) was REJECTED by the user later on 2026-09-03 and needs
+nothing further: dropped on M2, since the narrow core would surface only main-agent decisions
+the user already reads while staying blind to delegated work. Gap 2 stays open and named. Of
+the twelve carried items, 1, 10 and 11 are now terminal.
+
+Still open and unchanged: item 7 (deployer->drupal move, resumes in `~/work/projects`) and the
+agnix 0.40.0 -> 0.41.1 pin bump (`handoff-20260730-110844-agnix-version-bump.md`).
 
 ## Validation for any follow-up work
 

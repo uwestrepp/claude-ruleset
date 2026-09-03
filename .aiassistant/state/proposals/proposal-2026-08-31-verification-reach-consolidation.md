@@ -300,7 +300,7 @@ implementation — they stay here on purpose.
 
 | # | Item | Owning handoff |
 |---|---|---|
-| 1 | Pairing mode, part B | none — scoped 2026-09-02 to a narrow `observe`-only core; build-or-drop is the user's call (`Ownerless`) |
+| 1 | Pairing mode, part B | **REJECTED 2026-09-03** (user) — dropped on M2; Gap 2 stays open and named |
 | 2 | Branch resolution at commit time | Paket 8 §1 |
 | 3 | Pre-action check as its own call | Paket 8, parked with an unpark trigger |
 | 4 | Guard-pattern precision | Paket 4, follow-up step 1 |
@@ -340,10 +340,30 @@ implementation — they stay here on purpose.
    `observe` only, trigger on genuine option sets, plus the §8.4 suspension (M1) and a
    `CLAUDE.md` ledger line. `gate`, the level ladder and cross-session persistence are the
    expensive parts, and none is required for the stated need ("just see it").
-   Still open and NOT answerable by the agent: whether even that narrow version is worth
-   building, given that M2 has no cheap resolution — sub-agents do not see the mode, so
-   delegated implementation bypasses it entirely while `General.md` §11.1 mandates
-   delegation for exactly that kind of bounded work.
+   **REJECTED 2026-09-03 (user decision). Part B is dropped; Gap 2 stays open and named.**
+   Not rejected as a false need: Gap 2 is real and the decomposition in §3 of the source
+   proposal stands, since detail-level decisions only come into existence as the code is
+   written and no pre-flight primitive can reach them. What was rejected is that building
+   the narrow core is worth its cost.
+   Reason, and it is M2 rather than any of the four blocking findings: the narrow version
+   makes visible exactly the decisions taken in the main agent, which the user already reads
+   in the transcript, and is blind to delegated work, which `General.md` §11.1 actively
+   pushes bounded implementation toward. So it spends hook infrastructure plus an always-on
+   §8.4 exception on the half of the problem that was least opaque to begin with. The
+   supporting facts B1 through B4 remain correct and are why no cheaper prompt-only variant
+   exists to fall back on.
+   Corroborating evidence for M2's class of failure, from the 2026-09-03 session: context
+   does not cross execution boundaries here as a matter of pattern, not accident. The
+   `claude plugin eval` sandbox loads no `CLAUDE.md` (measured), and `CLAUDE.md` already
+   records that the built-in `Explore`/`Plan` sub-agents load none either.
+   *Noted, deliberately NOT proposed:* the cheaper lever for the same need would be a duty
+   in `General.md` §11.2 that a delegated sub-agent returns its option weighing in its
+   report, which addresses precisely the hole M2 describes and costs no hook. It is recorded
+   here rather than filed as a proposal because no incident sits behind it yet, and `Meta.md`
+   §3.3 would ask for one. Raise it if a delegated implementation decision is ever missed in
+   practice.
+   The source proposal stays archived at `proposals/done/`, its Status header updated to
+   point at this decision.
 2. **Branch resolution at commit time** (`proposal-2026-07-31-branch-resolution-at-commit-time.md`).
    `General.md` §12 resolves the target branch once per *task*, and a task can be long; in
    the GMP-340 go-live session the working copy had moved onto `staging` hours later and a
