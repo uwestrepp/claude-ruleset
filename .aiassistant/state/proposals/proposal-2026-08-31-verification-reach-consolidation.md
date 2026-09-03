@@ -310,7 +310,7 @@ implementation — they stay here on purpose.
 | 8 | Two target documents for actionable findings | Paket 3, second clause |
 | 9 | Transition-state bug needs two runs | Paket 8 §4 |
 | 10 | agnix ledger claim wrong for memory files | **DONE 2026-09-02** — sentence corrected in `CLAUDE.md` + hook header |
-| 11 | Skill activation has no test | **UNBLOCKED 2026-09-03** — gate lifts with `CLAUDE_CODE_WALNUT_SPIRE=1`; fixture still to author (`Ownerless`) |
+| 11 | Skill activation has no test | **DONE 2026-09-03** — nine-case eval suite runs; §9.1 gate out of reach by construction |
 | 12 | §5.6 completeness bullet, repair half | Paket 4, follow-up step 2 |
 
 1. **Pairing mode** (`proposal-2026-07-29-implementation-visibility.md`). Part A of that
@@ -487,11 +487,34 @@ Two items were appended later by the packages that discovered them:
     *Reach of that check:* it proves the gate opens and the command runs. It does NOT prove a
     case scores, and the grader idiom quoted above is still un-type-checked — no case has been
     run. Both remain dated hypotheses.
-    **Next concrete step:** author a fixture for a handful of skills whose triggers are
-    unambiguous — not all 27 descriptions — and let the first real run type-check the grader
-    idiom. Until a case has scored, the risk stays accepted-and-named: Paket 5's twelve
-    description changes and Paket 1's own reliance on §1.6 firing are both untested, and
-    `git revert` of a single commit remains the only repair.
+    **CLOSED 2026-09-03.** The fixture exists and runs: nine cases at
+    `plugins/marketplaces/local/plugins/core/evals/` with a README (commits `d949a86`,
+    `5d059f1`, `7b88f59`). The grader idiom quoted above is verified by real runs, with one
+    correction that the offline reference did not carry: `arm: both` is load-bearing, because
+    without it a `tool: Skill` grader is a display-only indicator that never moves the
+    ablation delta. Swapping `min: 1` for `min: 0, max: 0` while keeping `input_match` asserts
+    that one NAMED skill stayed quiet, which is what makes disambiguation testable.
+    *Measured, with-arm 1.00 throughout:* the first four cases were confirmed at `runs: 3`
+    (24 runs, 381 s, $1.51, mean delta +0.42) with no flake; only the baseline arm varied. The
+    five disambiguation and restraint cases are piloted at `runs: 1` and score 1.00 each.
+    Three substantive results about the descriptions themselves:
+    - the three-way `grill-me` / `poke-holes` / `brainstorm` guard BINDS — each fired only in
+      its own case and stayed at 0x in both sibling cases, so the "Distinct from X" clauses
+      are load-bearing rather than decorative,
+    - `commits` did NOT over-trigger on a German prompt containing "nichts committen", so its
+      broad "any request mentioning commits/committing/amending" clause is not the liability it
+      looked like,
+    - `blueprint` restrained itself on a routine class-cut question in both arms.
+    **Reach limit, and it is structural:** cases run in a sandbox that loads only the plugin
+    under test, so no `CLAUDE.md` and no `rules/`. The suite measures description-driven
+    auto-activation and CANNOT test the `General.md` §9.1 invocation gate. Related finding:
+    only three pocock skills (`zoom-out`, `diagnose`, `grill-with-docs`) carry
+    `disable-model-invocation: true`; for `core:blueprint`, `core:rule-friction`, `composer:*`
+    and `typo3:*` the gate is the ledger phrase plus agent behavior and nothing else.
+    **What stays untested:** the `composer` and `typo3` plugins have no suite (each needs its
+    own), three of Paket 5's changed descriptions are still uncovered, and Paket 1's reliance
+    on §1.6 firing is not a description question and remains outside this mechanism.
+    A follow-up proposal is filed at `proposals/proposal-2026-09-03-eval-case-duty.md`.
 
 12. **The §5.6 completeness bullet did not land** (Paket 1, 2026-09-02). The verbatim cue
     quoted under "Proposed change" — a filter's hit list is not an event list; assert on a
