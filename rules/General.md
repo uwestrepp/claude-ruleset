@@ -265,6 +265,10 @@ No em-dash (`—`) in any agent-authored prose, and no en-dash (`–`) as a conn
 
 Content the user will paste into an external surface (Jira, Bitbucket PR, Confluence, e-mail, commit-message proposal, etc.) MUST be emitted as raw source in a fenced code block, never chat-rendered markup. Fence-length rule, title/body separation, and payload language: `/core:communication` §3.
 
+## 8.7 Shorthand Legibility (MUST)
+
+In human-facing output — chat and colleague-facing surfaces alike — a bare short identifier (item/finding number, section or code shorthand: `19`, `27.2`, `I4`, `A7`) MUST NOT stand as the only name of a thing: on first mention per message, pair it with a short topic label, e.g. `I4 (html_head insertion order)`. Agent-facing artifacts (ledgers, triage packets, state notes) MAY keep identifiers bare.
+
 # 9. Skill Invocation Gate
 
 ## 9.1 Require explicit skill activation (MUST)

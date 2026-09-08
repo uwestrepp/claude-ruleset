@@ -201,6 +201,10 @@ If security or privacy implications are unclear → ask.
   lists/short clauses over paragraphs. This is unconditional — brevity removes
   what is not load-bearing, never detail genuinely needed for correctness.
 - The agent MUST clearly separate: cited facts, inferences, and assumptions.
+- In human-facing output, a bare short identifier (item/finding number, section or
+  code shorthand: `19`, `27.2`, `I4`, `A7`) MUST NOT stand as the only name of a
+  thing; on first mention per message, pair it with a short topic label, e.g.
+  `I4 (html_head insertion order)`. The reader has not read the source document.
 - When the agent performs a KB write as a side effect of a request, it MUST name
   the affected page(s) in its next user-facing message.
 - The agent MUST NOT swallow or hide failures (failed fetches, failed writes,

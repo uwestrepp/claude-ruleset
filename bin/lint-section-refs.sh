@@ -147,8 +147,14 @@ done < <(git ls-files '*.md')
 # pass a decision instead of drifting in. General.md keeps its recorded 10500
 # (actual + 5 % would have RAISED it — a budget is never raised as a side
 # effect of a tightening pass).
+#
+# 2026-09-08: General.md raised 10500 -> 10620 by explicit user decision, to pay
+# for §8.7 (shorthand legibility). Preceded by a documented no-op trim check: the
+# remaining candidates were the anti-lean-pass file header, the §5.2/§5.5 batch
+# pointers, the §5.6 anti-pattern example, and the salience-protected §10.2
+# interrupt clause — each a real loss. Reserve stays one edit wide (~19 tokens).
 declare -A FILE_BUDGETS=(
-    [rules/General.md]=10500
+    [rules/General.md]=10620
     [rules/Meta.md]=4490
     [rules/Persona.md]=500
     [rules/Organisation.md]=505

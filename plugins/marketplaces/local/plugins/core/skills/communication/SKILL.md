@@ -80,6 +80,15 @@ commit messages and chat.
 **Brevity**: lead with the point, lists over paragraphs where they aid reading
 (`General.md` §10.4).
 
+**Shorthand legibility** (`General.md` §8.7): the reader has not read the underlying
+document, so a bare item number, finding ID or section code (`19`, `27.2`, `I4`, `A7`)
+carries no meaning for them. On first mention per artifact, name the topic alongside it
+(`Befund I4 (Reihenfolge der html_head-Einträge)`); afterwards the short form may be
+reused within the same artifact. A comment or PR description that lists `19, 27.2, A7`
+bare forces the reader back into the source document or into a follow-up question. When
+several such items appear, prefer a short table (ID plus topic) over an inline
+enumeration.
+
 ## 3. Copy-paste deliverables (§8.6)
 
 Content the user will paste into an external surface MUST be emitted as **raw source
